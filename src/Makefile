@@ -17,7 +17,6 @@ DESTPCMDIR48 = $(DESTDIR48)/48khz24bit
 
 
 noct44::
-	rm -rf $(DESTDIR44)
 	mkdir -p $(DESTPCMDIR44)
 	mkdir -p $(DESTDIR44)/src
 	cp -p README.txt $(DESTDIR44)/.
@@ -27,7 +26,6 @@ noct44::
 	FFMPEG="$(FFMPEG)" sh do_eql+env_all.sh $(SRCPCMDIR44) $(DESTPCMDIR44)
 
 noct48::
-	rm -rf $(DESTDIR48)
 	mkdir -p $(DESTPCMDIR48)
 	mkdir -p $(DESTDIR48)/src
 	cp -p README.txt $(DESTDIR48)/.
