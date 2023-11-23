@@ -11,10 +11,11 @@
 #### This script can be used under Cygwin Terminal. ####
 
 
-#### Set your ffmpeg.exe.  Native Windows binary is OK. ####
+#### Set your ffmpeg.exe in Makefile.  Native Windows binary is OK. ####
 
-FFMPEG="/cygdrive/c/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
-
+if [ "$FFMPEG" = "" ]; then
+  FFMPEG="/cygdrive/c/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
+fi
 
 if [ "$2" == "" ]; then
   echo "[USAGE]"
@@ -62,6 +63,7 @@ FREQ_ENV_VOL_MIN=1760
 ########
 
 
+echo FFMPEG = $FFMPEG
 echo SRC_DIR: $SRC_DIR
 echo DEST_DIR: $DEST_DIR
 
