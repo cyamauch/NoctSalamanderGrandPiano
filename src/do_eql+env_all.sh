@@ -24,8 +24,8 @@ if [ "$2" == "" ]; then
 fi
 
 
-SRC_DIR=$1
-DEST_DIR=$2
+SRC_DIR="$1"
+DEST_DIR="$2"
 
 
 #### FLAG for wav creation ####
@@ -63,7 +63,7 @@ FREQ_ENV_VOL_MIN=1760
 ########
 
 
-echo FFMPEG = $FFMPEG
+echo FFMPEG: $FFMPEG
 echo SRC_DIR: $SRC_DIR
 echo DEST_DIR: $DEST_DIR
 
@@ -101,11 +101,11 @@ for i in $LIST ; do
   for j in $LIST_WAV ; do
     #echo :: $j
     if [ -f "${SRC_DIR}/$j" ]; then
-      OUT_FILE=${DEST_DIR}/$j
+      OUT_FILE="${DEST_DIR}/$j"
       echo "  Found "$j",  Output to $OUT_FILE"
-      rm -f tmp1.wav tmp2.wav $OUT_FILE
+      rm -f tmp1.wav tmp2.wav "$OUT_FILE"
       #
-      #$FFMPEG -i "${SRC_DIR}/$j" -hide_banner -af volumedetect -vn -f null - 2> tmp_info.txt
+      #"$FFMPEG" -i "${SRC_DIR}/$j" -hide_banner -af volumedetect -vn -f null - 2> tmp_info.txt
       #N=`cat tmp_info.txt | grep "Hz," | awk -F, '{print $2;}' | awk '{print $1;}'`
       #N_SAMPLES=`echo $N | sed -e 's/.*[ ]//'`
       #N=`cat tmp_info.txt | tr -d ' ' | grep "n_samples:" | awk -F: '{printf("%d\n",$2/4);}'`
@@ -115,9 +115,9 @@ for i in $LIST ; do
       #DURATION=`echo $N_SUMMIT $N_SAMPLES | awk '{printf("%g\n",1.0*$1/$2);}'`
       #echo DURATION = $DURATION
       #
-      $FFMPEG -i "${SRC_DIR}/$j" -af equalizer=f=${FREQ_EQ_0}:t=h:w=${FREQ_W_0}:g=-${GAIN_THIS_0},equalizer=f=${FREQ_EQ}:t=h:w=${FREQ_W}:g=-${GAIN_THIS},volume=-${VOL_THIS}dB tmp1.wav 2> /dev/null
-      $FFMPEG -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" tmp2.wav 2> /dev/null
-      $FFMPEG -i tmp1.wav -i tmp2.wav -filter_complex "amix=normalize=0" $OUT_FILE 2> /dev/null
+      "$FFMPEG" -i "${SRC_DIR}/$j" -af equalizer=f=${FREQ_EQ_0}:t=h:w=${FREQ_W_0}:g=-${GAIN_THIS_0},equalizer=f=${FREQ_EQ}:t=h:w=${FREQ_W}:g=-${GAIN_THIS},volume=-${VOL_THIS}dB tmp1.wav 2> /dev/null
+      "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" tmp2.wav 2> /dev/null
+      "$FFMPEG" -i tmp1.wav -i tmp2.wav -filter_complex "amix=normalize=0" "$OUT_FILE" 2> /dev/null
     fi
   done
 done
