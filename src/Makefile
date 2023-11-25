@@ -23,7 +23,7 @@ noct44::
 	cp -p do_eql+env_all.sh freq_data.csv Makefile freq-sec.txt freq-sec_fnc.png $(DESTDIR44)/src/.
 	cp -p $(SRCDIR44)/README $(DESTDIR44)/README.orig.txt
 	cp -p $(SRCDIR44)/*.sfz $(DESTDIR44)/.
-	FFMPEG="$(FFMPEG)" sh do_eql+env_all.sh $(SRCPCMDIR44) $(DESTPCMDIR44)
+	FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s16le" sh do_eql+env_all.sh $(SRCPCMDIR44) $(DESTPCMDIR44)
 
 noct48::
 	mkdir -p $(DESTPCMDIR48)
@@ -32,7 +32,7 @@ noct48::
 	cp -p do_eql+env_all.sh freq_data.csv Makefile freq-sec.txt freq-sec_fnc.png $(DESTDIR48)/src/.
 	cp -p $(SRCDIR48)/README $(DESTDIR48)/README.orig.txt
 	cp -p $(SRCDIR48)/*.sfz $(DESTDIR48)/.
-	FFMPEG="$(FFMPEG)" sh do_eql+env_all.sh $(SRCPCMDIR48) $(DESTPCMDIR48)
+	FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh do_eql+env_all.sh $(SRCPCMDIR48) $(DESTPCMDIR48)
 
 clean44::
 	rm -rf $(DESTDIR44)

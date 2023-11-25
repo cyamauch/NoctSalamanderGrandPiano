@@ -115,9 +115,9 @@ for i in $LIST ; do
       #DURATION=`echo $N_SUMMIT $N_SAMPLES | awk '{printf("%g\n",1.0*$1/$2);}'`
       #echo DURATION = $DURATION
       #
-      "$FFMPEG" -i "${SRC_DIR}/$j" -af equalizer=f=${FREQ_EQ_0}:t=h:w=${FREQ_W_0}:g=-${GAIN_THIS_0},equalizer=f=${FREQ_EQ}:t=h:w=${FREQ_W}:g=-${GAIN_THIS},volume=-${VOL_THIS}dB tmp1.wav 2> /dev/null
-      "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" tmp2.wav 2> /dev/null
-      "$FFMPEG" -i tmp1.wav -i tmp2.wav -filter_complex "amix=normalize=0" "$OUT_FILE" 2> /dev/null
+      "$FFMPEG" -i "${SRC_DIR}/$j" -af equalizer=f=${FREQ_EQ_0}:t=h:w=${FREQ_W_0}:g=-${GAIN_THIS_0},equalizer=f=${FREQ_EQ}:t=h:w=${FREQ_W}:g=-${GAIN_THIS},volume=-${VOL_THIS}dB -c:a pcm_s32le tmp1.wav 2> /dev/null
+      "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" -c:a pcm_s32le tmp2.wav 2> /dev/null
+      "$FFMPEG" -i tmp1.wav -i tmp2.wav -filter_complex "amix=normalize=0" $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
     fi
   done
 done

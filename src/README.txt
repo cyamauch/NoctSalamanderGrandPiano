@@ -1,13 +1,16 @@
 Noct-Salamander Grand Piano
-Refined Salamander Grand for Nocturn Music.
+Refined Salamander Grand for Nocturne.
 
 
 Technical info
 
-This sound bank was created based on Salamander Grand:
+This sound bank was created based on the Salamander Grand,
 
 "Salamander Grand Piano" Web site
 https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html
+
+and tone quality of all basic WAV files listed in SFZ is improved 
+to play nocturnes and other relaxation music.
 
 Retuned points are:
 
