@@ -66,7 +66,7 @@ echo SRC_DIR: $SRC_DIR
 echo DEST_DIR: $DEST_DIR
 
 
-LIST=`cat freq_data.csv | tr -d '\r' | awk -F, '{printf("%s%s,%s\n",substr($1,1,2),$2,$4);}'`
+LIST=`cat freq_data.csv | tr -d '\r' | grep -e '^C[^#]' -e '^D#' -e '^F#' -e '^A[^#]' | awk -F, '{printf("%s%s,%s\n",substr($1,1,2),$2,$4);}'`
 for i in $LIST ; do
   KEY=`echo $i | awk -F, '{printf("%s\n",$1);}'`
   FREQ=`echo $i | awk -F, '{printf("%s\n",$2);}'`
