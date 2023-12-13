@@ -20,7 +20,8 @@ frequency overtones.  This is a natural result of physics, and the digital
 processing was based on applying LPF to each of the notes as follows:
 
 - Applied LPF for keys having 440Hz and higher frequency.
-- Applied LPF at very high frequency for keys having 220Hz and above.
+- Applied different LPFs in the two frequency bands.
+  (Attenuates at f*13 for f < 1000Hz and at f*3 for f => 1000Hz)
 - Changed the envelopes of all keys so that the string decay is more gradual.
 
 In order to pursue natural sound quality, the levels of LPF and envelope 
@@ -30,17 +31,19 @@ The original sound source is a sampling of the YAMAHA C5, but these processes
 make it possible to reproduce the tone of a larger grand piano.
 
 FFmpeg was used for all processings.  See src/do_eql+env_all.sh for details. 
-This script contains all settings such as LPF.  You can also change the 
-parameters in the script and run "make" to generate your own piano sound 
-(you need to get the original version of Salamander Grand).  This allows for a 
-level of complexity and fine-tuning of sound quality that is not possible 
-through the GUI of VST plug-ins or filter settings within SFZ files. 
+You can change the parameters in the script and *_factor.txt files, and run 
+"make" to generate your own piano sound (you need to get the original version 
+of Salamander Grand).  This allows for a level of complexity and fine-tuning 
+of sound quality that is not possible through the GUI of VST plug-ins or 
+filter settings within SFZ files. 
 
 
 Changelog:
 
-V3.0
+V3.0 (Nov.24,2023)
 * First release based on Salamander Grand Piano V3+20161209.
+V3.1 (Dec.??,2023)
+* Configuration files (*_factor.txt) allow detailed LPF and volume settings.
 
 
 Licence: 

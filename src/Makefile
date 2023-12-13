@@ -7,12 +7,12 @@ FFMPEG = /cygdrive/c/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-
 
 SRCDIR44 =  ../SalamanderGrandPianoV3_44.1khz16bit
 SRCPCMDIR44 =  $(SRCDIR44)/44.1khz16bit 
-DESTDIR44 = ../NoctSalamanderGrandPianoV3.0_44.1khz16bit
+DESTDIR44 = ../NoctSalamanderGrandPianoV3.1_44.1khz16bit
 DESTPCMDIR44 = $(DESTDIR44)/44.1khz16bit
 
 SRCDIR48 =  ../SalamanderGrandPianoV3_48khz24bit
 SRCPCMDIR48 =  $(SRCDIR48)/48khz24bit
-DESTDIR48 = ../NoctSalamanderGrandPianoV3.0_48khz24bit
+DESTDIR48 = ../NoctSalamanderGrandPianoV3.1_48khz24bit
 DESTPCMDIR48 = $(DESTDIR48)/48khz24bit
 
 
@@ -20,7 +20,7 @@ noct44::
 	mkdir -p $(DESTPCMDIR44)
 	mkdir -p $(DESTDIR44)/src
 	cp -p README.txt $(DESTDIR44)/.
-	cp -p do_eql+env_all.sh freq_data.csv Makefile freq-sec.txt freq-sec_fnc.png $(DESTDIR44)/src/.
+	cp -p do_eql+env_all.sh freq_data.csv freq-sec.txt *_factor.txt Makefile freq-sec_fnc.png $(DESTDIR44)/src/.
 	cp -p $(SRCDIR44)/README $(DESTDIR44)/README.orig.txt
 	cp -p $(SRCDIR44)/*.sfz $(DESTDIR44)/.
 	FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s16le" sh do_eql+env_all.sh $(SRCPCMDIR44) $(DESTPCMDIR44)
@@ -29,7 +29,7 @@ noct48::
 	mkdir -p $(DESTPCMDIR48)
 	mkdir -p $(DESTDIR48)/src
 	cp -p README.txt $(DESTDIR48)/.
-	cp -p do_eql+env_all.sh freq_data.csv Makefile freq-sec.txt freq-sec_fnc.png $(DESTDIR48)/src/.
+	cp -p do_eql+env_all.sh freq_data.csv freq-sec.txt *_factor.txt Makefile freq-sec_fnc.png $(DESTDIR48)/src/.
 	cp -p $(SRCDIR48)/README $(DESTDIR48)/README.orig.txt
 	cp -p $(SRCDIR48)/*.sfz $(DESTDIR48)/.
 	FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh do_eql+env_all.sh $(SRCPCMDIR48) $(DESTPCMDIR48)
