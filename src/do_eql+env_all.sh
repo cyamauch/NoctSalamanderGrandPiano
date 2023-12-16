@@ -107,23 +107,24 @@ for i in $LIST ; do
   GAIN_THIS_01=`echo $FREQ $GAIN_THIS_0 $GAIN_THIS_1 | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
   #
   #
-  VOL_THIS=`cat vol_factor.txt | tr -d '\r' | grep "^$KEY" | awk '{printf("%s\n",$2);}'`
-  if [ "$VOL_THIS" = "" ]; then
-    VOL_THIS=0
+  VOL_THIS_ALL=`cat vol_factor.txt | tr -d '\r' | grep "^$KEY" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
+  if [ "$VOL_THIS_ALL" = "" ]; then
+    VOL_THIS_ALL="0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0"
   fi
+  LIST_VOL=`echo $KEY $VOL_THIS_ALL | awk '{printf("%sv1.wav %s\n%sv2.wav %s\n%sv3.wav %s\n%sv4.wav %s\n%sv5.wav %s\n%sv6.wav %s\n%sv7.wav %s\n%sv8.wav %s\n%sv9.wav %s\n%sv10.wav %s\n%sv11.wav %s\n%sv12.wav %s\n%sv13.wav %s\n%sv14.wav %s\n%sv15.wav %s\n%sv16.wav %s\n",$1,$2,$1,$3,$1,$4,$1,$5,$1,$6,$1,$7,$1,$8,$1,$9,$1,$10,$1,$11,$1,$12,$1,$13,$1,$14,$1,$15,$1,$16,$1,$17);}'`
   #
   GAIN_THIS=`echo $FREQ | awk '{ if($1 <= '$FREQ_ZERO'){printf("%s\n","'$GAIN_MIN'");} else { if('$FREQ_FULL' <= $1){printf("%s\n","'$GAIN_MAX'");}else{printf("%g\n",'$GAIN_MIN' + ('$GAIN_MAX' - '$GAIN_MIN')*(('$FREQ' - '$FREQ_ZERO')/('$FREQ_FULL' - '$FREQ_ZERO')));} } }'`
   #
-  echo " VOL: -$VOL_THIS    GAIN: -$GAIN_THIS    GAIN[01]: -$GAIN_THIS_01"
+  echo "GAIN: -$GAIN_THIS    GAIN[01]: -$GAIN_THIS_01"
   #
   for j in $LIST_WAV ; do
-    #echo :: $j
     if [ -f "${SRC_DIR}/$j" ]; then
       OUT_FILE="${DEST_DIR}/$j"
-      echo "  Found "$j",  Output to $OUT_FILE"
+      VOL_THIS=`echo "$LIST_VOL" | grep "^$j" | sed -e 's/.*wav //'`
+      echo "  Found ${j}, Vol=${VOL_THIS}, Output to $OUT_FILE"
       rm -f tmp1.wav tmp2.wav "$OUT_FILE"
       #
-      "$FFMPEG" -i "${SRC_DIR}/$j" -af equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=-${GAIN_THIS_01},equalizer=f=${FREQ_EQ}:t=h:w=${FREQ_W}:g=-${GAIN_THIS},volume=-${VOL_THIS}dB -c:a pcm_s32le tmp1.wav 2> /dev/null
+      "$FFMPEG" -i "${SRC_DIR}/$j" -af equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=-${GAIN_THIS_01},equalizer=f=${FREQ_EQ}:t=h:w=${FREQ_W}:g=-${GAIN_THIS},volume=${VOL_THIS}dB -c:a pcm_s32le tmp1.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" -c:a pcm_s32le tmp2.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -i tmp2.wav -filter_complex "amix=normalize=0" $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
     fi
