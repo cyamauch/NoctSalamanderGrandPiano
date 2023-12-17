@@ -86,8 +86,8 @@ for i in $LIST ; do
   ENV_VOL=`echo $FREQ | awk '{ if($1 <= '$FREQ_ENV_VOL_MAX'){printf("%s\n","'$ENV_VOL_MAX'");} else { if('$FREQ_ENV_VOL_MIN' <= $1){printf("%s\n","'$ENV_VOL_MIN'");}else{printf("%g\n",'$ENV_VOL_MAX' - ('$ENV_VOL_MAX' - '$ENV_VOL_MIN')*(('$FREQ' - '$FREQ_ENV_VOL_MAX')/('$FREQ_ENV_VOL_MIN' - '$FREQ_ENV_VOL_MAX')));} } }'`
   echo " DURATION = $DURATION    ENV_VOL = $ENV_VOL"
   #
-  FREQ_EQ_01=`echo $FREQ | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%g\n",$1*13.0); } else { printf("%g\n",$1*3.0); } }'`
-  FREQ_W_01=`echo $FREQ  | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%g\n",$1*4.0);  } else { printf("%g\n",$1*1.0); } }'`
+  FREQ_EQ_01=`echo $FREQ | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%g\n",$1*13.0); } else { printf("%g\n",$1*2.0); } }'`
+  FREQ_W_01=`echo $FREQ  | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%g\n",$1*4.0);  } else { printf("%g\n",$1*0.7); } }'`
   #
   FREQ_EQ=`echo $FREQ | awk '{printf("%g\n",$1*6.0);}'`
   FREQ_W=`echo $FREQ | awk '{printf("%g\n",$1*3.0);}'`
@@ -108,23 +108,32 @@ for i in $LIST ; do
   #
   #
   VOL_THIS_ALL=`cat vol_factor.txt | tr -d '\r' | grep "^$KEY" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
+  SUBST_THIS_ALL=`cat substitute.txt | tr -d '\r' | grep "^$KEY" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
+
   if [ "$VOL_THIS_ALL" = "" ]; then
     VOL_THIS_ALL="0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0"
   fi
+  if [ "$SUBST_THIS_ALL" = "" ]; then
+    SUBST_THIS_ALL="1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16"
+  fi
   LIST_VOL=`echo $KEY $VOL_THIS_ALL | awk '{printf("%sv1.wav %s\n%sv2.wav %s\n%sv3.wav %s\n%sv4.wav %s\n%sv5.wav %s\n%sv6.wav %s\n%sv7.wav %s\n%sv8.wav %s\n%sv9.wav %s\n%sv10.wav %s\n%sv11.wav %s\n%sv12.wav %s\n%sv13.wav %s\n%sv14.wav %s\n%sv15.wav %s\n%sv16.wav %s\n",$1,$2,$1,$3,$1,$4,$1,$5,$1,$6,$1,$7,$1,$8,$1,$9,$1,$10,$1,$11,$1,$12,$1,$13,$1,$14,$1,$15,$1,$16,$1,$17);}'`
+  LIST_SUBST=`echo $KEY $SUBST_THIS_ALL | awk '{printf("%sv1.wav %s\n%sv2.wav %s\n%sv3.wav %s\n%sv4.wav %s\n%sv5.wav %s\n%sv6.wav %s\n%sv7.wav %s\n%sv8.wav %s\n%sv9.wav %s\n%sv10.wav %s\n%sv11.wav %s\n%sv12.wav %s\n%sv13.wav %s\n%sv14.wav %s\n%sv15.wav %s\n%sv16.wav %s\n",$1,$2,$1,$3,$1,$4,$1,$5,$1,$6,$1,$7,$1,$8,$1,$9,$1,$10,$1,$11,$1,$12,$1,$13,$1,$14,$1,$15,$1,$16,$1,$17);}'`
   #
   GAIN_THIS=`echo $FREQ | awk '{ if($1 <= '$FREQ_ZERO'){printf("%s\n","'$GAIN_MIN'");} else { if('$FREQ_FULL' <= $1){printf("%s\n","'$GAIN_MAX'");}else{printf("%g\n",'$GAIN_MIN' + ('$GAIN_MAX' - '$GAIN_MIN')*(('$FREQ' - '$FREQ_ZERO')/('$FREQ_FULL' - '$FREQ_ZERO')));} } }'`
   #
   echo "GAIN: -$GAIN_THIS    GAIN[01]: -$GAIN_THIS_01"
   #
   for j in $LIST_WAV ; do
-    if [ -f "${SRC_DIR}/$j" ]; then
+    SUBST_THIS=`echo "$LIST_SUBST" | grep "^$j" | sed -e 's/.*wav //'`
+    J_IN=`echo $j | sed -e 's/[0-9][0-9]*.wav//'`"${SUBST_THIS}.wav"
+    IN_FILE="${SRC_DIR}/$J_IN"
+    if [ -f "$IN_FILE" ]; then
       OUT_FILE="${DEST_DIR}/$j"
       VOL_THIS=`echo "$LIST_VOL" | grep "^$j" | sed -e 's/.*wav //'`
-      echo "  Found ${j}, Vol=${VOL_THIS}, Output to $OUT_FILE"
+      echo "  Found ${J_IN}, Vol=${VOL_THIS}, Output to $OUT_FILE"
       rm -f tmp1.wav tmp2.wav "$OUT_FILE"
       #
-      "$FFMPEG" -i "${SRC_DIR}/$j" -af equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=-${GAIN_THIS_01},equalizer=f=${FREQ_EQ}:t=h:w=${FREQ_W}:g=-${GAIN_THIS},volume=${VOL_THIS}dB -c:a pcm_s32le tmp1.wav 2> /dev/null
+      "$FFMPEG" -i "$IN_FILE" -af equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=-${GAIN_THIS_01},equalizer=f=${FREQ_EQ}:t=h:w=${FREQ_W}:g=-${GAIN_THIS},volume=${VOL_THIS}dB -c:a pcm_s32le tmp1.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" -c:a pcm_s32le tmp2.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -i tmp2.wav -filter_complex "amix=normalize=0" $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
     fi

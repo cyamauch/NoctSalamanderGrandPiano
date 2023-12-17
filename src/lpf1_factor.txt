@@ -1,16 +1,16 @@
 #Only for 1000Hz <= frequency
-#Key GAIN(-db,frequency*3)
+#Key GAIN(-db,frequency*2)
 C5 2
-D#5 5
-F#5 10
-A5 20
-C6 5
-D#6 40
-F#6 40
-A6 40
-C7 20
-D#7 35
-F#7 50
+D#5 4
+F#5 7
+A5 14
+C6 0
+D#6 20
+F#6 10
+A6 15
+C7 15
+D#7 30
+F#7 40
 A7 40
 C8 40
 

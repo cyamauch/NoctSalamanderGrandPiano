@@ -21,7 +21,7 @@ processing was based on applying LPF to each of the notes as follows:
 
 - Applied LPF for keys having 440Hz and higher frequency.
 - Applied different LPFs in the two frequency bands.
-  (Attenuates at f*13 for f < 1000Hz and at f*3 for f => 1000Hz)
+  (Attenuates at f*13 for f < 1000Hz and at f*2 for f => 1000Hz)
 - Changed the envelopes of all keys so that the string decay is more gradual.
 
 In order to pursue natural sound quality, the levels of LPF and envelope 
