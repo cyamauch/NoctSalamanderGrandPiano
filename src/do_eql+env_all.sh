@@ -50,13 +50,18 @@ FREQ_FULL=880.0
 GAIN_MAX=40.0
 GAIN_MIN=1.0
 
-#### for envelope modification ###
+#### for envelope modification ####
 
 ENV_VOL_MAX=1.50
 ENV_VOL_MIN=1.00
 
 FREQ_ENV_VOL_MAX=110
 FREQ_ENV_VOL_MIN=1760
+
+#### Volume offset (db) for all WAV files ####
+
+VOL_OFFSET=-0.5
+
 
 ########
 
@@ -116,7 +121,7 @@ for i in $LIST ; do
   if [ "$SUBST_THIS_ALL" = "" ]; then
     SUBST_THIS_ALL="1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16"
   fi
-  LIST_VOL=`echo $KEY $VOL_THIS_ALL | awk '{printf("%sv1.wav %s\n%sv2.wav %s\n%sv3.wav %s\n%sv4.wav %s\n%sv5.wav %s\n%sv6.wav %s\n%sv7.wav %s\n%sv8.wav %s\n%sv9.wav %s\n%sv10.wav %s\n%sv11.wav %s\n%sv12.wav %s\n%sv13.wav %s\n%sv14.wav %s\n%sv15.wav %s\n%sv16.wav %s\n",$1,$2,$1,$3,$1,$4,$1,$5,$1,$6,$1,$7,$1,$8,$1,$9,$1,$10,$1,$11,$1,$12,$1,$13,$1,$14,$1,$15,$1,$16,$1,$17);}'`
+  LIST_VOL=`echo $KEY $VOL_OFFSET $VOL_THIS_ALL | awk '{printf("%sv1.wav %g\n%sv2.wav %g\n%sv3.wav %g\n%sv4.wav %g\n%sv5.wav %g\n%sv6.wav %g\n%sv7.wav %g\n%sv8.wav %g\n%sv9.wav %g\n%sv10.wav %g\n%sv11.wav %g\n%sv12.wav %g\n%sv13.wav %g\n%sv14.wav %g\n%sv15.wav %g\n%sv16.wav %g\n",$1,$2+$3,$1,$2+$4,$1,$2+$5,$1,$2+$6,$1,$2+$7,$1,$2+$8,$1,$2+$9,$1,$2+$10,$1,$2+$11,$1,$2+$12,$1,$2+$13,$1,$2+$14,$1,$2+$15,$1,$2+$16,$1,$2+$17,$1,$2+$18);}'`
   LIST_SUBST=`echo $KEY $SUBST_THIS_ALL | awk '{printf("%sv1.wav %s\n%sv2.wav %s\n%sv3.wav %s\n%sv4.wav %s\n%sv5.wav %s\n%sv6.wav %s\n%sv7.wav %s\n%sv8.wav %s\n%sv9.wav %s\n%sv10.wav %s\n%sv11.wav %s\n%sv12.wav %s\n%sv13.wav %s\n%sv14.wav %s\n%sv15.wav %s\n%sv16.wav %s\n",$1,$2,$1,$3,$1,$4,$1,$5,$1,$6,$1,$7,$1,$8,$1,$9,$1,$10,$1,$11,$1,$12,$1,$13,$1,$14,$1,$15,$1,$16,$1,$17);}'`
   #
   GAIN_THIS=`echo $FREQ | awk '{ if($1 <= '$FREQ_ZERO'){printf("%s\n","'$GAIN_MIN'");} else { if('$FREQ_FULL' <= $1){printf("%s\n","'$GAIN_MAX'");}else{printf("%g\n",'$GAIN_MIN' + ('$GAIN_MAX' - '$GAIN_MIN')*(('$FREQ' - '$FREQ_ZERO')/('$FREQ_FULL' - '$FREQ_ZERO')));} } }'`
