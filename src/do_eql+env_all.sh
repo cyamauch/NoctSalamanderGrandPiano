@@ -4,7 +4,7 @@
 #                                                      #
 #     Main script for Noct-Salamander Grand Piano.     #
 #                                                      #
-#                        (C) 2023 Chisato Yamauchi     #
+#                   (C) 2023-2024 Chisato Yamauchi     #
 #                                                      #
 ########################################################
 
@@ -40,12 +40,12 @@ FLAG_CREATE_WAV=ALL
 
 # LPF No.1 begins at ...
 
-FREQ_ZERO_1=1000.0
+FREQ_ZERO_1=500.0
 
 #### for basic LPF ####
 
-FREQ_ZERO=440.0
-FREQ_FULL=880.0
+FREQ_ZERO=220.0
+FREQ_FULL=440.0
 
 GAIN_MAX=40.0
 GAIN_MIN=1.0
@@ -55,8 +55,8 @@ GAIN_MIN=1.0
 ENV_VOL_MAX=1.50
 ENV_VOL_MIN=1.00
 
-FREQ_ENV_VOL_MAX=110
-FREQ_ENV_VOL_MIN=1760
+FREQ_ENV_VOL_MAX=55
+FREQ_ENV_VOL_MIN=880
 
 #### Volume offset (db) for all WAV files ####
 
@@ -71,7 +71,12 @@ echo SRC_DIR: $SRC_DIR
 echo DEST_DIR: $DEST_DIR
 
 
-LIST=`cat freq_data.csv | tr -d '\r' | grep -e '^C[^#]' -e '^D#' -e '^F#' -e '^A[^#]' | awk -F, '{printf("%s%s,%s\n",substr($1,1,2),$2,$4);}'`
+# Read frequency for each key
+
+LIST=`cat freq_piano_data.txt | tr -d '\r' | awk '{printf("%s,%s\n",$1,$2);}'`
+#echo "LIST=[$LIST]"
+
+
 for i in $LIST ; do
   KEY=`echo $i | awk -F, '{printf("%s\n",$1);}'`
   FREQ=`echo $i | awk -F, '{printf("%s\n",$2);}'`
@@ -84,18 +89,17 @@ for i in $LIST ; do
       LIST_WAV=`echo $KEY | awk '{printf("%sv'$FLAG_CREATE_WAV'.wav\n",$1);}'`
     fi
   fi
-  #echo "KEY: "`echo "$i"|awk -F, '{printf("%s\n",$1);}'`"    FREQ: ${FREQ}"
   echo "KEY: $KEY    FREQ: $FREQ"
   #
-  DURATION=`echo $FREQ | awk '{printf("%g\n",0.4*(800.0/log(800.0*$1)-48.0));}'`  #
+  DURATION=`echo $FREQ | awk '{printf("%g\n",0.4*(800.0/log(800.0*2.0*$1)-48.0));}'`  #
   ENV_VOL=`echo $FREQ | awk '{ if($1 <= '$FREQ_ENV_VOL_MAX'){printf("%s\n","'$ENV_VOL_MAX'");} else { if('$FREQ_ENV_VOL_MIN' <= $1){printf("%s\n","'$ENV_VOL_MIN'");}else{printf("%g\n",'$ENV_VOL_MAX' - ('$ENV_VOL_MAX' - '$ENV_VOL_MIN')*(('$FREQ' - '$FREQ_ENV_VOL_MAX')/('$FREQ_ENV_VOL_MIN' - '$FREQ_ENV_VOL_MAX')));} } }'`
   echo " DURATION = $DURATION    ENV_VOL = $ENV_VOL"
   #
-  FREQ_EQ_01=`echo $FREQ | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%g\n",$1*13.0); } else { printf("%g\n",$1*2.0); } }'`
-  FREQ_W_01=`echo $FREQ  | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%g\n",$1*4.0);  } else { printf("%g\n",$1*0.7); } }'`
+  FREQ_EQ_01=`echo $FREQ | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%g\n",$1*26.0); } else { printf("%g\n",$1*4.0); } }'`
+  FREQ_W_01=`echo $FREQ  | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%g\n",$1*8.0);  } else { printf("%g\n",$1*1.4); } }'`
   #
-  FREQ_EQ=`echo $FREQ | awk '{printf("%g\n",$1*6.0);}'`
-  FREQ_W=`echo $FREQ | awk '{printf("%g\n",$1*3.0);}'`
+  FREQ_EQ=`echo $FREQ | awk '{printf("%g\n",$1*12.0);}'`
+  FREQ_W=`echo $FREQ | awk '{printf("%g\n",$1*6.0);}'`
   echo " FREQ_EQ = $FREQ_EQ    FREQ_W = $FREQ_W"
   echo " FREQ_EQ_01 = $FREQ_EQ_01    FREQ_W_01 = $FREQ_W_01"
   #
@@ -126,7 +130,20 @@ for i in $LIST ; do
   #
   GAIN_THIS=`echo $FREQ | awk '{ if($1 <= '$FREQ_ZERO'){printf("%s\n","'$GAIN_MIN'");} else { if('$FREQ_FULL' <= $1){printf("%s\n","'$GAIN_MAX'");}else{printf("%g\n",'$GAIN_MIN' + ('$GAIN_MAX' - '$GAIN_MIN')*(('$FREQ' - '$FREQ_ZERO')/('$FREQ_FULL' - '$FREQ_ZERO')));} } }'`
   #
-  echo "GAIN: -$GAIN_THIS    GAIN[01]: -$GAIN_THIS_01"
+  #
+  # f_tuned = f_orig * 2.0^( cent / 1200.0 )
+  # cent = 1200.0 * log_2 (f_tuned / f_orig)
+  #
+  TUNE_BY_CENT=""
+  FILTER_ASETRATE=""
+  if [ "$FS_SRC" != "" ]; then
+    TUNE_BY_CENT=`cat tuned.txt | tr -d '\r' | grep "^$KEY" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
+    if [ "$TUNE_BY_CENT" != "" ] ; then
+      FILTER_ASETRATE=`echo $FS_SRC $TUNE_BY_CENT | awk '{printf(",asetrate=%g\n",$1 * 2.0^($2/1200.0));}'`
+    fi
+  fi
+  #
+  echo "GAIN: -$GAIN_THIS    GAIN[01]: -$GAIN_THIS_01   TUNE_BY_CENT: $TUNE_BY_CENT"
   #
   for j in $LIST_WAV ; do
     SUBST_THIS=`echo "$LIST_SUBST" | grep "^$j" | sed -e 's/.*wav //'`
@@ -138,7 +155,7 @@ for i in $LIST ; do
       echo "  Found ${J_IN}, Vol=${VOL_THIS}, Output to $OUT_FILE"
       rm -f tmp1.wav tmp2.wav "$OUT_FILE"
       #
-      "$FFMPEG" -i "$IN_FILE" -af equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=-${GAIN_THIS_01},equalizer=f=${FREQ_EQ}:t=h:w=${FREQ_W}:g=-${GAIN_THIS},volume=${VOL_THIS}dB -c:a pcm_s32le tmp1.wav 2> /dev/null
+      "$FFMPEG" -i "$IN_FILE" -af equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=-${GAIN_THIS_01},equalizer=f=${FREQ_EQ}:t=h:w=${FREQ_W}:g=-${GAIN_THIS},volume=${VOL_THIS}dB${FILTER_ASETRATE} -c:a pcm_s32le tmp1.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" -c:a pcm_s32le tmp2.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -i tmp2.wav -filter_complex "amix=normalize=0" $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
     fi

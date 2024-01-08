@@ -1,5 +1,5 @@
-#only for frequency < 1000Hz
-#Key GAIN(-db,frequency*13)
+#Only for frequency < 500Hz
+#Key GAIN(-db,frequency*26)
 A0 5
 C1 5
 D#1 5
