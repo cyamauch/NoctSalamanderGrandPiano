@@ -6,7 +6,7 @@
 
 LIST=`cat vol_factor_base.txt | grep '^[A-Z]' | awk '{printf("%s,%s\n",$1,$2);}'`
 
-echo $LIST
+#echo $LIST
 
 cat vol_factor.src.txt | grep '^#'
 
