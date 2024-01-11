@@ -23,7 +23,7 @@ noct44::
 	cp -p do_eql+env_all.sh freq_data.csv freq-sec.txt freq-sec_fnc.png $(DESTDIR44)/src/.
 	cp -p Makefile freq_piano_data.txt *_factor.txt substitute.txt tuned.txt $(DESTDIR44)/src/.
 	cp -p $(SRCDIR44)/README $(DESTDIR44)/README.orig.txt
-	cp -p $(SRCDIR44)/SalamanderGrandPianoV3.sfz $(DESTDIR44)/.
+	cp -p $(SRCDIR44)/SalamanderGrandPianoV3.sfz $(DESTDIR44)/Noct-SalamanderGrandPianoV3.sfz
 	FS_SRC=44100 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s16le" sh do_eql+env_all.sh $(SRCPCMDIR44) $(DESTPCMDIR44)
 
 noct48::
@@ -33,7 +33,7 @@ noct48::
 	cp -p do_eql+env_all.sh freq_data.csv freq-sec.txt freq-sec_fnc.png $(DESTDIR48)/src/.
 	cp -p Makefile freq_piano_data.txt *_factor.txt substitute.txt tuned.txt $(DESTDIR48)/src/.
 	cp -p $(SRCDIR48)/README $(DESTDIR48)/README.orig.txt
-	cp -p $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTDIR48)/.
+	cp -p $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTDIR48)/Noct-SalamanderGrandPianoV3.sfz
 	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh do_eql+env_all.sh $(SRCPCMDIR48) $(DESTPCMDIR48)
 
 clean44::
