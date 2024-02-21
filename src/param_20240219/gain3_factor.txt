@@ -1,0 +1,16 @@
+#for 500Hz <= frequency
+#Key GAIN(db,frequency*4)
+C5     -20
+D#5    -10
+F#5    -10
+A5     -10
+C6     -10
+D#6    -15
+F#6 -10
+A6  -15
+C7  -20
+D#7 -30
+F#7 -40
+A7  -40
+C8  -40
+

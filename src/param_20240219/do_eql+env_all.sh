@@ -39,7 +39,6 @@ if [ "$CMD_THIS" == "copy" ]; then
   for i in $LIST ; do
     OUT_FILE=${DEST_DIR}/${i}
     echo "Output to $OUT_FILE"
-    rm -f "$OUT_FILE"
     "$FFMPEG" -i ${SRC_DIR}/${i} $FFMPEG_OPT $OUT_FILE 2> /dev/null
   done
 
@@ -53,9 +52,7 @@ fi
 # ALL   ... create all
 # 1-16  ... create velocity=n WAV files
 # undef ... create none
-FLAG_CREATE_WAV=ALL
-
-#SELECTED_KEY="C1 F#1 C2 F#2 C3 F#3 C4 F#4 C4 F#4 C5 F#5 C6 F#6 C7 F#7 C8"
+FLAG_CREATE_WAV=16
 
 #SELECTED_KEY="A0 C1 D#1 F#1 A1 C2 D#2 F#2 A2 C3 D#3 F#3 A3 C4 D#4 F#4 A4"
 #SELECTED_KEY="C4 D#4 F#4 A4 C5 D#5 F#5 A5 C6 D#6 F#6 A6 C7 D#7 F#7 A7 C8"
@@ -273,6 +270,7 @@ for i in $LIST ; do
       OUT_FILE=${DEST_DIR}/${OUT_FILENAME}
       VOL_THIS=`echo "$LIST_VOL" | grep "^$j" | sed -e 's/.*wav //'`
       echo "  Found ${J_IN}, Vol=${VOL_THIS}, Output to $OUT_FILE"
+      rm -f tmp1.wav tmp2.wav "$OUT_FILE"
       #
       FILTER_DIRECT_ARG=""
       if [ "$FILTER_DIRECT_LINE" != "" ]; then
@@ -283,7 +281,6 @@ for i in $LIST ; do
         fi
       fi
       #
-      rm -f tmp1.wav tmp2.wav "$OUT_FILE"
       "$FFMPEG" -i "$IN_FILE" -af ${FILTER_ASETRATE}${FILTER_DIRECT_KEY}${FILTER_DIRECT_ARG}equalizer=f=${FREQ_EQ_23}:t=h:w=${FREQ_W_23}:g=${GAIN_THIS_23},equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=${GAIN_THIS_01},equalizer=f=0.1:t=h:w=3.0:g=-65,volume=${VOL_THIS}dB -c:a pcm_s32le tmp1.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" -c:a pcm_s32le tmp2.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -i tmp2.wav -filter_complex "amix=normalize=0" $FFMPEG_OPT "$OUT_FILE" 2> /dev/null

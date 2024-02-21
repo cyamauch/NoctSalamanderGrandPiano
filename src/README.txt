@@ -19,38 +19,50 @@ why large grand pianos have beautiful tones is because they have fewer high-
 frequency overtones.  This is a natural result of physics, and the digital 
 processing was based on applying LPF to each of the notes as follows:
 
-- Applied LPF for keys having 220Hz and higher frequency.
-- Applied different LPFs in the two frequency bands.
-  (Attenuates at f*26 for f < 500Hz and at f*4 for f => 500Hz)
+- Applied 4 filtering:
+  frequency*0.5, frequency*4, frequency*12 and frequency*26
+  (See gain0_factor.txt, gain1_factor.txt, gain2_factor.txt, gain3_factor.txt)
+
 - Changed the envelopes of all keys so that the string decay is more gradual.
 
-In order to pursue natural sound quality, the levels of LPF and envelope 
+In order to pursue natural sound quality, the levels of filtering and envelope 
 modification were varied gradually according to the scale.
 
 The original sound source is a sampling of the YAMAHA C5, but these processes 
 make it possible to reproduce the tone of a larger grand piano.
 
-In Version 3.1, the volume of all WAV files was adjusted according to the 
-settings in vol_factor.txt.  The C5 grand piano used for sampling was tuned 
-fairly accurately, but slight errors in very low and very high notes such as 
-A0, C1, D#1, F#7, and C8 were corrected to standard pitch according to 
-tuned.txt.  For pitch adjustment, we referred to the YAMAHA EA1 built-in 
-sound bank.
+In Version 4, the continuity of sound quality and volume in the scale was 
+carefully adjusted:
+
+- Reassigned WAV files to improve continuity of scale at each velocity layer.
+  (See assign.txt)
+
+- All volume of WAV files were carefully adjusted for each velocity layer.
+  (See vol_factor_base.txt, vol_factor.src.txt)
+
+- Erased strange noises during recording.
+  (See filter_direct.txt)
+
+The C5 grand piano used for sampling was tuned fairly accurately, but slight
+errors in very low and very high notes such as A0, C1, D#1, F#7, and C8 were
+corrected to standard pitch according to tuned.txt.  For pitch adjustment, 
+the built-in sound bank of the YAMAHA EA1 was referenced.
 
 FFmpeg was used for all processings.  See src/do_eql+env_all.sh for details. 
-You can change the parameters in the script and *_factor.txt files, and run 
-"make" to generate your own piano sound (you need to get the original version 
-of Salamander Grand).  This allows for a level of complexity and fine-tuning 
-of sound quality that is not possible through the GUI of VST plug-ins or 
-filter settings within SFZ files. 
+You can change the parameters of the *.txt files, and run "make noct48" to 
+generate your own piano sound (you need to get the original version of 
+Salamander Grand).  This allows for a level of complexity and fine-tuning of
+sound quality that is not possible through the GUI of VST plug-ins or filter
+settings within SFZ files. 
 
 
 Changelog:
 
 V3.0 (Nov.24,2023)
 * First release based on Salamander Grand Piano V3+20161209.
-V3.1 (Jan.??,2024)
-* Configuration files (*_factor.txt) allow detailed LPF and volume settings.
+V4.0 (Feb.??,2024)
+* Applied 4 filtering, reassigned WAV, adjusted all volume of WAV, 
+  erased noises.
 
 
 Licence: 

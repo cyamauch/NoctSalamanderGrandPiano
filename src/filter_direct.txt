@@ -1,0 +1,9 @@
+# Eliminate strange noises at 1035Hz when striking strings
+F#2  equalizer=f=1035.0:t=h:w=1.0:g=-80
+A2   equalizer=f=1116.0:t=h:w=1.0:g=-80
+
+# Eliminate strange noises after t=?[s]
+F#2v1  afade=t=out:st=11.5:d=3.0
+A2v1   afade=t=out:st=14.2:d=1.5
+F#7v1  afade=t=out:st=1.0:d=1.3
+
