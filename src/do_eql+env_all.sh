@@ -128,6 +128,7 @@ GAIN2_FACTOR_TXT=`cat gain2_factor.txt | tr -d '\r'`
 GAIN3_FACTOR_TXT=`cat gain3_factor.txt | tr -d '\r'`
 TUNED_TXT=`cat tuned.txt | tr -d '\r'`
 FILTER_DIRECT_TXT=`cat filter_direct.txt | tr -d '\r'`
+SFZ_SED_ARGS=`cat sfz_sed_args.txt | tr -d '\r'`
 
 
 # Output SFZ
@@ -135,7 +136,7 @@ FILTER_DIRECT_TXT=`cat filter_direct.txt | tr -d '\r'`
 ARG_OUTFILE_SED_0=`echo "$KEY_NID_TXT" | awk '{printf("-e s/%sv/%s_%sv/ \n",$1,$2,$1);}'`
 ARG_OUTFILE_SED_1=`echo "1_2_3_4_5_6_7_8_9_" | tr '_' '\n' | awk '{printf("-e s/v%s[.]wav/v0%s.wav/ \n",$1,$1);}'`
 ARG_OUTFILE_SED=`echo "$ARG_OUTFILE_SED_0" "$ARG_OUTFILE_SED_1"`
-cat ${SRC_DIR}/../SalamanderGrandPianoV3.sfz | sed $ARG_OUTFILE_SED > ${DEST_DIR}/../Noct-SalamanderGrandPiano.sfz
+cat ${SRC_DIR}/../SalamanderGrandPianoV3.sfz | sed $ARG_OUTFILE_SED $SFZ_SED_ARGS > ${DEST_DIR}/../Noct-SalamanderGrandPiano.sfz
 
 
 # Read frequency for each key
