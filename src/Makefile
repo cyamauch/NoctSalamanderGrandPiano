@@ -35,7 +35,7 @@ noct48:: vol_factor.txt
 	cp -p $(SRCPCMDIR48)/h*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/p*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/r*.wav $(DESTPCMDIR48)/.
-	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh do_eql+env_all.sh make $(SRCPCMDIR48) $(DESTPCMDIR48)
+	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh do_eql+env_all.sh make $(SRCPCMDIR48) $(DESTPCMDIR48) $(SRCDIR48)/SalamanderGrandPianoV3.sfz
 
 noct44::
 	mkdir -p $(DESTPCMDIR44)
@@ -48,7 +48,7 @@ noct44::
 	cp -p $(SRCPCMDIR44)/h*.wav $(DESTPCMDIR44)/.
 	cp -p $(SRCPCMDIR44)/p*.wav $(DESTPCMDIR44)/.
 	cp -p $(SRCPCMDIR44)/r*.wav $(DESTPCMDIR44)/.
-	FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s16le -ar 44100" sh do_eql+env_all.sh copy $(DESTPCMDIR48) $(DESTPCMDIR44)
+	FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s16le -ar 44100" sh do_eql+env_all.sh copy $(DESTPCMDIR48) $(DESTPCMDIR44) $(SRCDIR44)/SalamanderGrandPianoV3.sfz
 
 clean48::
 	rm -rf $(DESTDIR48)

@@ -29,23 +29,7 @@ fi
 CMD_THIS="$1"
 SRC_DIR="$2"
 DEST_DIR="$3"
-
-
-#### COPY MODE ####
-
-if [ "$CMD_THIS" == "copy" ]; then
-
-  LIST=`/bin/ls $SRC_DIR | grep '[0-9][0-9][0-9]_.*[.]wav'`
-  for i in $LIST ; do
-    OUT_FILE=${DEST_DIR}/${i}
-    echo "Output to $OUT_FILE"
-    rm -f "$OUT_FILE"
-    "$FFMPEG" -i ${SRC_DIR}/${i} $FFMPEG_OPT $OUT_FILE 2> /dev/null
-  done
-
-  exit 0
-
-fi
+SRC_SFZ="$4"
 
 
 #### FLAG for wav creation ####
@@ -133,10 +117,31 @@ SFZ_SED_ARGS=`cat sfz_sed_args.txt | tr -d '\r'`
 
 # Output SFZ
 
-ARG_OUTFILE_SED_0=`echo "$KEY_NID_TXT" | awk '{printf("-e s/%sv/%s_%sv/ \n",$1,$2,$1);}'`
-ARG_OUTFILE_SED_1=`echo "1_2_3_4_5_6_7_8_9_" | tr '_' '\n' | awk '{printf("-e s/v%s[.]wav/v0%s.wav/ \n",$1,$1);}'`
-ARG_OUTFILE_SED=`echo "$ARG_OUTFILE_SED_0" "$ARG_OUTFILE_SED_1"`
-cat ${SRC_DIR}/../SalamanderGrandPianoV3.sfz | sed $ARG_OUTFILE_SED $SFZ_SED_ARGS > ${DEST_DIR}/../Noct-SalamanderGrandPiano.sfz
+if [ "$SRC_SFZ" != "" ]; then
+
+  ARG_OUTFILE_SED_0=`echo "$KEY_NID_TXT" | awk '{printf("-e s/%sv/%s_%sv/ \n",$1,$2,$1);}'`
+  ARG_OUTFILE_SED_1=`echo "1_2_3_4_5_6_7_8_9_" | tr '_' '\n' | awk '{printf("-e s/v%s[.]wav/v0%s.wav/ \n",$1,$1);}'`
+  ARG_OUTFILE_SED=`echo "$ARG_OUTFILE_SED_0" "$ARG_OUTFILE_SED_1"`
+  cat ${SRC_SFZ} | sed $ARG_OUTFILE_SED $SFZ_SED_ARGS > ${DEST_DIR}/../Noct-SalamanderGrandPiano.sfz
+fi
+
+
+#### COPY MODE ####
+
+if [ "$CMD_THIS" == "copy" ]; then
+
+  LIST=`/bin/ls $SRC_DIR | grep '[0-9][0-9][0-9]_.*[.]wav'`
+  for i in $LIST ; do
+    OUT_FILE=${DEST_DIR}/${i}
+    echo "Output to $OUT_FILE"
+    rm -f "$OUT_FILE"
+    "$FFMPEG" -i ${SRC_DIR}/${i} $FFMPEG_OPT $OUT_FILE 2> /dev/null
+  done
+
+  exit 0
+
+fi
+
 
 
 # Read frequency for each key
