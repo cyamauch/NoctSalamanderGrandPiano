@@ -17,7 +17,7 @@ if [ "$FFMPEG" = "" ]; then
   FFMPEG="/cygdrive/c/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
 fi
 
-if [ "$3" == "" ]; then
+if [ "$3" = "" ]; then
   echo "[USAGE]"
   echo "**** to make ***"
   echo "$0 make SRC_DIR_ORIG DEST_DIR"
@@ -101,7 +101,7 @@ echo SRC_DIR: $SRC_DIR
 echo DEST_DIR: $DEST_DIR
 
 
-# Read parameters
+#### Read parameters ####
 
 KEY_NID_TXT=`cat key_n-id.txt | tr -d '\r'`
 VOL_FACTOR_TXT=`cat vol_factor.txt | tr -d '\r'`
@@ -114,21 +114,21 @@ TUNED_TXT=`cat tuned.txt | tr -d '\r'`
 FILTER_DIRECT_TXT=`cat filter_direct.txt | tr -d '\r'`
 SFZ_SED_ARGS=`cat sfz_sed_args.txt | tr -d '\r'`
 
+ARG_OUTFILE_SED_0=`echo "$KEY_NID_TXT" | awk '{printf("-e s/%sv/%s_%sv/ \n",$1,$2,$1);}'`
+ARG_OUTFILE_SED_1=`echo "1_2_3_4_5_6_7_8_9_" | tr '_' '\n' | awk '{printf("-e s/v%s[.]wav/v0%s.wav/ \n",$1,$1);}'`
+ARG_OUTFILE_SED=`echo "$ARG_OUTFILE_SED_0" "$ARG_OUTFILE_SED_1"`
 
-# Output SFZ
+
+#### Output SFZ ####
 
 if [ "$SRC_SFZ" != "" ]; then
-
-  ARG_OUTFILE_SED_0=`echo "$KEY_NID_TXT" | awk '{printf("-e s/%sv/%s_%sv/ \n",$1,$2,$1);}'`
-  ARG_OUTFILE_SED_1=`echo "1_2_3_4_5_6_7_8_9_" | tr '_' '\n' | awk '{printf("-e s/v%s[.]wav/v0%s.wav/ \n",$1,$1);}'`
-  ARG_OUTFILE_SED=`echo "$ARG_OUTFILE_SED_0" "$ARG_OUTFILE_SED_1"`
   cat ${SRC_SFZ} | sed $ARG_OUTFILE_SED $SFZ_SED_ARGS > ${DEST_DIR}/../Noct-SalamanderGrandPiano.sfz
 fi
 
 
 #### COPY MODE ####
 
-if [ "$CMD_THIS" == "copy" ]; then
+if [ "$CMD_THIS" = "copy" ]; then
 
   LIST=`/bin/ls $SRC_DIR | grep '[0-9][0-9][0-9]_.*[.]wav'`
   for i in $LIST ; do
@@ -144,9 +144,9 @@ fi
 
 
 
-# Read frequency for each key
+#### Read frequency for each key ####
 
-if [ "$SELECTED_KEY" == "" ]; then
+if [ "$SELECTED_KEY" = "" ]; then
   LIST=`cat freq_piano_data.txt | tr -d '\r' | awk '{printf("%s,%s\n",$1,$2);}'`
 else
   ARG_GREP=`echo "$SELECTED_KEY" | tr -s " " | tr " " "\n" | awk '{printf("-e %s\n",$1);}'`
@@ -161,17 +161,26 @@ VOL_OFFSET=`echo "$VOL_FACTOR_TXT" | grep "^OFFSET" | awk '{printf("%s\n",$2);}'
 echo "VOL_OFFSET=[$VOL_OFFSET]"
 
 
+#### Effective ratio of filters ####
+
+EFF_RATIO_0=`echo "$GAIN0_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
+EFF_RATIO_1=`echo "$GAIN1_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
+EFF_RATIO_2=`echo "$GAIN2_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
+EFF_RATIO_3=`echo "$GAIN3_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
+
+#### Main loop ####
+
 for i in $LIST ; do
   KEY=`echo $i | awk -F, '{printf("%s\n",$1);}'`
   FREQ=`echo $i | awk -F, '{printf("%s\n",$2);}'`
   N_ID=`echo "$KEY_NID_TXT" | grep "^$KEY" | awk '{print $2;}'`
   if [ "$FLAG_CREATE_WAV" = "" ]; then
-    LIST_WAV=""
+    LIST_VEL=""
   else
     if [ "$FLAG_CREATE_WAV" = "ALL" ]; then
-      LIST_WAV=`echo $KEY | awk '{printf("%sv1.wav %sv2.wav %sv3.wav %sv4.wav %sv5.wav %sv6.wav %sv7.wav %sv8.wav %sv9.wav %sv10.wav %sv11.wav %sv12.wav %sv13.wav %sv14.wav %sv15.wav %sv16.wav\n",$1,$1,$1,$1,$1,$1,$1,$1,$1,$1,$1,$1,$1,$1,$1,$1);}'`
+      LIST_VEL="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16"
     else
-      LIST_WAV=`echo $KEY | awk '{printf("%sv'$FLAG_CREATE_WAV'.wav\n",$1);}'`
+      LIST_VEL="$FLAG_CREATE_WAV"
     fi
   fi
   echo "N_ID: $N_ID   KEY: $KEY    FREQ: $FREQ"
@@ -190,28 +199,31 @@ for i in $LIST ; do
   #
   #GAIN_THIS_0=`echo $FREQ | awk '{ if($1 <= '$FREQ_ZERO'){printf("%s\n","'$GAIN_MIN'");} else { if('$FREQ_FULL' <= $1){printf("%s\n","'$GAIN_MAX'");}else{printf("%g\n",'$GAIN_MIN' + ('$GAIN_MAX' - '$GAIN_MIN')*(('$FREQ' - '$FREQ_ZERO')/('$FREQ_FULL' - '$FREQ_ZERO')));} } }'`
   #
-  GAIN_THIS_0=`echo "$GAIN0_FACTOR_TXT" | grep "^$KEY" | awk '{printf("%s\n",$2);}'`
+  GAIN_THIS_0=`echo "$GAIN0_FACTOR_TXT" | awk '{ if ($1 == "'$KEY'") {printf("%s\n",$2);} }'`
   if [ "$GAIN_THIS_0" = "" ]; then
     GAIN_THIS_0=0
   fi
   #
-  GAIN_THIS_1=`echo "$GAIN1_FACTOR_TXT" | grep "^$KEY" | awk '{printf("%s\n",$2);}'`
+  GAIN_THIS_1=`echo "$GAIN1_FACTOR_TXT" | awk '{ if ($1 == "'$KEY'") {printf("%s\n",$2);} }'`
   if [ "$GAIN_THIS_1" = "" ]; then
     GAIN_THIS_1=0
   fi
   #
-  GAIN_THIS_2=`echo "$GAIN2_FACTOR_TXT" | grep "^$KEY" | awk '{printf("%s\n",$2);}'`
+  GAIN_THIS_2=`echo "$GAIN2_FACTOR_TXT" | awk '{ if ($1 == "'$KEY'") {printf("%s\n",$2);} }'`
   if [ "$GAIN_THIS_2" = "" ]; then
     GAIN_THIS_2=0
   fi
   #
-  GAIN_THIS_3=`echo "$GAIN3_FACTOR_TXT" | grep "^$KEY" | awk '{printf("%s\n",$2);}'`
+  GAIN_THIS_3=`echo "$GAIN3_FACTOR_TXT" | awk '{ if ($1 == "'$KEY'") {printf("%s\n",$2);} }'`
   if [ "$GAIN_THIS_3" = "" ]; then
     GAIN_THIS_3=0
   fi
   #
   GAIN_THIS_01=`echo $FREQ $GAIN_THIS_0 $GAIN_THIS_1 | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
   GAIN_THIS_23=`echo $FREQ $GAIN_THIS_2 $GAIN_THIS_3 | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
+  #
+  EFF_RATIO_01=`echo $FREQ $EFF_RATIO_0 $EFF_RATIO_1 | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
+  EFF_RATIO_23=`echo $FREQ $EFF_RATIO_2 $EFF_RATIO_3 | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
   #
   #
   VOL_THIS_ALL=`echo "$VOL_FACTOR_TXT" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
@@ -226,18 +238,15 @@ for i in $LIST ; do
     ASSIGN_THIS_ALL="1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16"
   else
     USED_KEY=`echo $ASSIGN_THIS_ALL | awk '{print $17}'`
-    if [ "$USED_KEY" == "" ]; then
+    if [ "$USED_KEY" = "" ]; then
       USED_KEY="$KEY"
     else
       TUNE_BY_SCALE=`echo $ASSIGN_THIS_ALL | awk '{print $18}'`
     fi
   fi
-  if [ "$TUNE_BY_SCALE" == "" ] ; then
+  if [ "$TUNE_BY_SCALE" = "" ] ; then
     TUNE_BY_SCALE=0
   fi
-  #
-  LIST_VOL=`echo $KEY $VOL_OFFSET $VOL_THIS_ALL | awk '{printf("%sv1.wav %g\n%sv2.wav %g\n%sv3.wav %g\n%sv4.wav %g\n%sv5.wav %g\n%sv6.wav %g\n%sv7.wav %g\n%sv8.wav %g\n%sv9.wav %g\n%sv10.wav %g\n%sv11.wav %g\n%sv12.wav %g\n%sv13.wav %g\n%sv14.wav %g\n%sv15.wav %g\n%sv16.wav %g\n",$1,$2+$3,$1,$2+$4,$1,$2+$5,$1,$2+$6,$1,$2+$7,$1,$2+$8,$1,$2+$9,$1,$2+$10,$1,$2+$11,$1,$2+$12,$1,$2+$13,$1,$2+$14,$1,$2+$15,$1,$2+$16,$1,$2+$17,$1,$2+$18);}'`
-  LIST_ASSIGN=`echo $KEY $ASSIGN_THIS_ALL | awk '{printf("%sv1.wav %s\n%sv2.wav %s\n%sv3.wav %s\n%sv4.wav %s\n%sv5.wav %s\n%sv6.wav %s\n%sv7.wav %s\n%sv8.wav %s\n%sv9.wav %s\n%sv10.wav %s\n%sv11.wav %s\n%sv12.wav %s\n%sv13.wav %s\n%sv14.wav %s\n%sv15.wav %s\n%sv16.wav %s\n",$1,$2,$1,$3,$1,$4,$1,$5,$1,$6,$1,$7,$1,$8,$1,$9,$1,$10,$1,$11,$1,$12,$1,$13,$1,$14,$1,$15,$1,$16,$1,$17);}'`
   #
   # f_tuned = f_orig * 2.0^( cent / 1200.0 )
   # cent = 1200.0 * log_2 (f_tuned / f_orig)
@@ -246,7 +255,7 @@ for i in $LIST ; do
   FILTER_ASETRATE=""
   if [ "$FS_SRC" != "" ]; then
     TUNE_BY_CENT=`echo "$TUNED_TXT" | grep "^$KEY" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
-    if [ "$TUNE_BY_CENT" == "" ] ; then
+    if [ "$TUNE_BY_CENT" = "" ] ; then
       TUNE_BY_CENT=0
     fi
     if [ "$TUNE_BY_SCALE" != "0" -o "$TUNE_BY_CENT" != "0" ] ; then
@@ -262,27 +271,28 @@ for i in $LIST ; do
   fi
   # for one by one ...
   FILTER_DIRECT_LINE=`echo "$FILTER_DIRECT_TXT" | grep "^${KEY}v[0-9]"`
-  if [ "$FILTER_DIRECT_LINE" != "" ]; then
-    # to search in FOR loop: e.g. F#7v1 -> F#7v1.wav
-    FILTER_DIRECT_LINE=`echo "$FILTER_DIRECT_LINE" | sed -e 's/[ ]/.wav /'`
-  fi
   #
   echo "GAIN_01: $GAIN_THIS_01    GAIN_12: $GAIN_THIS_23   TUNE: ${TUNE_BY_SCALE} + ${TUNE_BY_CENT}/100"
   #
-  for j in $LIST_WAV ; do
-    ASSIGN_THIS=`echo "$LIST_ASSIGN" | grep "^$j" | sed -e 's/.*wav //'`
-    #J_IN=`echo $j | sed -e 's/[0-9][0-9]*.wav//'`"${ASSIGN_THIS}.wav"
+  for j in $LIST_VEL ; do
+    ORIG_NAME=${KEY}v${j}
+    ASSIGN_THIS=`echo $j $ASSIGN_THIS_ALL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
     J_IN="${USED_KEY}v${ASSIGN_THIS}.wav"
     IN_FILE="${SRC_DIR}/$J_IN"
     if [ -f "$IN_FILE" ]; then
-      OUT_FILENAME=`echo ${j} | sed $ARG_OUTFILE_SED`
+      OUT_FILENAME=`echo ${ORIG_NAME}.wav | sed $ARG_OUTFILE_SED`
       OUT_FILE=${DEST_DIR}/${OUT_FILENAME}
-      VOL_THIS=`echo "$LIST_VOL" | grep "^$j" | sed -e 's/.*wav //'`
+      VOL_THIS=`echo $j $VOL_OFFSET $VOL_THIS_ALL | awk '{ split($0,ARR," "); printf("%g\n",ARR[2]+ARR[2 + ARR[1]]); }'`
       echo "  Found ${J_IN}, Vol=${VOL_THIS}, Output to $OUT_FILE"
+      #
+      GAIN_THIS_VEL_01=`echo $j $GAIN_THIS_01 $EFF_RATIO_01 | awk '{ split($0,ARR," "); printf("%g\n",ARR[2] * ARR[2 + ARR[1]]); }'`
+      GAIN_THIS_VEL_23=`echo $j $GAIN_THIS_23 $EFF_RATIO_23 | awk '{ split($0,ARR," "); printf("%g\n",ARR[2] * ARR[2 + ARR[1]]); }'`
+      #echo "########## $j $GAIN_THIS_01 ... $GAIN_THIS_VEL_01 ###########"
+      #echo "########## $j $GAIN_THIS_23 ... $GAIN_THIS_VEL_23 ###########"
       #
       FILTER_DIRECT_ARG=""
       if [ "$FILTER_DIRECT_LINE" != "" ]; then
-        FD_TEST=`echo "$FILTER_DIRECT_LINE" | grep "^$j"`
+        FD_TEST=`echo "$FILTER_DIRECT_LINE" | grep "^$ORIG_NAME"`
         if [ "$FD_TEST" != "" ]; then
           FILTER_DIRECT_ARG=`echo "${FILTER_DIRECT_LINE}," | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
           echo "FILTER_DIRECT_ARG: $FILTER_DIRECT_ARG"
@@ -290,7 +300,7 @@ for i in $LIST ; do
       fi
       #
       rm -f tmp1.wav tmp2.wav "$OUT_FILE"
-      "$FFMPEG" -i "$IN_FILE" -af ${FILTER_ASETRATE}${FILTER_DIRECT_KEY}${FILTER_DIRECT_ARG}equalizer=f=${FREQ_EQ_23}:t=h:w=${FREQ_W_23}:g=${GAIN_THIS_23},equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=${GAIN_THIS_01},equalizer=f=0.1:t=h:w=3.0:g=-65,volume=${VOL_THIS}dB -c:a pcm_s32le tmp1.wav 2> /dev/null
+      "$FFMPEG" -i "$IN_FILE" -af ${FILTER_ASETRATE}${FILTER_DIRECT_KEY}${FILTER_DIRECT_ARG}equalizer=f=${FREQ_EQ_23}:t=h:w=${FREQ_W_23}:g=${GAIN_THIS_VEL_23},equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=${GAIN_THIS_VEL_01},equalizer=f=0.1:t=h:w=3.0:g=-65,volume=${VOL_THIS}dB -c:a pcm_s32le tmp1.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" -c:a pcm_s32le tmp2.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -i tmp2.wav -filter_complex "amix=normalize=0" $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
     fi
