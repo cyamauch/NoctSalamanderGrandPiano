@@ -4,7 +4,7 @@
 OFFSET  -1.5
 
 # offset for vol_factor.src.txt
-OFFSET_SRC -0.6
+OFFSET_SRC  0.0
 
 021_A0   0.0
 

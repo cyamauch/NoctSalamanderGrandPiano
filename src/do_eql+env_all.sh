@@ -39,6 +39,8 @@ SRC_SFZ="$4"
 # undef ... create none
 FLAG_CREATE_WAV=ALL
 
+#SELECTED_KEY="C2 D#2 F#2 A2 C3 D#3 F#3 A3 C4 D#4 F#4 A4 C4 D#4 F#4 A4 C5 D#5 F#5 A5 C6 D#6 F#6 A6 C7 D#7 F#7 A7 C8"
+
 #SELECTED_KEY="C1 F#1 C2 F#2 C3 F#3 C4 F#4 C4 F#4 C5 F#5 C6 F#6 C7 F#7 C8"
 
 #SELECTED_KEY="A0 C1 D#1 F#1 A1 C2 D#2 F#2 A2 C3 D#3 F#3 A3 C4 D#4 F#4 A4"
@@ -56,10 +58,14 @@ FLAG_CREATE_WAV=ALL
 
 #SELECTED_KEY="D#5 F#5 A5 C6 D#6 F#6"
 
+#SELECTED_KEY="C4"
+
 #SELECTED_KEY="C4 D#4 F#4 A4 C5 D#5 F#5 A5 C6 D#6 F#6 A6"
 #SELECTED_KEY="F#5 A5 C6 D#6 F#6"
 
 #SELECTED_KEY="D#7 F#7 A7 C8"
+#SELECTED_KEY="D#6 F#6 A6 C7 D#7 F#7 A7 C8"
+
 
 
 #### for basic LPF                   ####
@@ -167,6 +173,19 @@ EFF_RATIO_0=`echo "$GAIN0_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "E
 EFF_RATIO_1=`echo "$GAIN1_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
 EFF_RATIO_2=`echo "$GAIN2_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
 EFF_RATIO_3=`echo "$GAIN3_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
+if [ "$EFF_RATIO_0" = "" ]; then
+  EFF_RATIO_0="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
+fi
+if [ "$EFF_RATIO_1" = "" ]; then
+  EFF_RATIO_1="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
+fi
+if [ "$EFF_RATIO_2" = "" ]; then
+  EFF_RATIO_2="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
+fi
+if [ "$EFF_RATIO_3" = "" ]; then
+  EFF_RATIO_3="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
+fi
+
 
 #### Main loop ####
 
