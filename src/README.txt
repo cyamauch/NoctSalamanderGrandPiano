@@ -10,9 +10,9 @@ This sound bank was created based on the Salamander Grand,
   "Salamander Grand Piano" Web site
   https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html
 
-and tone quality of all basic WAV files listed in SFZ is improved to play 
-nocturnes and other relaxation music.  Released SFZ files have 16 velocity 
-layers with 48kHz24bit.
+and tone quality is improved to play nocturnes and other relaxation music.
+Instead of modifying the SFZ file, various filters were applied to the WAV
+files.
 
 Naturally, we referenced the tones of several concert grand pianos.  The reason
 why large grand pianos have beautiful tones is because they have fewer high-
@@ -20,8 +20,10 @@ frequency overtones.  This is a natural result of physics, and the digital
 processing was based on applying LPF to each of the notes as follows:
 
 - Applied 4 filtering:
-  frequency*0.5, frequency*4, frequency*12 and frequency*26
+  frequency*0.5, frequency*4, frequency*12 and frequency*26.
   (See gain0_factor.txt, gain1_factor.txt, gain2_factor.txt, gain3_factor.txt)
+
+- The effective rate of filter processing is changed for each velocity layer.
 
 - Changed the envelopes of all keys so that the string decay is more gradual.
 
@@ -48,7 +50,7 @@ errors in very low and very high notes such as A0, C1, D#1, F#7, and C8 were
 corrected to standard pitch according to tuned.txt.  For pitch adjustment, 
 the built-in sound bank of the YAMAHA EA1 was referenced.
 
-FFmpeg was used for all processings.  See src/do_eql+env_all.sh for details. 
+FFmpeg was used for all processings.  See src/do_eql+env_all.sh for details.
 You can change the parameters of the *.txt files, and run "make noct48" to 
 generate your own piano sound (you need to get the original version of 
 Salamander Grand).  This allows for a level of complexity and fine-tuning of
