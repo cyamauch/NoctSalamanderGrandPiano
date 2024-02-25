@@ -11,8 +11,9 @@ This sound bank was created based on the Salamander Grand,
   https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html
 
 and tone quality is improved to play nocturnes and other relaxation music.
-Instead of modifying the SFZ file, various filters were applied to the WAV
-files.
+Instead of modifying the SFZ file, carefully selected and configured filters
+were applied to the WAV files.  This allows easy conversion to any soundbank
+format and incorporation into software such as plug-ins.
 
 Naturally, we referenced the tones of several concert grand pianos.  The reason
 why large grand pianos have beautiful tones is because they have fewer high-
