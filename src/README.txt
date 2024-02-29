@@ -15,12 +15,15 @@ Instead of modifying the SFZ file, carefully selected and configured filters
 were applied to the WAV files.  This allows easy conversion to any soundbank
 format and incorporation into software such as plug-ins.
 
-Naturally, we referenced the tones of several concert grand pianos.  The reason
-why large grand pianos have beautiful tones is because they have fewer high-
-frequency overtones.  This is a natural result of physics, and the digital 
-processing was based on applying LPF to each of the notes as follows:
+Naturally, we referenced the tones of several concert grand pianos.  The 
+beautiful tone of a large grand piano is due to the steep decrease in 
+overtones from the bass to the treble. Since this is a natural consequence 
+of physics, if we have good sampling data from a non-large grand piano, we can
+obtain a sound very close to that of a large grand piano by adjusting its 
+frequency components. In this project, digital processing was used to adjust 
+the amount of overtones by pitch and velocity as follows:
 
-- Applied 4 filtering:
+- Applied 4 filtering from the bass to the treble:
   frequency*0.5, frequency*4, frequency*12 and frequency*26.
   (See gain0_factor.txt, gain1_factor.txt, gain2_factor.txt, gain3_factor.txt)
 
@@ -41,7 +44,7 @@ carefully adjusted:
   (See assign.txt)
 
 - All volume of WAV files were carefully adjusted for each velocity layer.
-  (See vol_factor_base.txt, vol_factor.src.txt)
+  (See vol_factor.src.txt and vol_factor_base.txt)
 
 - Erased strange noises during recording.
   (See filter_direct.txt)

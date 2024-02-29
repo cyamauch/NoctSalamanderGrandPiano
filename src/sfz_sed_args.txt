@@ -1,6 +1,0 @@
--e s/lovel=27\x20hivel=34/lovel=27\x20hivel=32/
--e s/lovel=35\x20hivel=36/lovel=33\x20hivel=37/
--e s/lovel=37\x20hivel=43/lovel=38\x20hivel=42/
--e s/lovel=44\x20hivel=46/lovel=43\x20hivel=46/
--e s/lovel=47\x20hivel=50/lovel=47\x20hivel=51/
--e s/lovel=51\x20hivel=56/lovel=52\x20hivel=57/
