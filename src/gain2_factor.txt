@@ -1,7 +1,7 @@
 #for frequency < 500Hz
 
-#           v1  v2  v3  v4  v5  v6  v7  v8  v9  v10 v11 v12 v13 v14 v15 v16
-EFF_RATIO   1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 0.9 0.8 0.7 0.6
+#           v1  v2  v3  v4  v5  v6   v7   v8   v9   v10  v11 v12 v13 v14 v15 v16
+EFF_RATIO   1.0 1.0 1.0 1.0 1.0 0.95 0.95 0.95 0.95 0.95 0.9 0.9 0.9 0.8 0.7 0.6
 
 #Key GAIN(db,frequency*26)
 A0   0

@@ -66,9 +66,9 @@ Changelog:
 
 V3.0 (Nov.24,2023)
 * First release based on Salamander Grand Piano V3+20161209.
-V4.0 (Feb.??,2024)
-* Applied 4 filtering, reassigned WAV, adjusted all volume of WAV, 
-  erased noises.
+V4.0 (Mar.??,2024)
+* Applied 4 filtering with effective rate, reassigned WAV, adjusted all 
+  volume of WAV, erased noises.
 
 
 Licence: 

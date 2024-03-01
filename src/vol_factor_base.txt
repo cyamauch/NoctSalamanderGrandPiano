@@ -1,7 +1,7 @@
 #key
 
 # offset for main script
-OFFSET  -1.5
+OFFSET   0.0
 
 # offset for vol_factor.src.txt
 OFFSET_SRC  0.0
