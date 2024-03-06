@@ -1,11 +1,17 @@
 #!/bin/sh
 
 #
-# sh mk_vol_factor.sh  > vol_factor.txt
+# sh mk_vol_factor.sh vol_factor.src.src.VERSION.txt > vol_factor.src4build.txt
 #
 
+if [ "$1" = "" ]; then
+  echo "[USAGE]"
+  echo "sh mk_vol_factor.sh vol_factor.src.src.VERSION.txt > vol_factor.src4build.txt"
+  exit
+fi
+
 VOL_FACTOR_BASE=`cat vol_factor_base.txt | tr -d '\r'`
-VOL_FACTOR_SRC=`cat vol_factor.src.txt | tr -d '\r'`
+VOL_FACTOR_SRC=`cat $1 | tr -d '\r'`
 ##############VOL_FACTOR_EFFECTIVE=`cat vol_factor_effective.txt | tr -d '\r'`
 
 LIST=`echo "$VOL_FACTOR_BASE" | grep '^[ACDF]' | awk '{printf("%s,%s\n",$1,$2);}'`
@@ -35,7 +41,13 @@ fi
 
 echo "$VOL_FACTOR_BASE" | grep '^[0-1]' | awk '{printf("%s %g\n",$1,'$OFFSET_SRC'+$2);}' | sort > _tmp0_.txt
 
-echo "$VOL_FACTOR_SRC" | grep '^VEL' > _tmp3_.txt 
+VEL_LINE=`echo "$VOL_FACTOR_SRC" | grep '^VEL'`
+if [ "$VEL_LINE" != "" ]; then
+  echo "$VEL_LINE" > _tmp3_.txt 
+else
+  echo "VEL_ALL  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0" > _tmp3_.txt 
+fi
+
 
 paste _tmp0_.txt _tmp2_.txt | tr '\t' ' ' | awk '{printf("%-7s %+.2f %+.2f %+.2f %+.2f %+.2f %+.2f %+.2f %+.2f %+.2f %+.2f %+.2f %+.2f %+.2f %+.2f %+.2f %+.2f\n",$3,$4+$2,$5+$2,$6+$2,$7+$2,$8+$2,$9+$2,$10+$2,$11+$2,$12+$2,$13+$2,$14+$2,$15+$2,$16+$2,$17+$2,$18+$2,$19+$2);}' >> _tmp3_.txt
 

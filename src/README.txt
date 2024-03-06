@@ -1,6 +1,12 @@
-Noct-Salamander Grand Piano
-Refined Salamander Grand for Nocturne
--- A free SFZ piano emulating a concert grand through digital processing.
+
+-------------------------------------------------------------------------------
+
+  Noct-Salamander Grand Piano
+
+  Project to develop a free SFZ concert grand piano
+  for Nocturne with digital processing.
+
+-------------------------------------------------------------------------------
 
 
 Technical info
@@ -11,9 +17,9 @@ This sound bank was created based on the Salamander Grand,
   https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html
 
 and tone quality is improved to play nocturnes and other relaxation music.
-Instead of modifying the SFZ file, carefully selected and configured filters
-were applied to the WAV files.  This allows easy conversion to any soundbank
-format and incorporation into software such as plug-ins.
+Instead of modifying the SFZ file, we applied a carefully configured filter per
+note to each of the 480 WAV files.  This allows easy conversion to any 
+soundbank format and incorporation into software such as plug-ins.
 
 Naturally, we referenced the tones of several concert grand pianos.  The 
 beautiful tone of a large grand piano is due to the steep decrease in 
@@ -67,6 +73,7 @@ Changelog:
 V3.0 (Nov.24,2023)
 * First release based on Salamander Grand Piano V3+20161209.
 V4.0RC1 (Mar.3,2024)
+V4.0RC2 (Mar.5,2024)
 * Applied 4 filtering with effective rate, reassigned WAV, adjusted all 
   volume of WAV, erased noises.
 
