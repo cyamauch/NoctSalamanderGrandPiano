@@ -3,15 +3,15 @@
 
   Noct-Salamander Grand Piano
 
-  Project to develop a free SFZ concert grand piano
-  for Nocturne with digital processing.
+  Remastered Salamander Grand --- a free SFZ/WAV semi-concert grand piano 
+  developed by physics and data processing.
 
 -------------------------------------------------------------------------------
 
 
 Technical info
 
-This sound bank was created based on the Salamander Grand,
+This sound bank is developed by remastering the Salamander Grand,
 
   "Salamander Grand Piano" Web site
   https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html

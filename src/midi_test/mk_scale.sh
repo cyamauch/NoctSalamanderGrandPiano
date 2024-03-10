@@ -1,9 +1,27 @@
-#!/bin/sh
+#!/bin/sh	
+
+if [ "$3" = "" ]; then
+  echo "[USAGE]"
+  echo "$1 tempo start end"
+  echo "$1 50000 21 108 (ALL)"
+  echo "$1 50000 24 48 (C1 to C3)"
+  echo "$1 50000 36 60 (C2 to C4)"
+  echo "$1 50000 48 72 (C3 to C5)"
+  echo "$1 50000 60 84 (C4 to C6)"
+  echo "$1 50000 72 96 (C5 to C7)"
+  echo "$1 50000 84 108 (C6 to C8)"
+  exit
+fi
+
+TEMPO=$1
+KEY_S=$2
+KEY_E=$3
+
 
 #     v1       v4          v8          v12            v16
 LIST="13 29 35 40 44 49 54 61 68 76 84 92 100 108 116 124"
 
-TEMPO=50000
+#TEMPO=50000
 #TEMPO=100000
 
 N=1
@@ -20,7 +38,7 @@ for i in $LIST ; do
   echo "0 SysEx f0 41 10 42 12 40 00 7f 00 41 f7" >> tmp.txt
 
   # key: 21 to 108
-  echo $i | awk '{ t=100; for (i=21; i<109; i++){printf("%d On ch=1 n=%d v=%s\n",t,i,$1); t+=1000; printf("%d On ch=1 n=%d v=0\n",t,i); } t+=4000; for (i=109; 21<i; ){ i--;  printf("%d On ch=1 n=%d v=%s\n",t,i,$1); t+=1000; printf("%d On ch=1 n=%d v=0\n",t,i); } }' >> tmp.txt
+  echo $i $KEY_S $KEY_E | awk '{ t=100; for (i=$2; i<1+$3; i++){printf("%d On ch=1 n=%d v=%s\n",t,i,$1); t+=1000; printf("%d On ch=1 n=%d v=0\n",t,i); } t+=4000; for (i=1+$3; $2<i; ){ i--;  printf("%d On ch=1 n=%d v=%s\n",t,i,$1); t+=1000; printf("%d On ch=1 n=%d v=0\n",t,i); } }' >> tmp.txt
 
   echo "TrkEnd" >> tmp.txt
 
