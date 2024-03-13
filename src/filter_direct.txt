@@ -1,6 +1,11 @@
-# Eliminate strange noises at 1035Hz when striking strings
-F#2  equalizer=f=1035.0:t=h:w=1.0:g=-80
-A2   equalizer=f=1116.0:t=h:w=1.0:g=-80
+## Eliminate strange noises at 1035Hz when striking strings
+## NOTE: disabled. See mk_special.sh
+## F#2  equalizer=f=1035.0:t=h:w=1.0:g=-80:r=f32
+## A2   equalizer=f=1116.0:t=h:w=1.0:g=-80:r=f32
+
+# Adjustment for fundamental tone of treble
+D#7    equalizer=f=2489.016:t=h:w=500.0:g=+2.0:r=f32,volume=-1.4dB
+F#7    equalizer=f=2959.955:t=h:w=500.0:g=+5.0:r=f32,volume=-3.1dB
 
 # Eliminate strange noises after t=?[s]
 F#2v1  afade=t=out:st=11.5:d=3.0

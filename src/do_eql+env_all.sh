@@ -17,6 +17,10 @@ if [ "$FFMPEG" = "" ]; then
   FFMPEG="/cygdrive/c/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
 fi
 
+if [ "$FFMPEG_OPT" = "" ]; then
+  FFMPEG_OPT="-c:a pcm_s24le"
+fi
+
 if [ "$3" = "" ]; then
   echo "[USAGE]"
   echo "**** to make ***"
@@ -30,6 +34,11 @@ CMD_THIS="$1"
 SRC_DIR="$2"
 DEST_DIR="$3"
 SRC_SFZ="$4"
+
+
+####
+
+FFMPEG_LOG_FILE="ffmpeg_log.txt"
 
 
 #### FLAG for wav creation ####
@@ -123,6 +132,11 @@ SFZ_SED_ARGS=`cat sfz_sed_args.txt | tr -d '\r'`
 ARG_OUTFILE_SED_0=`echo "$KEY_NID_TXT" | awk '{printf("-e s/%sv/%s_%sv/ \n",$1,$2,$1);}'`
 ARG_OUTFILE_SED_1=`echo "1_2_3_4_5_6_7_8_9_" | tr '_' '\n' | awk '{printf("-e s/v%s[.]wav/v0%s.wav/ \n",$1,$1);}'`
 ARG_OUTFILE_SED=`echo "$ARG_OUTFILE_SED_0" "$ARG_OUTFILE_SED_1"`
+
+
+########
+
+rm -f $FFMPEG_LOG_FILE
 
 
 #### Output SFZ ####
@@ -309,6 +323,17 @@ for i in $LIST ; do
       #echo "########## $j $GAIN_THIS_01 ... $GAIN_THIS_VEL_01 ###########"
       #echo "########## $j $GAIN_THIS_23 ... $GAIN_THIS_VEL_23 ###########"
       #
+      if [ "$GAIN_THIS_VEL_01" = "0" ]; then
+        ARG_EQ_01=""
+      else
+        ARG_EQ_01="equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=${GAIN_THIS_VEL_01}:r=f32,"
+      fi
+      if [ "$GAIN_THIS_VEL_23" = "0" ]; then
+        ARG_EQ_23=""
+      else
+        ARG_EQ_23="equalizer=f=${FREQ_EQ_23}:t=h:w=${FREQ_W_23}:g=${GAIN_THIS_VEL_23}:r=f32,"
+      fi
+      #
       FILTER_DIRECT_ARG=""
       if [ "$FILTER_DIRECT_LINE" != "" ]; then
         FD_TEST=`echo "$FILTER_DIRECT_LINE" | grep "^$ORIG_NAME"`
@@ -317,10 +342,17 @@ for i in $LIST ; do
           echo "FILTER_DIRECT_ARG: $FILTER_DIRECT_ARG"
         fi
       fi
+      # Special code: Fix strange envelope, noise, etc.
+      if [ "$KEY" = "F#2" -o "$KEY" = "A2" -o "$KEY" = "C3" -o "$KEY" = "D#3" ]; then
+        sh mk_special.sh "$FFMPEG" $KEY "$IN_FILE" tmp_pcm.wav 2> /dev/null
+        IN_FILE=tmp_pcm.wav
+      fi
       #
       rm -f tmp1.wav tmp2.wav "$OUT_FILE"
-      "$FFMPEG" -i "$IN_FILE" -af ${FILTER_ASETRATE}${FILTER_DIRECT_KEY}${FILTER_DIRECT_ARG}equalizer=f=${FREQ_EQ_23}:t=h:w=${FREQ_W_23}:g=${GAIN_THIS_VEL_23},equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=${GAIN_THIS_VEL_01},equalizer=f=0.1:t=h:w=3.0:g=-65,volume=${VOL_THIS}dB -c:a pcm_s32le tmp1.wav 2> /dev/null
-      "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" -c:a pcm_s32le tmp2.wav 2> /dev/null
+      ARGS="-af ${FILTER_ASETRATE}${FILTER_DIRECT_KEY}${FILTER_DIRECT_ARG}${ARG_EQ_01}${ARG_EQ_23}volume=${VOL_THIS}dB -c:a pcm_f32le"
+      echo FFMPEG -i "$IN_FILE" $ARGS "OUT.wav" >> $FFMPEG_LOG_FILE
+      "$FFMPEG" -i "$IN_FILE" $ARGS tmp1.wav 2> /dev/null
+      "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" -c:a pcm_f32le tmp2.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -i tmp2.wav -filter_complex "amix=normalize=0" $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
     fi
   done
