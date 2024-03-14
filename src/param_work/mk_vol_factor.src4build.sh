@@ -19,8 +19,15 @@ OFFSET_SRC=`echo "$VOL_FACTOR_BASE" | grep '^OFFSET_SRC' | awk '{printf("%s\n",$
 
 #echo $LIST
 
-echo "$VOL_FACTOR_SRC" | grep '^#'
-echo "$VOL_FACTOR_BASE" | grep '^OFFSET '
+#echo "$VOL_FACTOR_SRC" | grep '^#'
+#echo "$VOL_FACTOR_BASE" | grep '^OFFSET '
+
+echo "#Key Volume(db)"
+echo "#         v1   v2   v3   v4   v5   v6   v7   v8   v9  v10  v11  v12  v13  v14  v15  v16"
+echo ""
+echo "VEL_ALL  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0"
+echo ""
+
 
 if [ "$VOL_FACTOR_EFFECTIVE" != "" ]; then
 

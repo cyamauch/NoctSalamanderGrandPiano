@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#### Creating C3 ####
+#### Creating F#2, A2, etc. ####
 
 if [ "$4" = "" ]; then
   echo "[USAGE]"
