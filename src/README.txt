@@ -11,15 +11,17 @@
 
 Technical info
 
-This sound bank is developed by remastering the Salamander Grand,
+Our project does not involve new recordings, but rather the development of a 
+new piano sound source by digitally processing the Salamander Grand, which has
+a high recording quality. 
 
   "Salamander Grand Piano" Web site
   https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html
 
-and tone quality is improved to play nocturnes and other relaxation music.
+In order to ensure a high level of homogeneity and continuity of each sound 
+source, all of Salamander Grand's basic WAV sound sources were remastered. 
 Instead of modifying the SFZ file, we applied a carefully configured filter per
-note to each of the 480 WAV files.  This allows easy conversion to any 
-soundbank format and incorporation into software such as plug-ins.
+note to each of the 480 WAV files. 
 
 Naturally, we referenced the tones of several concert grand pianos.  The 
 beautiful tone of a large grand piano is due to the steep decrease in 
