@@ -1,11 +1,20 @@
 ## Eliminate strange noises at 1035Hz when striking strings
-## NOTE: disabled. See mk_special.sh
+## NOTE: Disabled. See mk_special.sh that has better solutions.
 ## F#2  equalizer=f=1035.0:t=h:w=1.0:g=-80:r=f32
 ## A2   equalizer=f=1116.0:t=h:w=1.0:g=-80:r=f32
 
 # Adjustment for fundamental tone of treble
 D#7    equalizer=f=2489.016:t=h:w=500.0:g=+2.0:r=f32,volume=-1.4dB
 F#7    equalizer=f=2959.955:t=h:w=500.0:g=+5.0:r=f32,volume=-3.1dB
+
+# Reduce overtone for some v=[1,2] samples
+C1v1   volume=+1.5dB,lowpass=f=700.0:t=q:w=0.707:r=f32
+F#1v1  volume=+1.5dB,lowpass=f=600.0:t=q:w=0.707:r=f32
+D#2v1  volume=+3.6dB,lowpass=f=430.0:t=q:w=0.707:r=f32
+D#3v1  volume=+2.5dB,lowpass=f=620.0:t=q:w=0.707:r=f32
+F#3v1  volume=+1.5dB,lowpass=f=560.0:t=q:w=0.707:r=f32
+D#4v1  volume=+1.5dB,lowpass=f=1100.0:t=q:w=0.707:r=f32
+D#4v2  volume=+1.5dB,lowpass=f=1100.0:t=q:w=0.707:r=f32
 
 # Eliminate strange noises after t=?[s]
 F#2v1  afade=t=out:st=11.5:d=3.0
@@ -15,6 +24,6 @@ F#7v1  afade=t=out:st=1.0:d=1.3
 # Fix overflow at v16
 F#3v16  pan=stereo|c0=0.97*c0+0.03*c1|c1=0.97*c1+0.03*c0
 A3v16   pan=stereo|c0=0.85*c0+0.15*c1|c1=0.85*c1+0.15*c0
-A4v16   pan=stereo|c0=0.96*c0+0.04*c1|c1=0.96*c1+0.04*c0
-C5v16   pan=stereo|c0=0.99*c0+0.01*c1|c1=0.99*c1+0.01*c0
+A4v16   pan=stereo|c0=0.92*c0+0.08*c1|c1=0.92*c1+0.08*c0
+C5v16   pan=stereo|c0=0.96*c0+0.04*c1|c1=0.96*c1+0.04*c0
 

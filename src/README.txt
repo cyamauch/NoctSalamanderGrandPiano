@@ -3,8 +3,8 @@
 
   Noct-Salamander Grand Piano
 
-  Remastered Salamander Grand --- a free SFZ/WAV semi-concert grand piano 
-  developed by physics and data processing.
+   A Free SFZ/WAV semi-concert grand piano
+   --- remastering the Salamander Grand using a physics-based approach
 
 -------------------------------------------------------------------------------
 
@@ -54,8 +54,22 @@ carefully adjusted:
 - All volume of WAV files were carefully adjusted for each velocity layer.
   (See vol_factor.src.txt and vol_factor_base.txt)
 
-- Erased strange noises during recording.
+- Erased strange noises during recording using both afade and equalizer.
+  (See mk_special.txt)
+
+- Individually adjust for excessive amounts of overtone that may be caused by
+  recordings (mainly Layer 1).
   (See filter_direct.txt)
+
+- Adjustment of individual and layer-by-layer overtone amounts and abnormal 
+  envelope shapes (F#2, A2, C3, D#3) that may have been caused by hammer 
+  conditions.
+  (See mk_special.sh)
+
+The Salamander Grand had a major problem with a lack of overtone around C3, 
+which caused a break in the continuity of sound quality, but the restoration 
+process described in the fifth item above enabled us to obtain the sound that
+we originally wanted, and the sound source as a whole became more complete.
 
 The C5 grand piano used for sampling was tuned fairly accurately, but slight
 errors in very low and very high notes such as A0, C1, D#1, F#7, and C8 were
@@ -69,15 +83,19 @@ Salamander Grand).  This allows for a level of complexity and fine-tuning of
 sound quality that is not possible through the GUI of VST plug-ins or filter
 settings within SFZ files. 
 
+Although waveforms and spectra are also used extensively in the tuning process,
+the final evaluation is based on aural perception of each individual sound and 
+continuity. A USB audio interface Roland Rubix22 and studio monitor headphones 
+SONY MDR-CD900ST are used for final adjustment and confirmation. 
+
 
 Changelog:
 
 V3.0 (Nov.24,2023)
 * First release based on Salamander Grand Piano V3+20161209.
-V4.0RC1 (Mar.3,2024)
-V4.0RC2 (Mar.5,2024)
+V4.0RC1 (Mar.3,2024), V4.0RC2 (Mar.5,2024), V4.0RC3 (Mar.20,2024)
 * Applied 4 filtering with effective rate, reassigned WAV, adjusted all 
-  volume of WAV, erased noises.
+  volume of WAV, erased noises and restoration of overtone/envelope near C3.
 
 
 Licence: 
