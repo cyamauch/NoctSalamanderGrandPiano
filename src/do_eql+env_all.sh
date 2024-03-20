@@ -48,6 +48,8 @@ FFMPEG_LOG_FILE="ffmpeg_log.txt"
 # undef ... create none
 FLAG_CREATE_WAV=ALL
 
+#SELECTED_KEY="A7"
+
 #SELECTED_KEY="C2 D#2 F#2 A2 C3 D#3 F#3 A3 C4 D#4 F#4 A4 C4 D#4 F#4 A4 C5 D#5 F#5 A5 C6 D#6 F#6 A6 C7 D#7 F#7 A7 C8"
 
 #SELECTED_KEY="C1 F#1 C2 F#2 C3 F#3 C4 F#4 C4 F#4 C5 F#5 C6 F#6 C7 F#7 C8"
@@ -55,11 +57,11 @@ FLAG_CREATE_WAV=ALL
 #SELECTED_KEY="A0 C1 D#1 F#1 A1 C2 D#2 F#2 A2 C3 D#3 F#3 A3 C4 D#4 F#4 A4"
 #SELECTED_KEY="C4 D#4 F#4 A4 C5 D#5 F#5 A5 C6 D#6 F#6 A6 C7 D#7 F#7 A7 C8"
 
-#SELECTED_KEY="F#3"
-
-#SELECTED_KEY="C1 D#1 F#1 A1 C2 D#2 F#2 A2"
-
-#SELECTED_KEY="C2 D#2 F#2 A2 C3 D#3"
+#SELECTED_KEY="A0 C1 D#1 F#1 A1 C2"
+#SELECTED_KEY="C1 D#1 F#1 A1 C2 D#2 F#2 A2 C3"
+#SELECTED_KEY="C2 D#2 F#2 A2 C3 D#3 F#3 A3 C4"
+#SELECTED_KEY="C3 D#3 F#3 A3 C4 D#4 F#4 A4 C5"
+#SELECTED_KEY="C4 D#4 F#4 A4 C5 D#5 F#5 A5 C6"
 
 #SELECTED_KEY="D#2 F#2 A2 C3 D#3 F#3 A3"
 #SELECTED_KEY="D#2 F#2 A2 C3 D#3 F#3 A3 C4 D#4 F#4 A4"
@@ -338,15 +340,15 @@ for i in $LIST ; do
       #
       FILTER_DIRECT_ARG=""
       if [ "$FILTER_DIRECT_LINE" != "" ]; then
-        FD_TEST=`echo "$FILTER_DIRECT_LINE" | grep "^$ORIG_NAME"`
+        FD_TEST=`echo "$FILTER_DIRECT_LINE" | grep "^${ORIG_NAME}[ ]"`
         if [ "$FD_TEST" != "" ]; then
-          FILTER_DIRECT_ARG=`echo "${FILTER_DIRECT_LINE}," | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
+          FILTER_DIRECT_ARG=`echo "${FD_TEST}," | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
           echo "FILTER_DIRECT_ARG: $FILTER_DIRECT_ARG"
         fi
       fi
       # Special code: Fix strange envelope, noise, etc.
       if [ "$KEY" = "F#2" -o "$KEY" = "A2" -o "$KEY" = "C3" -o "$KEY" = "D#3" ]; then
-        sh mk_special.sh "$FFMPEG" $KEY "$IN_FILE" tmp_pcm.wav 2> /dev/null
+        sh mk_special.sh "$FFMPEG" $KEY $j "$IN_FILE" tmp_pcm.wav 2> /dev/null
         IN_FILE=tmp_pcm.wav
       fi
       #
