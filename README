@@ -1,0 +1,11 @@
+This project is developing a new SFZ/WAV semi-concert grand piano with perfect
+homogeneity/continuity in terms of sound quality per velocity layer by 
+carefully remastering all 480 sampled sources in the Salamander Grand Piano
+(the widely used SFZ soundbank) using a physics-based approach.  The tone is
+bright and soft, intended for use in relaxation music such as nocturne.
+
+The SFZ+WAV sound bank package (48kHz24bit, Size:1.5GB) is provided free of 
+charge (license: CC-by).  In addition, all source code and parameter files are
+available to the public.
+
+
