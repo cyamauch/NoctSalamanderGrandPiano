@@ -15,6 +15,7 @@ D#3v1  volume=+2.5dB,lowpass=f=620.0:t=q:w=0.707:r=f32
 F#3v1  volume=+1.5dB,lowpass=f=560.0:t=q:w=0.707:r=f32
 D#4v1  volume=+1.5dB,lowpass=f=1100.0:t=q:w=0.707:r=f32
 D#4v2  volume=+1.5dB,lowpass=f=1100.0:t=q:w=0.707:r=f32
+D#4v3  volume=+1.3dB,lowpass=f=1500.0:t=q:w=0.707:r=f32
 
 # Eliminate strange noises after t=?[s]
 F#2v1  afade=t=out:st=11.5:d=3.0

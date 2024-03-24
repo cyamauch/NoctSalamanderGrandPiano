@@ -18,7 +18,7 @@ a high recording quality.
   "Salamander Grand Piano" Web site
   https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html
 
-In order to ensure a high level of homogeneity and continuity of each sound 
+In order to ensure a high level of homogeneity/continuity of each sound 
 source, all of Salamander Grand's basic WAV sound sources were remastered. 
 Instead of modifying the SFZ file, we applied a carefully configured filter per
 note to each of the 480 WAV files. 
@@ -45,10 +45,11 @@ modification were varied gradually according to the scale.
 The original sound source is a sampling of the YAMAHA C5, but these processes 
 make it possible to reproduce the tone of a larger grand piano.
 
-In Version 4, the continuity of sound quality and volume in the scale was 
-carefully adjusted:
+In Version 4, the homogeneity/continuity of sound quality and volume in the 
+scale was carefully adjusted:
 
-- Reassigned WAV files to improve continuity of scale at each velocity layer.
+- Reassigned WAV files to improve homogeneity/continuity of scale at each 
+  velocity layer.
   (See assign.txt)
 
 - All volume of WAV files were carefully adjusted for each velocity layer.
@@ -85,15 +86,15 @@ settings within SFZ files.
 
 Although waveforms and spectra are also used extensively in the tuning process,
 the final evaluation is based on aural perception of each individual sound and 
-continuity. A USB audio interface Roland Rubix22 and studio monitor headphones 
-SONY MDR-CD900ST are used for final adjustment and confirmation. 
+homogeneity/continuity. A USB audio interface Roland Rubix22 and studio monitor
+headphones SONY MDR-CD900ST are used for final adjustment and confirmation. 
 
 
 Changelog:
 
 V3.0 (Nov.24,2023)
 * First release based on Salamander Grand Piano V3+20161209.
-V4.0RC1 (Mar.3,2024), V4.0RC2 (Mar.5,2024), V4.0RC3 (Mar.20,2024)
+V4.0RC1 (Mar.3,2024), V4.0RC4 (Mar.24,2024)
 * Applied 4 filtering with effective rate, reassigned WAV, adjusted all 
   volume of WAV, erased noises and restoration of overtone/envelope near C3.
 
