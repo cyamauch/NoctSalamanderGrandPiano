@@ -48,7 +48,8 @@ FFMPEG_LOG_FILE="ffmpeg_log.txt"
 # undef ... create none
 FLAG_CREATE_WAV=ALL
 
-#SELECTED_KEY="F#3 A3 C4 D#4"
+#SELECTED_KEY="D#1 F#1 A1"
+#SELECTED_KEY="F#1"
 
 #SELECTED_KEY="C2 D#2 F#2 A2 C3 D#3 F#3 A3 C4 D#4 F#4 A4 C4 D#4 F#4 A4 C5 D#5 F#5 A5 C6 D#6 F#6 A6 C7 D#7 F#7 A7 C8"
 
@@ -147,6 +148,7 @@ rm -f $FFMPEG_LOG_FILE
 
 if [ "$SRC_SFZ" != "" ]; then
   cat ${SRC_SFZ} | sed $ARG_OUTFILE_SED $SFZ_SED_ARGS > ${DEST_DIR}/../Noct-SalamanderGrandPiano.sfz
+  cat ${DEST_DIR}/../Noct-SalamanderGrandPiano.sfz | awk '{ if ( substr($0,1,13) == "//HammerNoise" ){ FLG=1; } if ( FLG == 1 ) {FLG=1;} else {print;} }'  > ${DEST_DIR}/../Noct-SalamanderGrandPiano_withoutNoise.sfz
 fi
 
 
