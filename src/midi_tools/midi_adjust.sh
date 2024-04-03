@@ -16,8 +16,8 @@ func_output_main ()
   }'
 }
 
-MF2T="/cygdrive/c/archives/Piano/mf2t-win64/mf2t.exe"
-T2MF="/cygdrive/c/archives/Piano/mf2t-win64/t2mf.exe"
+MF2T="mf2t"
+T2MF="t2mf"
 
 if [ "$5" == "" ]; then
   echo "[USAGE]"

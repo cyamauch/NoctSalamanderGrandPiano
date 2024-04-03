@@ -1,7 +1,7 @@
 #!/bin/sh
 
-MF2T="/cygdrive/c/archives/Piano/mf2t-win64/mf2t.exe"
-T2MF="/cygdrive/c/archives/Piano/mf2t-win64/t2mf.exe"
+MF2T="mf2t"
+T2MF="t2mf"
 
 if [ "$1" = "" ]; then
   echo "Specify midi files."
@@ -17,7 +17,7 @@ while [ "$1" != "" ]; do
   $MF2T $1 | tr -d '\r' > _tmp_input.txt
 
   cat _tmp_input.txt | awk '{ \
-    if ( $4 == "\"<Master" && ($5 == "Reverve>\"" || $5 == "Volume>\"") ) { FLG=1; } \
+    if ( $2 == "Meta" && ($4 == "\"<Master" || $4 == "\"<part") && ($5 == "Reverve>\"" || $5 == "Volume>\"" || $5 == "reverve>\"") ) { FLG=1; } \
     else { \
       if ( FLG == 1 ) { \
         if ( $2 == "SysEx" ) {FLG=1;} \
