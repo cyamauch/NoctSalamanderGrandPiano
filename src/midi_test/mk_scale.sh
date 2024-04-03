@@ -2,14 +2,14 @@
 
 if [ "$3" = "" ]; then
   echo "[USAGE]"
-  echo "$1 tempo start end"
-  echo "$1 55000 21 108 (ALL)"
-  echo "$1 55000 24 48 (C1 to C3)"
-  echo "$1 55000 36 60 (C2 to C4)"
-  echo "$1 55000 48 72 (C3 to C5)"
-  echo "$1 55000 60 84 (C4 to C6)"
-  echo "$1 55000 72 96 (C5 to C7)"
-  echo "$1 55000 84 108 (C6 to C8)"
+  echo "$0 tempo start end"
+  echo "$0 55000 21 108 (ALL)"
+  echo "$0 55000 24 48 (C1 to C3)"
+  echo "$0 55000 36 60 (C2 to C4)"
+  echo "$0 55000 48 72 (C3 to C5)"
+  echo "$0 55000 60 84 (C4 to C6)"
+  echo "$0 55000 72 96 (C5 to C7)"
+  echo "$0 55000 84 108 (C6 to C8)"
   exit
 fi
 
@@ -45,7 +45,7 @@ for i in $LIST ; do
   VV=`echo $i | awk '{printf("%03d\n",$1);}'`
   NN=`echo $N | awk '{printf("%02d\n",$1);}'`
 
-  ./t2mf.exe tmp.txt > scale_v${NN}-v${VV}.mid
+  t2mf tmp.txt > scale_v${NN}-v${VV}.mid
 
   N=`expr $N + 1`
 
