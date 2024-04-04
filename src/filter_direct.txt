@@ -3,10 +3,8 @@
 ## F#2  equalizer=f=1035.0:t=h:w=1.0:g=-80:r=f32
 ## A2   equalizer=f=1116.0:t=h:w=1.0:g=-80:r=f32
 
-# Adjustment overtone
-#F#1    equalizer=f=46.249:t=h:w=92.5:g=-12:r=f32,lowpass=f=1300.0:t=q:w=0.707:r=f32,volume=+4dB
-#F#1    equalizer=f=45:t=h:w=50:g=-13:r=f32,equalizer=f=89:t=h:w=10:g=0:r=f32,equalizer=f=1000:t=h:w=1200:g=+0:r=f32,equalizer=f=796:t=h:w=100:g=0,equalizer=f=996:t=h:w=10:g=0,equalizer=f=1221:t=h:w=100:g=-20,equalizer=f=1617:t=h:w=100:g=-20:r=f32,afade=t=out:st=0:d=0.07:silence=0.65:curve=tri,volume=+6dB
-F#1    equalizer=f=1210:t=h:w=30:g=-40:r=f32,equalizer=f=1830:t=h:w=30:g=-40:r=f32,equalizer=f=1000:t=h:w=1500:g=+10:r=f32,equalizer=f=46:t=h:w=100:g=+2:r=f32,equalizer=f=91:t=h:w=50:g=+5,volume=-2.5dB
+# Adjustment overtone (transform A1 => F#1)
+F#1    equalizer=f=1210:t=h:w=8:g=-40:r=f32,equalizer=f=1830:t=h:w=8:g=-40:r=f32,equalizer=f=1400:t=h:w=1200:g=+14:r=f32,equalizer=f=46:t=h:w=40:g=-4:r=f32,equalizer=f=200:t=h:w=200:g=+10,volume=-3.8dB
 
 # Adjustment for fundamental tone of treble
 D#7    equalizer=f=2489.016:t=h:w=500.0:g=+2.0:r=f32,volume=-1.4dB

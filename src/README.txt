@@ -91,22 +91,22 @@ errors in very low and very high notes such as A0, C1, D#1, F#7, and C8 were
 corrected to standard pitch according to tuned.txt.  For pitch adjustment, 
 the built-in sound bank of the YAMAHA EA1 was referenced.
 
-Although the license terms of the original sound source require that the 
-modifications be clearly stated, this project adopted a policy of clarifying 
-not only that, but also the content of the modification process.  Therefore, 
-all processing was done by script, and FFmpeg (an open source product) was 
-used for WAV data processings.  All codes are available at GitHub repository.
-See src/do_eql+env_all.sh for details.  You can change the parameters of the 
-*.txt files, and run "make noct48" to generate your own piano sound (you need 
-to get the original version of Salamander Grand).  This allows for a level of 
-complexity and fine-tuning of sound quality that is not possible through the 
-GUI of VST plug-ins or filter settings within SFZ files.  It takes about 12 
-minutes to build a complete 48kHz version (Core i5-8250U CPU @ 1.6GHz). 
-
 Although waveforms and spectra are also used extensively in the tuning process,
 the final evaluation is based on aural perception of each individual sound and 
 homogeneity/continuity. A USB audio interface Roland Rubix22 and studio monitor
 headphones SONY MDR-CD900ST are used for final adjustment and confirmation. 
+
+The license terms of the original sound source require that the modifications 
+be clearly stated.  This project adopted a policy of clarifying not only that, 
+but also the content of the modification process.  Therefore, all processing 
+was done by script, and FFmpeg (an open source product) was used for WAV data 
+processings.  All codes are available at GitHub repository.  See 
+src/do_eql+env_all.sh for details.  You can change the parameters of the *.txt 
+files, and run "make noct48" to generate your own piano sound (you need to get 
+the original version of Salamander Grand).  This allows for a level of 
+complexity and fine-tuning of sound quality that is not possible through the 
+GUI of VST plug-ins or filter settings within SFZ files.  It takes about 12 
+minutes to build a complete 48kHz version (Core i5-8250U CPU @ 1.6GHz). 
 
 
 Changelog:
