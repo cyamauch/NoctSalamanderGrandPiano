@@ -70,7 +70,7 @@ while [ 1 ]; do
     CNT_TRK=$TRK
   fi
 
-  echo "PHASE2 -- TRK: $TRK"
+  echo "PHASE1 -- TRK: $TRK"
 
 done
 
