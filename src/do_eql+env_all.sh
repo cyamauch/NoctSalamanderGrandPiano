@@ -349,7 +349,8 @@ for i in $LIST ; do
         fi
       fi
       # Special code: Fix strange envelope, noise, etc.
-      if [ "$KEY" = "F#2" -o "$KEY" = "A2" -o "$KEY" = "C3" -o "$KEY" = "D#3" ]; then
+      if [ "$KEY" = "F#1" -o "$KEY" = "F#2" -o "$KEY" = "A2" -o "$KEY" = "C3" -o "$KEY" = "D#3" ]; then
+        rm -f tmp_pcm.wav
         sh mk_special.sh "$FFMPEG" $KEY $j "$IN_FILE" tmp_pcm.wav 2> /dev/null
         IN_FILE=tmp_pcm.wav
       fi
