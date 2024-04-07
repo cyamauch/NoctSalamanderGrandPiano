@@ -23,11 +23,15 @@ if [ "$KEY" = "F#1" ]; then
 
   # Note: $IN_FILE/$OUT_FILE of "A1" is transformed into "F#1" in the main script.
 
-  rm -f _tmp_sub_0.wav _tmp_sub_1.wav $OUT_FILE
-  "$FFMPEG" -i $IN_FILE -af equalizer=f=1439:t=h:w=8:g=-40:r=f32,equalizer=f=2176:t=h:w=8:g=-40:r=f32,equalizer=f=1665:t=h:w=1665:g=+11.5:r=f32,equalizer=f=55:t=h:w=55:g=-8:r=f32,equalizer=f=238:t=h:w=238:g=+8,afade=t=out:st=0:d=0.5:silence=0.0:curve=tri,volume=-4.3dB -c:a pcm_f32le _tmp_sub_0.wav
-  "$FFMPEG" -i $IN_FILE -af equalizer=f=1665:t=h:w=1665:g=+11.5:r=f32,equalizer=f=55:t=h:w=55:g=-8:r=f32,equalizer=f=238:t=h:w=238:g=+8,afade=t=in:st=0:d=0.5:silence=0.0:curve=tri,volume=-4.3dB -c:a pcm_f32le _tmp_sub_1.wav
+  GAIN55="+0"
+  GAIN238="+0"
+  GAIN1665="+7.5"
 
-  "$FFMPEG" -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex "amix=normalize=0,volume=+0.0dB" -c:a pcm_f32le $OUT_FILE
+  rm -f _tmp_sub_0.wav _tmp_sub_1.wav $OUT_FILE
+  "$FFMPEG" -i $IN_FILE -af equalizer=f=1439:t=h:w=8:g=-40:r=f32,equalizer=f=2176:t=h:w=8:g=-40:r=f32,equalizer=f=1665:t=h:w=1665:g=${GAIN1665}:r=f32,equalizer=f=55:t=h:w=55:g=${GAIN55}:r=f32,equalizer=f=238:t=h:w=238:g=${GAIN238},afade=t=out:st=0:d=0.5:silence=0.0:curve=tri -c:a pcm_f32le _tmp_sub_0.wav
+  "$FFMPEG" -i $IN_FILE -af equalizer=f=1665:t=h:w=1665:g=${GAIN1665}:r=f32,equalizer=f=55:t=h:w=55:g=${GAIN55}:r=f32,equalizer=f=238:t=h:w=238:g=${GAIN238},afade=t=in:st=0:d=0.5:silence=0.0:curve=tri -c:a pcm_f32le _tmp_sub_1.wav
+
+  "$FFMPEG" -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex "amix=normalize=0,volume=-1.2dB" -c:a pcm_f32le $OUT_FILE
 
 elif [ "$KEY" = "F#2" ]; then
 
