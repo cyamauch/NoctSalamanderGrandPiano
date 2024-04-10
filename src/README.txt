@@ -101,12 +101,12 @@ be clearly stated.  This project adopted a policy of clarifying not only that,
 but also the content of the modification process.  Therefore, all processing 
 was done by script, and FFmpeg (an open source product) was used for WAV data 
 processings.  All codes are available at GitHub repository.  See 
-src/do_eql+env_all.sh for details.  You can change the parameters of the *.txt 
-files, and run "make noct48" to generate your own piano sound (you need to get 
-the original version of Salamander Grand).  This allows for a level of 
-complexity and fine-tuning of sound quality that is not possible through the 
-GUI of VST plug-ins or filter settings within SFZ files.  It takes about 12 
-minutes to build a complete 48kHz version (Core i5-8250U CPU @ 1.6GHz). 
+src/build.sh for details.  You can change the parameters of the *.txt files, 
+and run "make noct48" to generate your own piano sound (you need to get the 
+original version of Salamander Grand).  This allows for a level of complexity 
+and fine-tuning of sound quality that is not possible through the GUI of VST 
+plug-ins or filter settings within SFZ files.  It takes about 12 minutes to 
+build a complete 48kHz version (Core i5-8250U CPU @ 1.6GHz). 
 
 
 Changelog:
