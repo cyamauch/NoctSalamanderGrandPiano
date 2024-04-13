@@ -190,17 +190,9 @@ echo "VOL_OFFSET=[$VOL_OFFSET]"
 #### Effective ratio of filters ####
 
 EFF_RATIO_0=`echo "$GAIN0_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
-EFF_RATIO_1=`echo "$GAIN1_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
-EFF_RATIO_2=`echo "$GAIN2_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
 EFF_RATIO_3=`echo "$GAIN3_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
 if [ "$EFF_RATIO_0" = "" ]; then
   EFF_RATIO_0="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
-fi
-if [ "$EFF_RATIO_1" = "" ]; then
-  EFF_RATIO_1="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
-fi
-if [ "$EFF_RATIO_2" = "" ]; then
-  EFF_RATIO_2="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
 fi
 if [ "$EFF_RATIO_3" = "" ]; then
   EFF_RATIO_3="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
@@ -261,8 +253,8 @@ for i in $LIST ; do
   GAIN_THIS_01=`echo $FREQ $GAIN_THIS_0 $GAIN_THIS_1 | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
   GAIN_THIS_23=`echo $FREQ $GAIN_THIS_2 $GAIN_THIS_3 | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
   #
-  EFF_RATIO_01=`echo $FREQ $EFF_RATIO_0 $EFF_RATIO_1 | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
-  EFF_RATIO_23=`echo $FREQ $EFF_RATIO_2 $EFF_RATIO_3 | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
+  EFF_RATIO_01=`echo $FREQ $EFF_RATIO_0 NONE | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
+  EFF_RATIO_23=`echo $FREQ NONE $EFF_RATIO_3 | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
   #
   #
   VOL_THIS_ALL=`echo "$VOL_FACTOR_TXT" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
@@ -324,10 +316,18 @@ for i in $LIST ; do
       VOL_THIS=`echo $j $VOL_OFFSET $VOL_THIS_ALL | awk '{ split($0,ARR," "); printf("%g\n",ARR[2]+ARR[2 + ARR[1]]); }'`
       echo "  Found ${J_IN}, Vol=${VOL_THIS}, Output to $OUT_FILE"
       #
-      GAIN_THIS_VEL_01=`echo $j $GAIN_THIS_01 $EFF_RATIO_01 | awk '{ split($0,ARR," "); printf("%g\n",ARR[2] * ARR[2 + ARR[1]]); }'`
-      GAIN_THIS_VEL_23=`echo $j $GAIN_THIS_23 $EFF_RATIO_23 | awk '{ split($0,ARR," "); printf("%g\n",ARR[2] * ARR[2 + ARR[1]]); }'`
-      #echo "########## $j $GAIN_THIS_01 ... $GAIN_THIS_VEL_01 ###########"
-      #echo "########## $j $GAIN_THIS_23 ... $GAIN_THIS_VEL_23 ###########"
+      if [ "$EFF_RATIO_01" = "NONE" ]; then
+        GAIN_THIS_VEL_01=`echo $j $GAIN_THIS_01 | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
+      else
+        GAIN_THIS_VEL_01=`echo $j $GAIN_THIS_01 $EFF_RATIO_01 | awk '{ split($0,ARR," "); printf("%g\n",ARR[2] * ARR[2 + ARR[1]]); }'`
+      fi
+      if [ "$EFF_RATIO_23" = "NONE" ]; then
+        GAIN_THIS_VEL_23=`echo $j $GAIN_THIS_23 | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
+      else
+        GAIN_THIS_VEL_23=`echo $j $GAIN_THIS_23 $EFF_RATIO_23 | awk '{ split($0,ARR," "); printf("%g\n",ARR[2] * ARR[2 + ARR[1]]); }'`
+      fi
+      #echo "########## $j GAIN_THIS_01:[$GAIN_THIS_01] ... SET:[$GAIN_THIS_VEL_01] ###########"
+      #echo "########## $j GAIN_THIS_23:[$GAIN_THIS_23] ... SET:[$GAIN_THIS_VEL_23] ###########"
       #
       if [ "$GAIN_THIS_VEL_01" = "0" ]; then
         ARG_EQ_01=""
