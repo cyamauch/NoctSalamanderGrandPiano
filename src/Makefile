@@ -22,6 +22,7 @@ DESTDIR44TEST = ../NoctSalamanderGrandPiano_Test
 DESTPCMDIR44TEST = $(DESTDIR44TEST)/44.1khz16bit
 
 vol_factor.txt::
+	sh setup_overtone.sh
 	sh mk_vol_factor.sh  > vol_factor.txt
 
 noct48:: vol_factor.txt
