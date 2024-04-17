@@ -140,7 +140,7 @@ cat $IN_TMP | awk '{ \
     } \
   } \
   else { \
-    print; \
+    if ( $1 != "0" ) {print;} \
   } \
 }' | sort -n >> _tmp_output.txt
 
