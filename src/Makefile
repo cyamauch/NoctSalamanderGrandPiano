@@ -30,7 +30,8 @@ noct48:: vol_factor.txt
 	mkdir -p $(DESTDIR48)/src
 	cp -p README.txt $(DESTDIR48)/.
 	cp -p rename_wav.sh freq_data.csv freq-sec.txt freq-sec_fnc.png $(DESTDIR48)/src/.
-	cp -p Makefile build.sh mk_special.sh freq_piano_data.txt key_n-id.txt $(DESTDIR48)/src/.
+	cp -p Makefile build.sh mk_special.sh setup_overtone.sh mk_vol_factor.sh $(DESTDIR48)/src/.
+	cp -p freq_piano_data.txt key_n-id.txt overtone_config.txt $(DESTDIR48)/src/.
 	cp -p *_factor*.txt assign.txt tuned.txt filter_direct.txt sfz_sed_args.txt $(DESTDIR48)/src/.
 	cp -p $(SRCDIR48)/README $(DESTDIR48)/README.orig.txt
 	cp -p $(SRCPCMDIR48)/h*.wav $(DESTPCMDIR48)/.
@@ -43,7 +44,8 @@ noct44::
 	mkdir -p $(DESTDIR44)/src
 	cp -p README.txt $(DESTDIR44)/.
 	cp -p rename_wav.sh freq_data.csv freq-sec.txt freq-sec_fnc.png $(DESTDIR44)/src/.
-	cp -p Makefile build.sh mk_special.sh freq_piano_data.txt key_n-id.txt $(DESTDIR44)/src/.
+	cp -p Makefile build.sh mk_special.sh setup_overtone.sh mk_vol_factor.sh $(DESTDIR44)/src/.
+	cp -p freq_piano_data.txt key_n-id.txt overtone_config.txt $(DESTDIR44)/src/.
 	cp -p *_factor*.txt assign.txt tuned.txt filter_direct.txt sfz_sed_args.txt $(DESTDIR44)/src/.
 	cp -p $(SRCDIR44)/README $(DESTDIR44)/README.orig.txt
 	cp -p $(SRCPCMDIR44)/h*.wav $(DESTPCMDIR44)/.

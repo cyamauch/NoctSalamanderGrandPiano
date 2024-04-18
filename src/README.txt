@@ -33,7 +33,7 @@ the amount of overtones by pitch and velocity as follows:
 
 - Applied 4 filtering from the bass to the treble:
   frequency*0.5, frequency*4, frequency*12 and frequency*26.
-  (See gain0_factor.txt, gain1_factor.txt, gain2_factor.txt, gain3_factor.txt)
+  (See overtone_config.txt, gain0_factor.txt and gain3_factor.txt)
 
 - The effective rate of filter processing is changed for each velocity layer.
 
@@ -113,7 +113,7 @@ Changelog:
 
 V3.0 (Nov.24,2023)
 * First release based on Salamander Grand Piano V3+20161209.
-V4.0RC1 (Mar.3,2024), V4.0RC5 (Apr.2,2024)
+V4.0RC1 (Mar.3,2024), V4.0RC6 (Apr.18,2024)
 * Applied 4 filtering with effective rate, reassigned WAV, adjusted all 
   volume of WAV, erased noises and restoration of overtone/envelope F#1 and
   notes around C3.
