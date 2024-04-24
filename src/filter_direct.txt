@@ -13,7 +13,9 @@ D#7    equalizer=f=2489.016:t=h:w=500.0:g=+2.0:r=f32,volume=-1.4dB
 F#7    equalizer=f=2959.955:t=h:w=500.0:g=+5.0:r=f32,volume=-3.1dB
 
 # Reduce metallic treble
-A7     equalizer=f=7340:t=h:w=5.0:g=-80:r=f32
+#A7     equalizer=f=5086:t=h:w=20.0:g=-20:r=f32,equalizer=f=7340:t=h:w=10.0:g=-60:r=f32
+A7     equalizer=f=5120:t=h:w=50.0:g=-15:r=f32,equalizer=f=7340:t=h:w=10.0:g=-50:r=f32
+C8     equalizer=f=6350:t=h:w=50.0:g=-10:r=f32
 
 # Reduce overtone for some v=[1,2] samples
 C1v1   volume=+1.5dB,lowpass=f=700.0:t=q:w=0.707:r=f32
