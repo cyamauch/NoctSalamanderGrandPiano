@@ -93,20 +93,21 @@ the built-in sound bank of the YAMAHA EA1 was referenced.
 
 Although waveforms and spectra are also used extensively in the tuning process,
 the final evaluation is based on aural perception of each individual sound and 
-homogeneity/continuity. A USB audio interface Roland Rubix22 and studio monitor
-headphones SONY MDR-CD900ST are used for final adjustment and confirmation. 
+homogeneity/continuity.  For adjustment and confirmation, we mainly use a USB 
+audio interface Roland Rubix22 and studio monitor headphones SONY MDR-CD900ST. 
+In addition to that, BOSE 101IT speakers are also used for final confirmation.
 
 The license terms of the original sound source require that the modifications 
 be clearly stated.  This project adopted a policy of clarifying not only that, 
 but also the content of the modification process.  Therefore, all processing 
 was done by script, and FFmpeg (an open source product) was used for WAV data 
-processings.  All codes are available at GitHub repository.  See 
-src/build.sh for details.  You can change the parameters of the *.txt files, 
-and run "make noct48" to generate your own piano sound (you need to get the 
-original version of Salamander Grand).  This allows for a level of complexity 
-and fine-tuning of sound quality that is not possible through the GUI of VST 
-plug-ins or filter settings within SFZ files.  It takes about 12 minutes to 
-build a complete 48kHz version (Core i5-8250U CPU @ 1.6GHz). 
+processings.  All codes are available at GitHub repository.  See src/build.sh 
+for details.  You can change the parameters of overtone_config.txt, and run 
+"make noct48" to generate your own piano sound (you need to get the original 
+version of Salamander Grand).  This allows for a level of complexity and fine-
+tuning of sound quality that is not possible through the GUI of VST plug-ins 
+or filter settings within SFZ files.  It takes about 12 minutes to build a 
+complete 48kHz version (Core i5-8250U CPU @ 1.6GHz). 
 
 
 Changelog:
@@ -127,9 +128,9 @@ http://creativecommons.org/licenses/by/3.0/
 
 Acknowledgments:
 
-We are very grateful to Alexander Holm for the original sound bank.
-We searched numerous free sound banks, but only Salamander Grand Piano had 
-sufficient quality and freedom of development. 
+We are very grateful to Alexander Holm for developing the original sound bank 
+and advising us on this project.  We searched numerous free sound banks, but 
+only Salamander Grand Piano had sufficient quality and freedom of development.
 
 
 Author:
