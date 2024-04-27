@@ -12,6 +12,9 @@ if [ "$1" = "" ]; then
   echo " -H ... copy pedal info (CC64,CC67) to ch=3 and remove half pedal on ch=1"
   echo "        (for Disklavier)"
   echo " -p ... remove CC exept CC64/CC67"
+  echo "[EXAMPLES]"
+  echo " for VirtualMIDISynth ... -r -v"
+  echo " for Disklavier       ... -r -v -H -p"
   exit
 fi
 
