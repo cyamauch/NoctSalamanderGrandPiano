@@ -9,12 +9,13 @@ if [ "$1" = "" ]; then
   echo " -r ... remove reverve controls"
   echo " -v ... remove volume controls"
   echo " -h ... remove half pedal (CC64,CC67)"
-  echo " -H ... copy pedal info (CC64,CC67) to ch=3 and remove half pedal on ch=1"
+  echo " -H param ... copy pedal info (CC64,CC67) to ch=3 and remove half pedal on ch=1"
+  echo "        param is factor for half-pedal for CC64 (1.0 ... 2.0)."
   echo "        (for Disklavier)"
   echo " -p ... remove CC exept CC64/CC67"
   echo "[EXAMPLES]"
   echo " for VirtualMIDISynth ... -r -v"
-  echo " for Disklavier       ... -r -v -H -p"
+  echo " for Disklavier       ... -r -v -H 1.7 -p"
   exit
 fi
 
@@ -22,6 +23,7 @@ REMOVE_REVERVE=0
 REMOVE_VOLUME=0
 REMOVE_HALF_PEDAL=0
 COPY_PEDAL_TO_CH3=0
+HALF_FACTOR=1.0
 REMOVE_CC_EXEPT_64_67=0
 
 while [ "$1" != "" ]; do
@@ -35,6 +37,8 @@ while [ "$1" != "" ]; do
   elif [ "$1" = "-H" ]; then
     REMOVE_HALF_PEDAL=1
     COPY_PEDAL_TO_CH3=1
+    shift
+    HALF_FACTOR=$1
   elif [ "$1" = "-p" ]; then
     REMOVE_CC_EXEPT_64_67=1
   else
@@ -97,7 +101,14 @@ while [ "$1" != "" ]; do
         if ( V < 64 ) { printf("%s %s %s %s v=0\n",$1,$2,$3,$4); } \
         else { printf("%s %s %s %s v=127\n",$1,$2,$3,$4); } \
         if ( $3 == "ch=1" && '$COPY_PEDAL_TO_CH3' ) { \
-          S = sprintf("%s %s ch=3 %s %s\n",$1,$2,$4,$5); \
+          if ( $4 == "c=64" ) { \
+            FIXED_V = 127 - int('$HALF_FACTOR' * (127 - V)); \
+            if ( FIXED_V < 0 ) {FIXED_V=0;} \
+            S = sprintf("%s %s ch=3 %s v=%d\n",$1,$2,$4,FIXED_V); \
+          } \
+          else { \
+            S = sprintf("%s %s ch=3 %s %s\n",$1,$2,$4,$5); \
+          } \
           STR_CH3 = STR_CH3 S; \
         } \
       } \
