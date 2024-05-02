@@ -3,7 +3,7 @@
 
   Noct-Salamander Grand Piano
 
-   A Free SFZ/WAV semi-concert grand piano
+   A Free SFZ semi-concert grand piano
    --- remastering the Salamander Grand using a physics-based approach
 
 -------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ Changelog:
 
 V3.0 (Nov.24,2023)
 * First release based on Salamander Grand Piano V3+20161209.
-V4.0RC1 (Mar.3,2024), V4.0RC6 (Apr.18,2024)
+V4.0RC1 (Mar.3,2024), V4.0RC7 (Apr.30,2024)
 * Applied 4 filtering with effective rate, reassigned WAV, adjusted all 
   volume of WAV, erased noises and restoration of overtone/envelope F#1 and
   notes around C3.
