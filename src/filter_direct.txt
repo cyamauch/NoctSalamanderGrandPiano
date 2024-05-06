@@ -8,6 +8,9 @@
 #F#1    equalizer=f=1210:t=h:w=8:g=-40:r=f32,equalizer=f=1830:t=h:w=8:g=-40:r=f32,equalizer=f=1400:t=h:w=1200:g=+14:r=f32,equalizer=f=46:t=h:w=40:g=-4:r=f32,equalizer=f=200:t=h:w=200:g=+10,volume=-3.8dB
 #F#1    equalizer=f=1210:t=h:w=8:g=-40:r=f32,equalizer=f=1830:t=h:w=8:g=-40:r=f32,equalizer=f=1400:t=h:w=1400:g=+14:r=f32,equalizer=f=46:t=h:w=40:g=-8:r=f32,equalizer=f=200:t=h:w=200:g=+6,volume=-3.8dB
 
+# Adjustment overtone
+A2v13   lowpass=f=3800.0:t=q:w=0.707:r=f32,volume=+0.1dB
+
 # Adjustment for fundamental tone of treble
 D#7    equalizer=f=2489.016:t=h:w=500.0:g=+2.0:r=f32,volume=-1.4dB
 F#7    equalizer=f=2959.955:t=h:w=500.0:g=+5.0:r=f32,volume=-3.1dB

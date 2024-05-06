@@ -98,7 +98,7 @@ elif [ "$KEY" = "C3" ]; then
   "$FFMPEG" -i $IN_FILE -af afade=t=out:st=0:d=0.4:silence=0.0:curve=tri,highpass=f=${A_FRQ}:t=q:w=0.707:r=f32,volume=${A_VOL} -c:a pcm_f32le _tmp_sub_1.wav
   "$FFMPEG" -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex "amix=normalize=0" -c:a pcm_f32le _tmp_sub_2.wav
   # Enhance overtone
-  "$FFMPEG" -i _tmp_sub_2.wav -af afade=t=out:st=0:d=1.5:silence=0.4:curve=tri,highpass=f=330.0:t=q:w=0.707:r=f32,volume=$H_VOL -c:a pcm_f32le _tmp_sub_3.wav
+  "$FFMPEG" -i _tmp_sub_2.wav -af afade=t=out:st=0:d=1.5:silence=0.25:curve=tri,highpass=f=330.0:t=q:w=0.707:r=f32,volume=$H_VOL -c:a pcm_f32le _tmp_sub_3.wav
   "$FFMPEG" -i _tmp_sub_2.wav -i _tmp_sub_3.wav -filter_complex "amix=normalize=0,volume=${O_VOL}" -c:a pcm_f32le $OUT_FILE
 
   #### for new version ? (testing...) ####
