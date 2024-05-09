@@ -64,8 +64,15 @@ while [ "$1" != "" ]; do
 
   cat _tmp_input.txt | awk '{ \
     if ( ($2 == "Meta" && $4 == "\"<Master" && $5 == "Reverve>\"") && '$REMOVE_REVERVE' ) { FLG=1; } \
+    else if ( ($2 == "SysEx" && \
+               $3 == "f0" && $4 == "41" && $5 == "10" && $6 == "42" && $7 == "12" && $8 == "40" && $9 == "01") && \
+              '$REMOVE_REVERVE' ) { FLG=1; } \
     else if ( ($2 == "Meta" && $4 == "\"<Master" && $5 == "Volume>\"") && '$REMOVE_VOLUME' ) { FLG=2; } \
+    else if ( ($2 == "SysEx" && \
+        $3 == "f0" && $4 == "41" && $5 == "10" && $6 == "42" && $7 == "12" && $8 == "40" && $9 == "00" && $10 == "04") && \
+              '$REMOVE_VOLUME' ) { FLG=2; } \
     else if ( ($2 == "Meta" && $4 == "\"<part" && $5 == "reverve>\"") && '$REMOVE_REVERVE' ) { FLG=3; } \
+    else if ( ($2 == "Par" && $4 == "c=91") && '$REMOVE_REVERVE' ) { FLG=3; } \
     else if ( FLG == 1 ) { \
       if ( $2 == "SysEx" ) {FLG=1;} \
       else {FLG=0;} \
