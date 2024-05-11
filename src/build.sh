@@ -34,6 +34,7 @@ CMD_THIS="$1"
 SRC_DIR="$2"
 DEST_DIR="$3"
 SRC_SFZ="$4"
+DEST_SFZ_BASENAME="$5"
 
 
 ####
@@ -149,8 +150,8 @@ rm -f $FFMPEG_LOG_FILE
 #### Output SFZ ####
 
 if [ "$SRC_SFZ" != "" ]; then
-  cat ${SRC_SFZ} | sed $ARG_OUTFILE_SED $SFZ_SED_ARGS > ${DEST_DIR}/../Noct-SalamanderGrandPiano.sfz
-  cat ${DEST_DIR}/../Noct-SalamanderGrandPiano.sfz | awk '{ if ( substr($0,1,13) == "//HammerNoise" ){ FLG=1; } if ( FLG == 1 ) {FLG=1;} else {print;} }'  > ${DEST_DIR}/../Noct-SalamanderGrandPiano_withoutNoise.sfz
+  cat ${SRC_SFZ} | sed $ARG_OUTFILE_SED $SFZ_SED_ARGS > ${DEST_DIR}/../${DEST_SFZ_BASENAME}.sfz
+  cat ${DEST_DIR}/../${DEST_SFZ_BASENAME}.sfz | awk '{ if ( substr($0,1,13) == "//HammerNoise" ){ FLG=1; } if ( FLG == 1 ) {FLG=1;} else {print;} }'  > ${DEST_DIR}/../${DEST_SFZ_BASENAME}_withoutNoise.sfz
 fi
 
 
