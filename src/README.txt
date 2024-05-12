@@ -55,6 +55,9 @@ scale was carefully adjusted:
 - All volume of WAV files were carefully adjusted for each velocity layer.
   (See vol_factor.src.txt and vol_factor_base.txt)
 
+- The amount of delay was equalized for each note.
+  (See pcm_seek_pos.txt and mk_special.txt)
+
 - Erased strange noises during recording using both fade and equalizer.
   (See mk_special.txt)
 
@@ -65,7 +68,7 @@ scale was carefully adjusted:
 - Adjustment of insufficient fundamental tone amount, insufficient overtone 
   amount, and abnormal envelope shape, which may be caused by the hammer 
   condition, using filters or individual processing.
-  (See filter_direct.txt...F#1,D#7,F#7, mk_special.sh...F#2,A2,C3,D#3) 
+  (See filter_direct.txt...D#7,F#7,C8, mk_special.sh...F#1,F#2,A2,C3,D#3) 
 
 The Salamander Grand had a major problem in "F#1" and "C3", which caused a 
 break in the continuity of sound quality.  The restoration process described 
@@ -118,6 +121,8 @@ V4.0RC1 (Mar.3,2024), V4.0RC8 (May.9,2024)
 * Applied 4 filtering with effective rate, reassigned WAV, adjusted all 
   volume of WAV, erased noises and restoration of overtone/envelope F#1 and
   notes around C3.
+V4.0 (May.**,2024)
+* Amount of delay was equalized for each note.
 
 
 Licence: 
@@ -131,6 +136,15 @@ Acknowledgments:
 We are very grateful to Alexander Holm for developing the original sound bank 
 and advising us on this project.  We searched numerous free sound banks, but 
 only Salamander Grand Piano had sufficient quality and freedom of development.
+
+We would like to thank Katsuhiro Oguri (Professional Musician) for allowing us
+to use his performance data.  The MIDI files not only made for an ideal 
+listening section on this site, but also greatly aided in the development of 
+the sound sources and in confirming the results of the adjustments. 
+
+We would like to thank Frieve-A (Deep Learning Specialist) for his important
+evaluation of our product.  His Youtube video was a great help in creating our
+website.
 
 
 Author:
