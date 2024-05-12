@@ -49,10 +49,10 @@ FFMPEG_LOG_FILE="ffmpeg_log.txt"
 # undef ... create none
 FLAG_CREATE_WAV=ALL
 
-#SELECTED_KEY="A0 C1"
-#SELECTED_KEY="C2 F#2 C3 F#3 A3"
-#SELECTED_KEY="A3 C4"
 #SELECTED_KEY="C3"
+#SELECTED_KEY="C2 F#2 C3 F#3 A3"
+#SELECTED_KEY="C5 D#5"
+#SELECTED_KEY="A5 C6"
 
 #SELECTED_KEY="C2 D#2 F#2 A2 C3 D#3 F#3 A3 C4 D#4 F#4 A4 C4 D#4 F#4 A4 C5 D#5 F#5 A5 C6 D#6 F#6 A6 C7 D#7 F#7 A7 C8"
 
@@ -128,6 +128,7 @@ echo DEST_DIR: $DEST_DIR
 
 KEY_NID_TXT=`cat key_n-id.txt | tr -d '\r'`
 VOL_FACTOR_TXT=`cat vol_factor.txt | tr -d '\r'`
+PCM_SEEK_POS=`cat pcm_seek_pos.txt | tr -d '\r'`
 ASSIGN_TXT=`cat assign.txt | tr -d '\r'`
 GAIN0_FACTOR_TXT=`cat gain0_factor.txt | tr -d '\r'`
 GAIN1_FACTOR_TXT=`cat gain1_factor.txt | tr -d '\r'`
@@ -261,10 +262,14 @@ for i in $LIST ; do
   #
   #
   VOL_THIS_ALL=`echo "$VOL_FACTOR_TXT" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
+  SEEK_THIS_ALL=`echo "$PCM_SEEK_POS" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
   ASSIGN_THIS_ALL=`echo "$ASSIGN_TXT" | grep "^$KEY" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
   #
   if [ "$VOL_THIS_ALL" = "" ]; then
     VOL_THIS_ALL="0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0"
+  fi
+  if [ "$SEEK_THIS_ALL" = "" ]; then
+    SEEK_THIS_ALL="0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000"
   fi
   USED_KEY="$KEY"
   TUNE_BY_SCALE=""
@@ -317,7 +322,8 @@ for i in $LIST ; do
       OUT_FILENAME=`echo ${ORIG_NAME}.wav | sed $ARG_OUTFILE_SED`
       OUT_FILE=${DEST_DIR}/${OUT_FILENAME}
       VOL_THIS=`echo $j $VOL_OFFSET $VOL_THIS_ALL | awk '{ split($0,ARR," "); printf("%g\n",ARR[2]+ARR[2 + ARR[1]]); }'`
-      echo "  Found ${J_IN}, Vol=${VOL_THIS}, Output to $OUT_FILE"
+      SEEK_THIS=`echo $j $SEEK_THIS_ALL | awk '{ split($0,ARR," "); printf("%s\n",ARR[1 + ARR[1]]); }'`
+      echo "  Found ${J_IN}, Vol=${VOL_THIS}, Seek=${SEEK_THIS} Output to $OUT_FILE"
       #
       if [ "$EFF_RATIO_01" = "NONE" ]; then
         GAIN_THIS_VEL_01=`echo $j $GAIN_THIS_01 | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
@@ -359,7 +365,7 @@ for i in $LIST ; do
       fi
       #
       rm -f tmp1.wav tmp2.wav "$OUT_FILE"
-      ARGS="-af ${FILTER_ASETRATE}${FILTER_DIRECT_KEY}${FILTER_DIRECT_ARG}${ARG_EQ_01}${ARG_EQ_23}volume=${VOL_THIS}dB -c:a pcm_f32le"
+      ARGS="-ss ${SEEK_THIS} -af ${FILTER_ASETRATE}${FILTER_DIRECT_KEY}${FILTER_DIRECT_ARG}${ARG_EQ_01}${ARG_EQ_23}volume=${VOL_THIS}dB -c:a pcm_f32le"
       echo FFMPEG -i "$IN_FILE" $ARGS "OUT.wav" >> $FFMPEG_LOG_FILE
       "$FFMPEG" -i "$IN_FILE" $ARGS tmp1.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" -c:a pcm_f32le tmp2.wav 2> /dev/null
