@@ -121,7 +121,7 @@ V4.0RC1 (Mar.3,2024), V4.0RC8 (May.9,2024)
 * Applied 4 filtering with effective rate, reassigned WAV, adjusted all 
   volume of WAV, erased noises and restoration of overtone/envelope F#1 and
   notes around C3.
-V4.0 (May.**,2024)
+V4.0 (May.14,2024)
 * Amount of delay was equalized for each note.
 
 
