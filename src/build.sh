@@ -33,8 +33,6 @@ fi
 CMD_THIS="$1"
 SRC_DIR="$2"
 DEST_DIR="$3"
-SRC_SFZ="$4"
-DEST_SFZ_BASENAME="$5"
 
 
 ####
@@ -137,7 +135,6 @@ GAIN2_FACTOR_TXT=`cat gain2_factor.txt | tr -d '\r'`
 GAIN3_FACTOR_TXT=`cat gain3_factor.txt | tr -d '\r'`
 TUNED_TXT=`cat tuned.txt | tr -d '\r'`
 FILTER_DIRECT_TXT=`cat filter_direct.txt | tr -d '\r'`
-SFZ_SED_ARGS=`cat sfz_sed_args.txt | tr -d '\r'`
 
 ARG_OUTFILE_SED_0=`echo "$KEY_NID_TXT" | awk '{printf("-e s/%sv/%s_%sv/ \n",$1,$2,$1);}'`
 ARG_OUTFILE_SED_1=`echo "1_2_3_4_5_6_7_8_9_" | tr '_' '\n' | awk '{printf("-e s/v%s[.]wav/v0%s.wav/ \n",$1,$1);}'`
@@ -147,14 +144,6 @@ ARG_OUTFILE_SED=`echo "$ARG_OUTFILE_SED_0" "$ARG_OUTFILE_SED_1"`
 ########
 
 rm -f $FFMPEG_LOG_FILE
-
-
-#### Output SFZ ####
-
-if [ "$SRC_SFZ" != "" ]; then
-  cat ${SRC_SFZ} | sed $ARG_OUTFILE_SED $SFZ_SED_ARGS > ${DEST_DIR}/../${DEST_SFZ_BASENAME}.sfz
-  cat ${DEST_DIR}/../${DEST_SFZ_BASENAME}.sfz | awk '{ if ( substr($0,1,13) == "//HammerNoise" ){ FLG=1; } if ( FLG == 1 ) {FLG=1;} else {print;} }'  > ${DEST_DIR}/../${DEST_SFZ_BASENAME}_withoutNoise.sfz
-fi
 
 
 #### COPY MODE ####

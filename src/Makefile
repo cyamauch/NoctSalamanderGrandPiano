@@ -8,6 +8,7 @@ FFMPEG = /cygdrive/c/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-
 # Select an overtone settings
 #
 OVERTONE_CONFIG = overtone_config.txt
+OVERTONE3_CONFIG = overtone3_config.txt
 
 #
 # $(DEST_SFZ_BASENAME).sfz will be created
@@ -17,7 +18,7 @@ DEST_SFZ_BASENAME = Noct-SalamanderGrandPiano
 #
 # Basename of destination directory
 #
-DESTDIR_BASENAME = NoctSalamanderGrandPianoV4.0
+DESTDIR_BASENAME = NoctSalamanderGrandPianoV4.1beta1
 
 
 SRCDIR48 =  ../SalamanderGrandPianoV3_48khz24bit
@@ -37,10 +38,17 @@ DESTDIR44TEST = ../$(DESTDIR_BASENAME)_Test
 DESTPCMDIR44TEST = $(DESTDIR44TEST)/44.1khz16bit
 
 vol_factor.txt::
-	OVERTONE_CONFIG=$(OVERTONE_CONFIG) sh setup_overtone.sh
+	OVERTONE_CONFIG=$(OVERTONE_CONFIG) OVERTONE3_CONFIG=$(OVERTONE3_CONFIG) sh setup_overtone.sh
 	sh mk_vol_factor.sh  > vol_factor.txt
 
-noct48:: vol_factor.txt
+sfz48::
+	sh mk_sfz.sh $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_flat.txt _flat
+	sh mk_sfz.sh $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.0db.txt _treble1.0db
+	sh mk_sfz.sh $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.5db.txt _treble1.5db
+	sh mk_sfz.sh $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.0db.txt _treble2.0db
+	sh mk_sfz.sh $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.5db.txt _treble2.5db
+
+noct48:: sfz48 vol_factor.txt
 	mkdir -p $(DESTPCMDIR48)
 	mkdir -p $(DESTDIR48)/src
 	cp -p README.txt $(DESTDIR48)/.
@@ -48,13 +56,18 @@ noct48:: vol_factor.txt
 	cp -p Makefile build.sh mk_special.sh setup_overtone.sh mk_vol_factor.sh $(DESTDIR48)/src/.
 	cp -p pcm_seek_pos.txt freq_piano_data.txt key_n-id.txt $(OVERTONE_CONFIG) $(DESTDIR48)/src/.
 	cp -p *_factor*.txt assign.txt tuned.txt filter_direct.txt sfz_sed_args.txt $(DESTDIR48)/src/.
+	cp -p sfz_vol_factor_base*.txt mk_sfz.sh $(DESTDIR48)/src/.
 	cp -p $(SRCDIR48)/README $(DESTDIR48)/README.orig.txt
 	cp -p $(SRCPCMDIR48)/h*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/p*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/r*.wav $(DESTPCMDIR48)/.
-	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48) $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DEST_SFZ_BASENAME)
+	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48)
 
-noct44::
+sfz44::
+	sh mk_sfz.sh $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_flat.txt _flat
+	sh mk_sfz.sh $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.0db.txt _treble2.0db
+
+noct44:: sfz44
 	mkdir -p $(DESTPCMDIR44)
 	mkdir -p $(DESTDIR44)/src
 	cp -p README.txt $(DESTDIR44)/.
@@ -62,11 +75,12 @@ noct44::
 	cp -p Makefile build.sh mk_special.sh setup_overtone.sh mk_vol_factor.sh $(DESTDIR44)/src/.
 	cp -p pcm_seek_pos.txt freq_piano_data.txt key_n-id.txt $(OVERTONE_CONFIG) $(DESTDIR44)/src/.
 	cp -p *_factor*.txt assign.txt tuned.txt filter_direct.txt sfz_sed_args.txt $(DESTDIR44)/src/.
+	cp -p sfz_vol_factor_base*.txt mk_sfz.sh $(DESTDIR44)/src/.
 	cp -p $(SRCDIR44)/README $(DESTDIR44)/README.orig.txt
 	cp -p $(SRCPCMDIR44)/h*.wav $(DESTPCMDIR44)/.
 	cp -p $(SRCPCMDIR44)/p*.wav $(DESTPCMDIR44)/.
 	cp -p $(SRCPCMDIR44)/r*.wav $(DESTPCMDIR44)/.
-	FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s16le -ar 44100" sh build.sh copy $(DESTPCMDIR48) $(DESTPCMDIR44) $(SRCDIR44)/SalamanderGrandPianoV3.sfz $(DEST_SFZ_BASENAME)
+	FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s16le -ar 44100" sh build.sh copy $(DESTPCMDIR48) $(DESTPCMDIR44)
 
 clean48::
 	rm -rf $(DESTDIR48)
