@@ -47,7 +47,7 @@ FFMPEG_LOG_FILE="ffmpeg_log.txt"
 # undef ... create none
 FLAG_CREATE_WAV=ALL
 
-#SELECTED_KEY="A1"
+#SELECTED_KEY="C4"
 #SELECTED_KEY="D#6 F#6 A6 C7"
 #SELECTED_KEY="F#5 A5 C6 D#6 F#6 A6 C7"
 #SELECTED_KEY="C2 F#2 C3 F#3 A3"
@@ -107,6 +107,10 @@ FREQ_ZERO_3=500.0
 
 
 #### for envelope modification ####
+
+if [ "$ENV_FACTOR" = "" ]; then
+  ENV_FACTOR=1.0
+fi
 
 ENV_VOL_MAX=1.50
 ENV_VOL_MIN=1.00
@@ -184,12 +188,8 @@ echo "VOL_OFFSET=[$VOL_OFFSET]"
 #### Effective ratio of filters ####
 
 EFF_RATIO_0=`echo "$GAIN0_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
-EFF_RATIO_3=`echo "$GAIN3_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
 if [ "$EFF_RATIO_0" = "" ]; then
   EFF_RATIO_0="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
-fi
-if [ "$EFF_RATIO_3" = "" ]; then
-  EFF_RATIO_3="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
 fi
 
 
@@ -210,8 +210,21 @@ for i in $LIST ; do
   fi
   echo "N_ID: $N_ID   KEY: $KEY    FREQ: $FREQ"
   #
-  DURATION=`echo $FREQ | awk '{printf("%g\n",0.4*(800.0/log(800.0*2.0*$1)-48.0));}'`  #
-  ENV_VOL=`echo $FREQ | awk '{ if($1 <= '$FREQ_ENV_VOL_MAX'){printf("%s\n","'$ENV_VOL_MAX'");} else { if('$FREQ_ENV_VOL_MIN' <= $1){printf("%s\n","'$ENV_VOL_MIN'");}else{printf("%g\n",'$ENV_VOL_MAX' - ('$ENV_VOL_MAX' - '$ENV_VOL_MIN')*(('$FREQ' - '$FREQ_ENV_VOL_MAX')/('$FREQ_ENV_VOL_MIN' - '$FREQ_ENV_VOL_MAX')));} } }'`
+  DURATION=`echo $FREQ | awk '{printf("%g\n",0.4*(800.0/log(800.0*2.0*$1)-48.0));}'`
+  ENV_VOL=`echo $FREQ | awk '{ \
+    if ($1 <= '$FREQ_ENV_VOL_MAX') { \
+      val = '$ENV_VOL_MAX'; \
+    } \
+    else { \
+      if('$FREQ_ENV_VOL_MIN' <= $1) { \
+        val = '$ENV_VOL_MIN'; \
+      } \
+      else { \
+        val = '$ENV_VOL_MAX' - ('$ENV_VOL_MAX' - '$ENV_VOL_MIN')*(('$FREQ' - '$FREQ_ENV_VOL_MAX')/('$FREQ_ENV_VOL_MIN' - '$FREQ_ENV_VOL_MAX')); \
+      } \
+    } \
+    printf("%g\n",val * '$ENV_FACTOR'); \
+  }'`
   echo " DURATION = $DURATION    ENV_VOL = $ENV_VOL"
   #
   FREQ_EQ_01=`echo $FREQ | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%g\n",$1*0.5); } else { printf("%g\n",$1*12.0); } }'`
@@ -248,7 +261,7 @@ for i in $LIST ; do
   GAIN_THIS_23=`echo $FREQ $GAIN_THIS_2 $GAIN_THIS_3 | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
   #
   EFF_RATIO_01=`echo $FREQ $EFF_RATIO_0 NONE | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
-  EFF_RATIO_23=`echo $FREQ NONE $EFF_RATIO_3 | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
+  EFF_RATIO_23=`echo $FREQ NONE NONE | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
   #
   #
   VOL_THIS_ALL=`echo "$VOL_FACTOR_TXT" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
@@ -301,7 +314,7 @@ for i in $LIST ; do
   # for one by one ...
   FILTER_DIRECT_LINE=`echo "$FILTER_DIRECT_TXT" | grep "^${KEY}v[0-9]"`
   #
-  echo "GAIN_01: $GAIN_THIS_01    GAIN_12: $GAIN_THIS_23   TUNE: ${TUNE_BY_SCALE} + ${TUNE_BY_CENT}/100"
+  echo "GAIN_01: $GAIN_THIS_01    GAIN_23: $GAIN_THIS_23   TUNE: ${TUNE_BY_SCALE} + ${TUNE_BY_CENT}/100"
   #
   for j in $LIST_VEL ; do
     ORIG_NAME=${KEY}v${j}
