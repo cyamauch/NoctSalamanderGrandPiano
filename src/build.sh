@@ -47,8 +47,11 @@ FFMPEG_LOG_FILE="ffmpeg_log.txt"
 # undef ... create none
 FLAG_CREATE_WAV=ALL
 
-#SELECTED_KEY="C4"
-#SELECTED_KEY="D#6 F#6 A6 C7"
+#SELECTED_KEY="F#4 A4 C5 D#5 F#5 A5 C6"
+#SELECTED_KEY="C5"
+#SELECTED_KEY="A2 C3 D#3 F#3 C4 D#4"
+#SELECTED_KEY="F#3 A3 C4 D#4 C5 D#6"
+#SELECTED_KEY="F#3 C4 C5 D#5"
 #SELECTED_KEY="F#5 A5 C6 D#6 F#6 A6 C7"
 #SELECTED_KEY="C2 F#2 C3 F#3 A3"
 #SELECTED_KEY="C1 D#1 F#1 A1 C2 D#2 F#2"
@@ -129,16 +132,16 @@ echo DEST_DIR: $DEST_DIR
 
 #### Read parameters ####
 
-KEY_NID_TXT=`cat key_n-id.txt | tr -d '\r'`
-VOL_FACTOR_TXT=`cat vol_factor.txt | tr -d '\r'`
-PCM_SEEK_POS=`cat pcm_seek_pos.txt | tr -d '\r'`
-ASSIGN_TXT=`cat assign.txt | tr -d '\r'`
-GAIN0_FACTOR_TXT=`cat gain0_factor.txt | tr -d '\r'`
-GAIN1_FACTOR_TXT=`cat gain1_factor.txt | tr -d '\r'`
-GAIN2_FACTOR_TXT=`cat gain2_factor.txt | tr -d '\r'`
-GAIN3_FACTOR_TXT=`cat gain3_factor.txt | tr -d '\r'`
-TUNED_TXT=`cat tuned.txt | tr -d '\r'`
-FILTER_DIRECT_TXT=`cat filter_direct.txt | tr -d '\r'`
+KEY_NID_TXT=`cat key_n-id.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
+VOL_FACTOR_TXT=`cat vol_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
+PCM_SEEK_POS=`cat pcm_seek_pos.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
+ASSIGN_TXT=`cat assign.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
+GAIN0_FACTOR_TXT=`cat gain0_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
+GAIN1_FACTOR_TXT=`cat gain1_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
+GAIN2_FACTOR_TXT=`cat gain2_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
+GAIN3_FACTOR_TXT=`cat gain3_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
+TUNED_TXT=`cat tuned.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
+FILTER_DIRECT_TXT=`cat filter_direct.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 
 ARG_OUTFILE_SED_0=`echo "$KEY_NID_TXT" | awk '{printf("-e s/%sv/%s_%sv/ \n",$1,$2,$1);}'`
 ARG_OUTFILE_SED_1=`echo "1_2_3_4_5_6_7_8_9_" | tr '_' '\n' | awk '{printf("-e s/v%s[.]wav/v0%s.wav/ \n",$1,$1);}'`
@@ -154,7 +157,7 @@ rm -f $FFMPEG_LOG_FILE
 
 if [ "$CMD_THIS" = "copy" ]; then
 
-  LIST=`/bin/ls $SRC_DIR | grep '[0-9][0-9][0-9]_.*[.]wav'`
+  LIST=`/bin/ls $SRC_DIR | grep '[0-1][0-9][0-9]_.*[.]wav'`
   for i in $LIST ; do
     OUT_FILE=${DEST_DIR}/${i}
     echo "Output to $OUT_FILE"
@@ -187,7 +190,7 @@ echo "VOL_OFFSET=[$VOL_OFFSET]"
 
 #### Effective ratio of filters ####
 
-EFF_RATIO_0=`echo "$GAIN0_FACTOR_TXT" | tr -s ' ' ',' | awk -F, '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",substr($0,11)); } }'`
+EFF_RATIO_0=`echo "$GAIN0_FACTOR_TXT" | awk '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",$2); } }'`
 if [ "$EFF_RATIO_0" = "" ]; then
   EFF_RATIO_0="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
 fi
@@ -237,22 +240,22 @@ for i in $LIST ; do
   #
   #GAIN_THIS_0=`echo $FREQ | awk '{ if($1 <= '$FREQ_ZERO'){printf("%s\n","'$GAIN_MIN'");} else { if('$FREQ_FULL' <= $1){printf("%s\n","'$GAIN_MAX'");}else{printf("%g\n",'$GAIN_MIN' + ('$GAIN_MAX' - '$GAIN_MIN')*(('$FREQ' - '$FREQ_ZERO')/('$FREQ_FULL' - '$FREQ_ZERO')));} } }'`
   #
-  GAIN_THIS_0=`echo "$GAIN0_FACTOR_TXT" | awk '{ if ($1 == "'$KEY'") {printf("%s\n",$2);} }'`
+  GAIN_THIS_0=`echo "$GAIN0_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
   if [ "$GAIN_THIS_0" = "" ]; then
     GAIN_THIS_0=0
   fi
   #
-  GAIN_THIS_1=`echo "$GAIN1_FACTOR_TXT" | awk '{ if ($1 == "'$KEY'") {printf("%s\n",$2);} }'`
+  GAIN_THIS_1=`echo "$GAIN1_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
   if [ "$GAIN_THIS_1" = "" ]; then
     GAIN_THIS_1=0
   fi
   #
-  GAIN_THIS_2=`echo "$GAIN2_FACTOR_TXT" | awk '{ if ($1 == "'$KEY'") {printf("%s\n",$2);} }'`
+  GAIN_THIS_2=`echo "$GAIN2_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
   if [ "$GAIN_THIS_2" = "" ]; then
     GAIN_THIS_2=0
   fi
   #
-  GAIN_THIS_3=`echo "$GAIN3_FACTOR_TXT" | awk '{ if ($1 == "'$KEY'") {printf("%s\n",$2);} }'`
+  GAIN_THIS_3=`echo "$GAIN3_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
   if [ "$GAIN_THIS_3" = "" ]; then
     GAIN_THIS_3=0
   fi
@@ -266,7 +269,7 @@ for i in $LIST ; do
   #
   VOL_THIS_ALL=`echo "$VOL_FACTOR_TXT" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
   SEEK_THIS_ALL=`echo "$PCM_SEEK_POS" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
-  ASSIGN_THIS_ALL=`echo "$ASSIGN_TXT" | grep "^$KEY" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
+  ASSIGN_THIS_ALL=`echo "$ASSIGN_TXT" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
   #
   if [ "$VOL_THIS_ALL" = "" ]; then
     VOL_THIS_ALL="0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0"

@@ -1,0 +1,17 @@
+-e s/Salamander\x20Grand\x20Piano\x20V2/Noct-Salamander\x20Grand\x20Piano/
+-e s/lovel=1\x20hivel=26/lovel=1\x20hivel=22/
+-e s/lovel=27\x20hivel=34/lovel=23\x20hivel=29/
+-e s/lovel=35\x20hivel=36/lovel=30\x20hivel=36/
+-e s/lovel=37\x20hivel=43/lovel=37\x20hivel=43/
+-e s/lovel=44\x20hivel=46/lovel=44\x20hivel=50/
+-e s/lovel=47\x20hivel=50/lovel=51\x20hivel=57/
+-e s/lovel=51\x20hivel=56/lovel=58\x20hivel=64/
+-e s/lovel=57\x20hivel=64/lovel=65\x20hivel=71/
+-e s/lovel=65\x20hivel=72/lovel=72\x20hivel=78/
+-e s/lovel=73\x20hivel=80/lovel=79\x20hivel=85/
+-e s/lovel=81\x20hivel=88/lovel=86\x20hivel=92/
+-e s/lovel=89\x20hivel=96/lovel=93\x20hivel=99/
+-e s/lovel=97\x20hivel=104/lovel=100\x20hivel=106/
+-e s/lovel=105\x20hivel=112/lovel=107\x20hivel=113/
+-e s/lovel=113\x20hivel=120/lovel=114\x20hivel=120/
+

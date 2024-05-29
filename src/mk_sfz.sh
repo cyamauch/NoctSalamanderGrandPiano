@@ -7,23 +7,28 @@ DEST_DIR=$2
 DEST_SFZ_BASENAME=$3
 SFZ_VOL_FACTOR_BASE_FILE=$4
 SFZ_SUFFIX=$5
+SFZ_SED_ARGS_FILE=$6
 
 if [ "$4" != "" ]; then
 
-  KEY_NID_TXT=`cat key_n-id.txt | tr -d '\r'`
+  KEY_NID_TXT=`cat key_n-id.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
   ARG_OUTFILE_SED_0=`echo "$KEY_NID_TXT" | awk '{printf("-e s/%sv/%s_%sv/ \n",$1,$2,$1);}'`
   ARG_OUTFILE_SED_1=`echo "1_2_3_4_5_6_7_8_9_" | tr '_' '\n' | awk '{printf("-e s/v%s[.]wav/v0%s.wav/ \n",$1,$1);}'`
   ARG_OUTFILE_SED=`echo "$ARG_OUTFILE_SED_0" "$ARG_OUTFILE_SED_1"`
 
-  SFZ_SED_ARGS=`cat sfz_sed_args.txt | tr -d '\r'`
+  if [ "$SFZ_SED_ARGS_FILE" = "" ]; then
+    SFZ_SED_ARGS=`cat sfz_sed_args.txt | tr -d '\r'`
+  else
+    SFZ_SED_ARGS=`cat $SFZ_SED_ARGS_FILE | tr -d '\r'`
+  fi
 
-  SFZ_VOL_FACTOR_BASE=`cat $SFZ_VOL_FACTOR_BASE_FILE | tr \d '\r'`
+  SFZ_VOL_FACTOR_BASE=`cat $SFZ_VOL_FACTOR_BASE_FILE | tr -d '\r' | sed -e 's/^[ ]*//'`
 
   echo "$SFZ_VOL_FACTOR_BASE" | grep '^AMP_VEL' | sed -e 's/[^ ][^ ]*[ ][ ]*//' > tmp.sfz
   echo "$SFZ_VOL_FACTOR_BASE" | grep '^VEL_ALL' | sed -e 's/[^ ][^ ]*[ ][ ]*//' >> tmp.sfz
-  echo "$SFZ_VOL_FACTOR_BASE" | grep '^[0-9][0-9][0-9][_]' | awk '{printf("%s ",substr($1,1,3));}' >> tmp.sfz
+  echo "$SFZ_VOL_FACTOR_BASE" | grep '^[0-1][0-9][0-9][_][A-Z]' | awk '{printf("%s ",substr($1,1,3));}' >> tmp.sfz
   echo >> tmp.sfz
-  echo "$SFZ_VOL_FACTOR_BASE" | grep '^[0-9][0-9][0-9][_]' | awk '{printf("%s ",$2);}' >> tmp.sfz
+  echo "$SFZ_VOL_FACTOR_BASE" | grep '^[0-1][0-9][0-9][_][A-Z]' | awk '{printf("%s ",$2);}' >> tmp.sfz
   echo >> tmp.sfz
   cat ${SRC_SFZ} | sed $ARG_OUTFILE_SED $SFZ_SED_ARGS >> tmp.sfz
 
@@ -34,7 +39,7 @@ if [ "$4" != "" ]; then
     else if ( NR==4 ) { split($0,VOL_KEY," "); } \
     else { \
       volume = 0.0; \
-      p0 = match($0, /[0-9][0-9][0-9]_[A-Z]/); \
+      p0 = match($0, /[0-1][0-9][0-9]_[A-Z]/); \
       p1 = 0; \
       p_amp = 0; \
       if ( 0 < p0 ) { \

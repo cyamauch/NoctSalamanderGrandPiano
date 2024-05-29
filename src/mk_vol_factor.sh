@@ -4,9 +4,9 @@
 # sh mk_vol_factor.sh  > vol_factor.txt
 #
 
-VOL_FACTOR_BASE=`cat vol_factor_base.txt | tr -d '\r'`
-VOL_FACTOR_SRC=`cat vol_factor.src.txt | tr -d '\r'`
-VOL_FACTOR_EFFECTIVE=`cat vol_factor_effective.txt | tr -d '\r'`
+VOL_FACTOR_BASE=`cat vol_factor_base.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
+VOL_FACTOR_SRC=`cat vol_factor.src.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
+VOL_FACTOR_EFFECTIVE=`cat vol_factor_effective.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 
 LIST=`echo "$VOL_FACTOR_BASE" | grep '^[ACDF]' | awk '{printf("%s,%s\n",$1,$2);}'`
 OFFSET_SRC=`echo "$VOL_FACTOR_BASE" | grep '^OFFSET_SRC' | awk '{printf("%s\n",$2);}'`
@@ -18,9 +18,9 @@ echo "$VOL_FACTOR_BASE" | grep '^OFFSET '
 
 if [ "$VOL_FACTOR_EFFECTIVE" != "" ]; then
 
-  echo "$VOL_FACTOR_EFFECTIVE" | grep '^[0-1]' | sort > _tmp0_.txt
+  echo "$VOL_FACTOR_EFFECTIVE" | grep '^[0-1][0-9][0-9]' | sort > _tmp0_.txt
 
-  echo "$VOL_FACTOR_SRC" | grep '^[0-1]' | sort > _tmp1_.txt
+  echo "$VOL_FACTOR_SRC" | grep '^[0-1][0-9][0-9]' | sort > _tmp1_.txt
 
   paste _tmp1_.txt _tmp0_.txt | tr '\t' ' ' | awk '{ \
     printf("%s ",$1); \
@@ -33,11 +33,11 @@ if [ "$VOL_FACTOR_EFFECTIVE" != "" ]; then
 
 else
 
-  echo "$VOL_FACTOR_SRC" | grep '^[0-1]' | sort > _tmp2_.txt
+  echo "$VOL_FACTOR_SRC" | grep '^[0-1][0-9][0-9]' | sort > _tmp2_.txt
 
 fi
 
-echo "$VOL_FACTOR_BASE" | grep '^[0-1]' | awk '{printf("%s %g\n",$1,'$OFFSET_SRC'+$2);}' | sort > _tmp0_.txt
+echo "$VOL_FACTOR_BASE" | grep '^[0-1][0-9][0-9]' | awk '{printf("%s %g\n",$1,'$OFFSET_SRC'+$2);}' | sort > _tmp0_.txt
 
 VEL_LINE=`echo "$VOL_FACTOR_SRC" | grep '^VEL'`
 if [ "$VEL_LINE" != "" ]; then

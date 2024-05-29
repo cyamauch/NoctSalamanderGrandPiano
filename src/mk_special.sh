@@ -79,7 +79,7 @@ elif [ "$KEY" = "A2" ]; then
   SEEK=`echo $VEL $SEEK_ALL | awk '{ split($0,ARR," "); print ARR[1+$1]; }'`
 
   #########      v1     v2     v3     v4     v5      v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
-  HPASS_VOL="     0      0      0  -24dB  -12dB  -6.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB"
+  HPASS_VOL=" -24dB      0  -24dB  -24dB  -12dB  -6.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB"
   OUTPT_VOL="+2.3dB +2.3dB +2.3dB +1.6dB +0.8dB  +0.4dB    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
   H_VOL=`echo $VEL $HPASS_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
   O_VOL=`echo $VEL $OUTPT_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
@@ -112,10 +112,10 @@ elif [ "$KEY" = "C3" ]; then
   #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
   ATACK_FRQ="  80.0   80.0  130.0  190.0  200.0  210.0  220.0  220.0  280.0  300.0  330.0  330.0  330.0  330.0  330.0  330.0"
   #ATACK_VOL="-7.0dB -5.5dB -4.0dB -3.5dB -3.4dB -3.3dB -3.2dB -3.2dB -2.5dB -2.3dB -2.0dB -2.0dB -2.0dB -2.0dB -2.0dB -2.0dB"
-  ATACK_VOL="-7.0dB -5.5dB -4.0dB -3.5dB -3.4dB -3.3dB -3.2dB -3.2dB -2.5dB -2.5dB -2.5dB -2.5dB -2.5dB -2.5dB -2.5dB -2.5dB"
+  ATACK_VOL="-4.5dB -7.5dB -4.0dB -3.5dB -3.4dB -3.3dB -3.2dB -3.2dB -2.5dB -2.5dB -2.5dB -2.5dB -2.5dB -2.5dB -2.5dB -2.5dB"
   #
   #HPASS_VOL="     0      0      0  -36dB  -18dB  -16dB  -15dB  -15dB  -12dB  -10dB -9.0dB -9.0dB -9.0dB -9.0dB -9.0dB -9.0dB"
-  HPASS_VOL="     0      0      0  -36dB  -28dB  -24dB  -24dB  -24dB  -24dB -22dB -20.0dB -18.0dB -16.0dB -14.0dB -14.0dB -14.0dB"
+  HPASS_VOL="  -16dB  -20dB  -40dB  -36dB  -28dB  -24dB  -24dB  -24dB  -24dB -22dB -20.0dB -18.0dB -16.0dB -14.0dB -14.0dB -14.0dB"
   OUTPT_VOL="    1.0    1.0   1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
   #
   A_FRQ=`echo $VEL $ATACK_FRQ | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
@@ -160,8 +160,9 @@ elif [ "$KEY" = "D#3" ]; then
   ##HPASS_VOL="     0      0      0  -30dB  -23dB  -15dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB"
   ##OUTPT_VOL="+1.5dB +1.5dB +1.5dB +1.2dB +1.0dB +0.7dB   1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
 
-  HPASS_VOL="     0      0      0     0     0   -15dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB"
-  OUTPT_VOL="+1.5dB +1.5dB +1.5dB +1.5dB +1.5dB +0.7dB   1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
+  ##HPASS_VOL="     0      0      0     0     0   -15dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB"
+  HPASS_VOL="     0      0      0     0     0     0     0      -15dB  -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB"
+  OUTPT_VOL="+1.5dB +1.5dB +1.5dB +1.5dB +1.5dB +1.0dB +1.0dB  +0.5dB    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
   H_VOL=`echo $VEL $HPASS_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
   O_VOL=`echo $VEL $OUTPT_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
 

@@ -28,24 +28,87 @@ F#7    equalizer=f=2959.955:t=h:w=500.0:g=+5.0:r=f32,volume=-3.1dB
 A7     equalizer=f=5120:t=h:w=50.0:g=-15:r=f32,equalizer=f=7340:t=h:w=10.0:g=-50:r=f32
 C8     equalizer=f=6350:t=h:w=50.0:g=-10:r=f32,equalizer=f=4186.009:t=h:w=500.0:g=+5.0:r=f32,volume=-3.1dB
 
-# Reduce overtone for some v=[1,2] samples
-C1v1   volume=+1.5dB,lowpass=f=700.0:t=q:w=0.707:r=f32
-#F#1v1  volume=+1.5dB,lowpass=f=600.0:t=q:w=0.707:r=f32
-D#2v1  volume=+3.6dB,lowpass=f=530.0:t=q:w=0.707:r=f32
-D#3v1  volume=+2.5dB,lowpass=f=620.0:t=q:w=0.707:r=f32
-F#3v1  volume=+1.5dB,lowpass=f=560.0:t=q:w=0.707:r=f32
-D#4v1  volume=+1.5dB,lowpass=f=1100.0:t=q:w=0.707:r=f32
-D#4v2  volume=+1.5dB,lowpass=f=1100.0:t=q:w=0.707:r=f32
-D#4v3  volume=+1.3dB,lowpass=f=1500.0:t=q:w=0.707:r=f32
-
 # Eliminate strange noises after t=?[s]
 F#2v1  afade=t=out:st=11.5:d=3.0
 A2v1   afade=t=out:st=14.2:d=1.5
 F#7v1  afade=t=out:st=1.0:d=1.3
 
-# Fix overflow at v16
-#F#3v16  pan=stereo|c0=0.97*c0+0.03*c1|c1=0.97*c1+0.03*c0
-#A3v16   pan=stereo|c0=0.85*c0+0.15*c1|c1=0.85*c1+0.15*c0
-#A4v16   pan=stereo|c0=0.92*c0+0.08*c1|c1=0.92*c1+0.08*c0
-#C5v16   pan=stereo|c0=0.96*c0+0.04*c1|c1=0.96*c1+0.04*c0
 
+# Reduce overtone for some v=[1,2] samples
+C1v1   volume=+1.5dB,lowpass=f=700.0:t=q:w=0.707:r=f32
+D#2v1  volume=+3.6dB,lowpass=f=530.0:t=q:w=0.707:r=f32
+D#3v1  volume=+2.5dB,lowpass=f=620.0:t=q:w=0.707:r=f32
+F#3v1  volume=+1.5dB,lowpass=f=560.0:t=q:w=0.707:r=f32
+D#4v1  volume=+1.5dB,lowpass=f=1100.0:t=q:w=0.707:r=f32
+
+C3v2   volume=+1.0dB,lowpass=f=1900.0:t=q:w=0.707:r=f32
+D#3v2  volume=+1.0dB,lowpass=f=1200.0:t=q:w=0.707:r=f32
+F#3v2  volume=+1.0dB,lowpass=f=1100.0:t=q:w=0.707:r=f32
+
+D#4v2  volume=+1.0dB,lowpass=f=1200.0:t=q:w=0.707:r=f32
+
+
+#######################
+######## Ver.5 ########
+#######################
+
+# Reduce overtone for some v=[1,2] samples
+
+C5v1  lowpass=f=1600.0:t=q:w=0.707:r=f32
+D#5v1 lowpass=f=1200.0:t=q:w=0.707:r=f32
+
+C4v2  lowpass=f=2300.0:t=q:w=0.707:r=f32
+
+C5v2  lowpass=f=1600.0:t=q:w=0.707:r=f32
+D#5v2 lowpass=f=1700.0:t=q:w=0.707:r=f32
+
+C6v2  lowpass=f=3000.0:t=q:w=0.707:r=f32,equalizer=f=1046.502:t=h:w=200.0:g=+1.0:r=f32
+D#6v2 lowpass=f=3300.0:t=q:w=0.707:r=f32
+
+# Reduce overtone
+
+D#3v3  equalizer=f=4044.64:t=h:w=1244.5:g=-25:r=f32
+
+D#6  equalizer=f=4978.03:t=h:w=1742.31:g=-5:r=f32
+
+# Adjustment for fundamental tone of treble
+C6v3    equalizer=f=1046.502:t=h:w=200.0:g=+1.3:r=f32,equalizer=f=4186.01:t=h:w=1465.1:g=+2:r=f32
+C6v4    equalizer=f=1046.502:t=h:w=200.0:g=+1.6:r=f32,equalizer=f=4186.01:t=h:w=1465.1:g=+5:r=f32
+C6v5    equalizer=f=1046.502:t=h:w=200.0:g=+2.0:r=f32,equalizer=f=4186.01:t=h:w=1465.1:g=+6:r=f32
+C6v6    equalizer=f=1046.502:t=h:w=200.0:g=+2.0:r=f32,equalizer=f=4186.01:t=h:w=1465.1:g=+6:r=f32
+C6v7    equalizer=f=1046.502:t=h:w=200.0:g=+1.6:r=f32,equalizer=f=4186.01:t=h:w=1465.1:g=+5:r=f32
+C6v8    equalizer=f=1046.502:t=h:w=200.0:g=+1.3:r=f32,equalizer=f=4186.01:t=h:w=1465.1:g=+6:r=f32
+C6v9    equalizer=f=1046.502:t=h:w=200.0:g=+0.5:r=f32,equalizer=f=4186.01:t=h:w=1465.1:g=+2:r=f32
+
+
+
+
+
+##D#3v4  equalizer=f=4044.64:t=h:w=1244.5:g=-14:r=f32
+##D#3v5  equalizer=f=4044.64:t=h:w=1244.5:g=-16:r=f32
+
+##F#3v3  equalizer=f=4809.92:t=h:w=1479.98:g=-24.5:r=f32
+##F#3v5 equalizer=f=4809.92:t=h:w=1479.98:g=-7.0:r=f32
+##F#3v6 equalizer=f=4809.92:t=h:w=1479.98:g=-12.25:r=f32
+##F#3v7 equalizer=f=4809.92:t=h:w=1479.98:g=-12.25:r=f32
+##F#3v8 equalizer=f=4809.92:t=h:w=1479.98:g=-7.0:r=f32
+##F#3v15 equalizer=f=4809.92:t=h:w=1479.98:g=-7.0:r=f32
+
+##A3v4 equalizer=f=2640:t=h:w=1320:g=-1.25:r=f32,equalizer=f=5720:t=h:w=1760:g=-8.75:r=f32
+##A3v6 equalizer=f=2640:t=h:w=1320:g=-0.5:r=f32,equalizer=f=5720:t=h:w=1760:g=-3.5:r=f32
+##A3v11 equalizer=f=2640:t=h:w=1320:g=-0.5:r=f32,equalizer=f=5720:t=h:w=1760:g=-3.5:r=f32
+##A3v12 equalizer=f=2640:t=h:w=1320:g=-1:r=f32,equalizer=f=5720:t=h:w=1760:g=-7:r=f32
+##A3v14 equalizer=f=2640:t=h:w=1320:g=-0.5:r=f32,equalizer=f=5720:t=h:w=1760:g=-3.5:r=f32
+##A3v15 equalizer=f=2640:t=h:w=1320:g=-0.5:r=f32,equalizer=f=5720:t=h:w=1760:g=-3.5:r=f32
+
+##C4v3   equalizer=f=3139.51:t=h:w=1569.76:g=-5:r=f32,equalizer=f=6802.28:t=h:w=2093.01:g=-20:r=f32
+##C4v4 equalizer=f=3139.51:t=h:w=1569.76:g=-1.2:r=f32,equalizer=f=6802.28:t=h:w=2093.01:g=-4.8:r=f32
+##C4v5 equalizer=f=3139.51:t=h:w=1569.76:g=-1:r=f32,equalizer=f=6802.28:t=h:w=2093.01:g=-4:r=f32
+##C4v6 equalizer=f=3139.51:t=h:w=1569.76:g=-1:r=f32,equalizer=f=6802.28:t=h:w=2093.01:g=-4:r=f32
+##C4v7 equalizer=f=3139.51:t=h:w=1569.76:g=-1:r=f32,equalizer=f=6802.28:t=h:w=2093.01:g=-4:r=f32
+##C4v8 equalizer=f=3139.51:t=h:w=1569.76:g=-2.2:r=f32,equalizer=f=6802.28:t=h:w=2093.01:g=-8.8:r=f32
+##C4v15 equalizer=f=3139.51:t=h:w=1569.76:g=-1.5:r=f32,equalizer=f=6802.28:t=h:w=2093.01:g=-6:r=f32
+
+##D#4v3  equalizer=f=3733.52:t=h:w=1866.76:g=-9.6:r=f32,equalizer=f=8089.3:t=h:w=2489.02:g=-32:r=f32
+
+##C5   equalizer=f=2093:t=h:w=732.551:g=-20:r=f32
