@@ -54,7 +54,7 @@ elif [ "$KEY" = "F#2" ]; then
 
   #########      v1     v2     v3     v4     v5      v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
   HPASS_VOL="     0      0      0  -48dB  -24dB -12.0dB -6.0dB -6.0dB -6.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB"
-  OUTPT_VOL="+2.3dB +2.3dB +2.3dB +2.0dB +1.6dB  +1.2dB +0.6dB +0.6dB +0.6dB    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
+  OUTPT_VOL="   1.0 +2.3dB +2.3dB +2.0dB +1.6dB  +1.2dB +0.6dB +0.6dB +0.6dB    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
   H_VOL=`echo $VEL $HPASS_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
   O_VOL=`echo $VEL $OUTPT_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
 

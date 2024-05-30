@@ -33,7 +33,8 @@ fi
 CMD_THIS="$1"
 SRC_DIR="$2"
 DEST_DIR="$3"
-
+ENV_FACTOR="$4"
+USE_GAIN0="$5"
 
 ####
 
@@ -47,8 +48,9 @@ FFMPEG_LOG_FILE="ffmpeg_log.txt"
 # undef ... create none
 FLAG_CREATE_WAV=ALL
 
+#SELECTED_KEY="A0 C1 D#1 F#1"
 #SELECTED_KEY="F#4 A4 C5 D#5 F#5 A5 C6"
-#SELECTED_KEY="C5"
+#SELECTED_KEY="C3 F#6 A6 C7 D#7 F#7 A7 C8"
 #SELECTED_KEY="A2 C3 D#3 F#3 C4 D#4"
 #SELECTED_KEY="F#3 A3 C4 D#4 C5 D#6"
 #SELECTED_KEY="F#3 C4 C5 D#5"
@@ -136,7 +138,11 @@ KEY_NID_TXT=`cat key_n-id.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 VOL_FACTOR_TXT=`cat vol_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 PCM_SEEK_POS=`cat pcm_seek_pos.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 ASSIGN_TXT=`cat assign.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
-GAIN0_FACTOR_TXT=`cat gain0_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
+if [ "$USE_GAIN0" != "0" ]; then
+  GAIN0_FACTOR_TXT=`cat gain0_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
+else
+ GAIN0_FACTOR_TXT=""
+fi
 GAIN1_FACTOR_TXT=`cat gain1_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
 GAIN2_FACTOR_TXT=`cat gain2_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
 GAIN3_FACTOR_TXT=`cat gain3_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`

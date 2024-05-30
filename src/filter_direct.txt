@@ -3,10 +3,10 @@
 ## F#2  equalizer=f=1035.0:t=h:w=1.0:g=-80:r=f32
 ## A2   equalizer=f=1116.0:t=h:w=1.0:g=-80:r=f32
 
-# Adjustment overtone (transform: A1 => F#1).
-# Note: This process is moved into mk_special.sh.
-#F#1    equalizer=f=1210:t=h:w=8:g=-40:r=f32,equalizer=f=1830:t=h:w=8:g=-40:r=f32,equalizer=f=1400:t=h:w=1200:g=+14:r=f32,equalizer=f=46:t=h:w=40:g=-4:r=f32,equalizer=f=200:t=h:w=200:g=+10,volume=-3.8dB
-#F#1    equalizer=f=1210:t=h:w=8:g=-40:r=f32,equalizer=f=1830:t=h:w=8:g=-40:r=f32,equalizer=f=1400:t=h:w=1400:g=+14:r=f32,equalizer=f=46:t=h:w=40:g=-8:r=f32,equalizer=f=200:t=h:w=200:g=+6,volume=-3.8dB
+## Adjustment overtone (transform: A1 => F#1).
+## Note: This process is moved into mk_special.sh.
+## F#1    equalizer=f=1210:t=h:w=8:g=-40:r=f32,equalizer=f=1830:t=h:w=8:g=-40:r=f32,equalizer=f=1400:t=h:w=1200:g=+14:r=f32,equalizer=f=46:t=h:w=40:g=-4:r=f32,equalizer=f=200:t=h:w=200:g=+10,volume=-3.8dB
+## F#1    equalizer=f=1210:t=h:w=8:g=-40:r=f32,equalizer=f=1830:t=h:w=8:g=-40:r=f32,equalizer=f=1400:t=h:w=1400:g=+14:r=f32,equalizer=f=46:t=h:w=40:g=-8:r=f32,equalizer=f=200:t=h:w=200:g=+6,volume=-3.8dB
 
 # Adjustment overtone
 D#1v2   equalizer=f=700.0:t=h:w=700.0:g=+1.0:r=f32
@@ -29,14 +29,17 @@ A7     equalizer=f=5120:t=h:w=50.0:g=-15:r=f32,equalizer=f=7340:t=h:w=10.0:g=-50
 C8     equalizer=f=6350:t=h:w=50.0:g=-10:r=f32,equalizer=f=4186.009:t=h:w=500.0:g=+5.0:r=f32,volume=-3.1dB
 
 # Eliminate strange noises after t=?[s]
-F#2v1  afade=t=out:st=11.5:d=3.0
 A2v1   afade=t=out:st=14.2:d=1.5
 F#7v1  afade=t=out:st=1.0:d=1.3
+
+## This setting is no longer necessary because F#2v3 is used instead.
+## F#2v1  afade=t=out:st=11.5:d=3.0
 
 
 # Reduce overtone for some v=[1,2] samples
 C1v1   volume=+1.5dB,lowpass=f=700.0:t=q:w=0.707:r=f32
 D#2v1  volume=+3.6dB,lowpass=f=530.0:t=q:w=0.707:r=f32
+F#2v1  lowpass=f=450.0:t=q:w=0.707:r=f32
 D#3v1  volume=+2.5dB,lowpass=f=620.0:t=q:w=0.707:r=f32
 F#3v1  volume=+1.5dB,lowpass=f=560.0:t=q:w=0.707:r=f32
 D#4v1  volume=+1.5dB,lowpass=f=1100.0:t=q:w=0.707:r=f32

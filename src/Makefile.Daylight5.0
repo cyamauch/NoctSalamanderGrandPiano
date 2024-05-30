@@ -64,7 +64,7 @@ noct48:: sfz48 vol_factor.txt
 	cp -p $(SRCPCMDIR48)/h*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/p*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/r*.wav $(DESTPCMDIR48)/.
-	ENV_FACTOR=0.0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48)
+	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48) 0.0 0
 
 sfz44::
 	mkdir -p $(DESTPCMDIR48)
