@@ -33,8 +33,19 @@ fi
 CMD_THIS="$1"
 SRC_DIR="$2"
 DEST_DIR="$3"
-ENV_FACTOR="$4"
-USE_GAIN0="$5"
+
+if [ "$4" = "" ]; then
+  ENV_FACTOR=0
+else
+  ENV_FACTOR="$4"
+fi
+
+if [ "$5" = "" ]; then
+  GAIN0_MAIN_FACTOR=0
+else
+  GAIN0_MAIN_FACTOR="$5"
+fi
+
 
 ####
 
@@ -48,7 +59,7 @@ FFMPEG_LOG_FILE="ffmpeg_log.txt"
 # undef ... create none
 FLAG_CREATE_WAV=ALL
 
-#SELECTED_KEY="C5 D#5"
+#SELECTED_KEY="C4"
 #SELECTED_KEY="F#4 A4 C5 D#5 F#5 A5 C6"
 #SELECTED_KEY="C3 F#6 A6 C7 D#7 F#7 A7 C8"
 #SELECTED_KEY="A2 C3 D#3 F#3 C4 D#4"
@@ -113,10 +124,6 @@ FREQ_ZERO_3=500.0
 
 #### for envelope modification ####
 
-if [ "$ENV_FACTOR" = "" ]; then
-  ENV_FACTOR=1.0
-fi
-
 ENV_VOL_MAX=1.50
 ENV_VOL_MIN=1.00
 
@@ -138,7 +145,9 @@ KEY_NID_TXT=`cat key_n-id.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 VOL_FACTOR_TXT=`cat vol_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 PCM_SEEK_POS=`cat pcm_seek_pos.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 ASSIGN_TXT=`cat assign.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
-if [ "$USE_GAIN0" != "0" ]; then
+GAIN1_ROOT_FACTOR_TXT=`cat gain1_root_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
+GAIN2_ROOT_FACTOR_TXT=`cat gain2_root_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
+if [ "$GAIN0_MAIN_FACTOR" != "0" ]; then
   GAIN0_FACTOR_TXT=`cat gain0_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
 else
  GAIN0_FACTOR_TXT=""
@@ -196,10 +205,20 @@ echo "VOL_OFFSET=[$VOL_OFFSET]"
 
 #### Effective ratio of filters ####
 
-EFF_RATIO_0=`echo "$GAIN0_FACTOR_TXT" | awk '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",$2); } }'`
-if [ "$EFF_RATIO_0" = "" ]; then
-  EFF_RATIO_0="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
+EFF_RATIO_0_SRC=`echo "$GAIN0_FACTOR_TXT" | awk '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",$2); } }'`
+if [ "$EFF_RATIO_0_SRC" = "" ]; then
+  EFF_RATIO_0_SRC="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
 fi
+EFF_RATIO_0=`echo "$EFF_RATIO_0_SRC" | awk '{ \
+  split($0,ARR,","); \
+  for ( i=1 ; i<=length(ARR) ; i++ ) { \
+    if ( i != 1 ) { \
+      printf(","); \
+    } \
+    printf("%.2f",ARR[i] * '$GAIN0_MAIN_FACTOR'); \
+  } \
+  printf("\n"); \
+}'`
 
 
 #### Main loop ####
@@ -236,6 +255,11 @@ for i in $LIST ; do
   }'`
   echo " DURATION = $DURATION    ENV_VOL = $ENV_VOL"
   #
+  FREQ_EQ_ROOT_1=`echo $FREQ | awk '{ printf("%g\n",$1*12.0); }'`
+  FREQ_W_ROOT_1=`echo $FREQ  | awk '{ printf("%g\n",$1*6.0); }'`
+  FREQ_EQ_ROOT_2=`echo $FREQ | awk '{ printf("%g\n",$1*26.0); }'`
+  FREQ_W_ROOT_2=`echo $FREQ  | awk '{ printf("%g\n",$1*8.0); }'`
+  #
   FREQ_EQ_01=`echo $FREQ | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%g\n",$1*0.5); } else { printf("%g\n",$1*12.0); } }'`
   FREQ_W_01=`echo $FREQ  | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%g\n",$1*0.3);  } else { printf("%g\n",$1*6.0); } }'`
   FREQ_EQ_23=`echo $FREQ | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%g\n",$1*26.0); } else { printf("%g\n",$1*4.0); } }'`
@@ -244,30 +268,40 @@ for i in $LIST ; do
   echo " FREQ_EQ_01 = $FREQ_EQ_01    FREQ_W_01 = $FREQ_W_01"
   echo " FREQ_EQ_23 = $FREQ_EQ_23    FREQ_W_23 = $FREQ_W_23"
   #
-  #GAIN_THIS_0=`echo $FREQ | awk '{ if($1 <= '$FREQ_ZERO'){printf("%s\n","'$GAIN_MIN'");} else { if('$FREQ_FULL' <= $1){printf("%s\n","'$GAIN_MAX'");}else{printf("%g\n",'$GAIN_MIN' + ('$GAIN_MAX' - '$GAIN_MIN')*(('$FREQ' - '$FREQ_ZERO')/('$FREQ_FULL' - '$FREQ_ZERO')));} } }'`
-  #
-  GAIN_THIS_0=`echo "$GAIN0_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
-  if [ "$GAIN_THIS_0" = "" ]; then
-    GAIN_THIS_0=0
+  GAIN1_ROOT_THIS=`echo "$GAIN1_ROOT_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
+  if [ "$GAIN1_ROOT_THIS" = "" ]; then
+    GAIN1_ROOT_THIS=0
   fi
   #
-  GAIN_THIS_1=`echo "$GAIN1_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
-  if [ "$GAIN_THIS_1" = "" ]; then
-    GAIN_THIS_1=0
+  GAIN2_ROOT_THIS=`echo "$GAIN2_ROOT_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
+  if [ "$GAIN2_ROOT_THIS" = "" ]; then
+    GAIN2_ROOT_THIS=0
   fi
   #
-  GAIN_THIS_2=`echo "$GAIN2_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
-  if [ "$GAIN_THIS_2" = "" ]; then
-    GAIN_THIS_2=0
+  #GAIN0_THIS=`echo $FREQ | awk '{ if($1 <= '$FREQ_ZERO'){printf("%s\n","'$GAIN_MIN'");} else { if('$FREQ_FULL' <= $1){printf("%s\n","'$GAIN_MAX'");}else{printf("%g\n",'$GAIN_MIN' + ('$GAIN_MAX' - '$GAIN_MIN')*(('$FREQ' - '$FREQ_ZERO')/('$FREQ_FULL' - '$FREQ_ZERO')));} } }'`
+  #
+  GAIN0_THIS=`echo "$GAIN0_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
+  if [ "$GAIN0_THIS" = "" ]; then
+    GAIN0_THIS=0
   fi
   #
-  GAIN_THIS_3=`echo "$GAIN3_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
-  if [ "$GAIN_THIS_3" = "" ]; then
-    GAIN_THIS_3=0
+  GAIN1_THIS=`echo "$GAIN1_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
+  if [ "$GAIN1_THIS" = "" ]; then
+    GAIN1_THIS=0
   fi
   #
-  GAIN_THIS_01=`echo $FREQ $GAIN_THIS_0 $GAIN_THIS_1 | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
-  GAIN_THIS_23=`echo $FREQ $GAIN_THIS_2 $GAIN_THIS_3 | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
+  GAIN2_THIS=`echo "$GAIN2_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
+  if [ "$GAIN2_THIS" = "" ]; then
+    GAIN2_THIS=0
+  fi
+  #
+  GAIN3_THIS=`echo "$GAIN3_FACTOR_TXT" | awk '{ if (substr($1,1,3) == "'$N_ID'") {printf("%s\n",$2);} }'`
+  if [ "$GAIN3_THIS" = "" ]; then
+    GAIN3_THIS=0
+  fi
+  #
+  GAIN01_THIS=`echo $FREQ $GAIN0_THIS $GAIN1_THIS | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
+  GAIN23_THIS=`echo $FREQ $GAIN2_THIS $GAIN3_THIS | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
   #
   EFF_RATIO_01=`echo $FREQ $EFF_RATIO_0 NONE | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
   EFF_RATIO_23=`echo $FREQ NONE NONE | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
@@ -323,7 +357,9 @@ for i in $LIST ; do
   # for one by one ...
   FILTER_DIRECT_LINE=`echo "$FILTER_DIRECT_TXT" | grep "^${KEY}v[0-9]"`
   #
-  echo "GAIN_01: $GAIN_THIS_01    GAIN_23: $GAIN_THIS_23   TUNE: ${TUNE_BY_SCALE} + ${TUNE_BY_CENT}/100"
+  echo "GAIN_ROOT_1: $GAIN1_ROOT_THIS    GAIN_ROOT_2: $GAIN2_ROOT_THIS"
+  echo "GAIN_01: $GAIN01_THIS    GAIN_23: $GAIN23_THIS   TUNE: ${TUNE_BY_SCALE} + ${TUNE_BY_CENT}/100"
+  echo "EFF_RATIO_01: $EFF_RATIO_01"
   #
   for j in $LIST_VEL ; do
     ORIG_NAME=${KEY}v${j}
@@ -337,28 +373,42 @@ for i in $LIST ; do
       SEEK_THIS=`echo $j $SEEK_THIS_ALL | awk '{ split($0,ARR," "); printf("%s\n",ARR[1 + ARR[1]]); }'`
       echo "  Found ${J_IN}, Vol=${VOL_THIS}, Seek=${SEEK_THIS} Output to $OUT_FILE"
       #
+      GAIN1_ROOT_THIS_VEL=`echo $j $GAIN1_ROOT_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
+      GAIN2_ROOT_THIS_VEL=`echo $j $GAIN2_ROOT_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
+      #
       if [ "$EFF_RATIO_01" = "NONE" ]; then
-        GAIN_THIS_VEL_01=`echo $j $GAIN_THIS_01 | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
+        GAIN01_THIS_VEL=`echo $j $GAIN01_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
       else
-        GAIN_THIS_VEL_01=`echo $j $GAIN_THIS_01 $EFF_RATIO_01 | awk '{ split($0,ARR," "); printf("%g\n",ARR[2] * ARR[2 + ARR[1]]); }'`
+        GAIN01_THIS_VEL=`echo $j $GAIN01_THIS $EFF_RATIO_01 | awk '{ split($0,ARR," "); printf("%g\n",ARR[2] * ARR[2 + ARR[1]]); }'`
       fi
       if [ "$EFF_RATIO_23" = "NONE" ]; then
-        GAIN_THIS_VEL_23=`echo $j $GAIN_THIS_23 | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
+        GAIN23_THIS_VEL=`echo $j $GAIN23_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
       else
-        GAIN_THIS_VEL_23=`echo $j $GAIN_THIS_23 $EFF_RATIO_23 | awk '{ split($0,ARR," "); printf("%g\n",ARR[2] * ARR[2 + ARR[1]]); }'`
+        GAIN23_THIS_VEL=`echo $j $GAIN23_THIS $EFF_RATIO_23 | awk '{ split($0,ARR," "); printf("%g\n",ARR[2] * ARR[2 + ARR[1]]); }'`
       fi
-      #echo "########## $j GAIN_THIS_01:[$GAIN_THIS_01] ... SET:[$GAIN_THIS_VEL_01] ###########"
-      #echo "########## $j GAIN_THIS_23:[$GAIN_THIS_23] ... SET:[$GAIN_THIS_VEL_23] ###########"
+      #echo "########## $j GAIN01_THIS:[$GAIN01_THIS] ... SET:[$GAIN01_THIS_VEL] ###########"
+      #echo "########## $j GAIN23_THIS:[$GAIN23_THIS] ... SET:[$GAIN23_THIS_VEL] ###########"
       #
-      if [ "$GAIN_THIS_VEL_01" = "0" ]; then
+      if [ "$GAIN1_ROOT_THIS_VEL" = "0" ]; then
+        ARG_EQ_ROOT_1=""
+      else
+        ARG_EQ_ROOT_1="equalizer=f=${FREQ_EQ_ROOT_1}:t=h:w=${FREQ_W_ROOT_1}:g=${GAIN1_ROOT_THIS_VEL}:r=f32,"
+      fi
+      if [ "$GAIN2_ROOT_THIS_VEL" = "0" ]; then
+        ARG_EQ_ROOT_2=""
+      else
+        ARG_EQ_ROOT_2="equalizer=f=${FREQ_EQ_ROOT_2}:t=h:w=${FREQ_W_ROOT_2}:g=${GAIN2_ROOT_THIS_VEL}:r=f32,"
+      fi
+      #
+      if [ "$GAIN01_THIS_VEL" = "0" ]; then
         ARG_EQ_01=""
       else
-        ARG_EQ_01="equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=${GAIN_THIS_VEL_01}:r=f32,"
+        ARG_EQ_01="equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=${GAIN01_THIS_VEL}:r=f32,"
       fi
-      if [ "$GAIN_THIS_VEL_23" = "0" ]; then
+      if [ "$GAIN23_THIS_VEL" = "0" ]; then
         ARG_EQ_23=""
       else
-        ARG_EQ_23="equalizer=f=${FREQ_EQ_23}:t=h:w=${FREQ_W_23}:g=${GAIN_THIS_VEL_23}:r=f32,"
+        ARG_EQ_23="equalizer=f=${FREQ_EQ_23}:t=h:w=${FREQ_W_23}:g=${GAIN23_THIS_VEL}:r=f32,"
       fi
       #
       FILTER_DIRECT_ARG=""
@@ -377,7 +427,7 @@ for i in $LIST ; do
       fi
       #
       rm -f tmp1.wav tmp2.wav "$OUT_FILE"
-      ARGS="-ss ${SEEK_THIS} -af ${FILTER_ASETRATE}${FILTER_DIRECT_KEY}${FILTER_DIRECT_ARG}${ARG_EQ_01}${ARG_EQ_23}volume=${VOL_THIS}dB -c:a pcm_f32le"
+      ARGS="-ss ${SEEK_THIS} -af ${FILTER_ASETRATE}${FILTER_DIRECT_KEY}${FILTER_DIRECT_ARG}${ARG_EQ_ROOT_1}${ARG_EQ_ROOT_2}${ARG_EQ_01}${ARG_EQ_23}volume=${VOL_THIS}dB -c:a pcm_f32le"
       echo FFMPEG -i "$IN_FILE" $ARGS "OUT.wav" >> $FFMPEG_LOG_FILE
       "$FFMPEG" -i "$IN_FILE" $ARGS tmp1.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" -c:a pcm_f32le tmp2.wav 2> /dev/null

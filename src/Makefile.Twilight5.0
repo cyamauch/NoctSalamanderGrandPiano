@@ -7,18 +7,18 @@ FFMPEG = /cygdrive/c/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-
 #
 # Select an overtone settings
 #
-OVERTONE_CONFIG = overtone_config.daylight5.0.txt
-OVERTONE3_CONFIG = overtone3_config.daylight5.0.txt
+OVERTONE_CONFIG = overtone_config.twilight5.0.txt
+OVERTONE3_CONFIG = overtone3_config.twilight5.0.txt
 
 #
 # $(DEST_SFZ_BASENAME).sfz will be created
 #
-DEST_SFZ_BASENAME = Daylight-SalamanderGrandPiano
+DEST_SFZ_BASENAME = Twilight-SalamanderGrandPiano
 
 #
 # Basename of destination directory
 #
-DESTDIR_BASENAME = DaylightSalamanderGrandPianoV5.0beta1
+DESTDIR_BASENAME = TwilightSalamanderGrandPianoV5.0beta1
 
 
 SRCDIR48 =  ../SalamanderGrandPianoV3_48khz24bit
@@ -65,7 +65,7 @@ noct48:: sfz48 vol_factor.txt
 	cp -p $(SRCPCMDIR48)/h*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/p*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/r*.wav $(DESTPCMDIR48)/.
-	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48) 0.0 0
+	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48) 0.5 0.5
 
 sfz44::
 	mkdir -p $(DESTPCMDIR48)
