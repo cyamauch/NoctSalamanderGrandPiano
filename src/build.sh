@@ -1,12 +1,12 @@
 #!/bin/sh
 
-########################################################
-#                                                      #
-#     Main script for Noct-Salamander Grand Piano.     #
-#                                                      #
-#                   (C) 2023-2024 Chisato Yamauchi     #
-#                                                      #
-########################################################
+###############################################################
+#                                                             #
+#     Main script for Noct-Salamander Grand Piano Project.    #
+#                                                             #
+#                          (C) 2023-2024 Chisato Yamauchi     #
+#                                                             #
+###############################################################
 
 #### This script can be used under Cygwin Terminal. ####
 
@@ -40,11 +40,11 @@ else
   ENV_FACTOR="$4"
 fi
 
-if [ "$5" = "" ]; then
-  GAIN0_MAIN_FACTOR=0
-else
-  GAIN0_MAIN_FACTOR="$5"
-fi
+#if [ "$5" = "" ]; then
+#  GAIN0_MAIN_FACTOR=0
+#else
+#  GAIN0_MAIN_FACTOR="$5"
+#fi
 
 
 ####
@@ -59,7 +59,7 @@ FFMPEG_LOG_FILE="ffmpeg_log.txt"
 # undef ... create none
 FLAG_CREATE_WAV=ALL
 
-#SELECTED_KEY="C4"
+#SELECTED_KEY="C5 D#5"
 #SELECTED_KEY="F#4 A4 C5 D#5 F#5 A5 C6"
 #SELECTED_KEY="C3 F#6 A6 C7 D#7 F#7 A7 C8"
 #SELECTED_KEY="A2 C3 D#3 F#3 C4 D#4"
@@ -147,11 +147,7 @@ PCM_SEEK_POS=`cat pcm_seek_pos.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 ASSIGN_TXT=`cat assign.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 GAIN1_ROOT_FACTOR_TXT=`cat gain1_root_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
 GAIN2_ROOT_FACTOR_TXT=`cat gain2_root_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
-if [ "$GAIN0_MAIN_FACTOR" != "0" ]; then
-  GAIN0_FACTOR_TXT=`cat gain0_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
-else
- GAIN0_FACTOR_TXT=""
-fi
+GAIN0_FACTOR_TXT=`cat gain0_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
 GAIN1_FACTOR_TXT=`cat gain1_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
 GAIN2_FACTOR_TXT=`cat gain2_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
 GAIN3_FACTOR_TXT=`cat gain3_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
@@ -205,20 +201,20 @@ echo "VOL_OFFSET=[$VOL_OFFSET]"
 
 #### Effective ratio of filters ####
 
-EFF_RATIO_0_SRC=`echo "$GAIN0_FACTOR_TXT" | awk '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",$2); } }'`
-if [ "$EFF_RATIO_0_SRC" = "" ]; then
-  EFF_RATIO_0_SRC="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
-fi
-EFF_RATIO_0=`echo "$EFF_RATIO_0_SRC" | awk '{ \
-  split($0,ARR,","); \
-  for ( i=1 ; i<=length(ARR) ; i++ ) { \
-    if ( i != 1 ) { \
-      printf(","); \
-    } \
-    printf("%.2f",ARR[i] * '$GAIN0_MAIN_FACTOR'); \
-  } \
-  printf("\n"); \
-}'`
+##  EFF_RATIO_0_SRC=`echo "$GAIN0_FACTOR_TXT" | awk '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",$2); } }'`
+##  if [ "$EFF_RATIO_0_SRC" = "" ]; then
+##    EFF_RATIO_0_SRC="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
+##  fi
+##  EFF_RATIO_0=`echo "$EFF_RATIO_0_SRC" | awk '{ \
+##    split($0,ARR,","); \
+##    for ( i=1 ; i<=length(ARR) ; i++ ) { \
+##      if ( i != 1 ) { \
+##        printf(","); \
+##      } \
+##      printf("%.2f",ARR[i] * '$GAIN0_MAIN_FACTOR'); \
+##    } \
+##    printf("\n"); \
+##  }'`
 
 
 #### Main loop ####
@@ -303,7 +299,7 @@ for i in $LIST ; do
   GAIN01_THIS=`echo $FREQ $GAIN0_THIS $GAIN1_THIS | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
   GAIN23_THIS=`echo $FREQ $GAIN2_THIS $GAIN3_THIS | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
   #
-  EFF_RATIO_01=`echo $FREQ $EFF_RATIO_0 NONE | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
+  EFF_RATIO_01=`echo $FREQ NONE NONE | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
   EFF_RATIO_23=`echo $FREQ NONE NONE | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
   #
   #
