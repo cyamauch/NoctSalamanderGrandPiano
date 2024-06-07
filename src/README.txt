@@ -1,10 +1,9 @@
 
 -------------------------------------------------------------------------------
 
-  Noct-Salamander Grand Piano
+    Noct-Salamander Grand Piano Project
 
-   A Free SFZ semi-concert grand piano
-   --- remastering the Salamander Grand using a physics-based approach
+    Free SFZ 48kHz/24bit Accurate Grand Piano Soundbanks
 
 -------------------------------------------------------------------------------
 
@@ -25,10 +24,10 @@ note to each of the 480 WAV files.
 
 Naturally, we referenced the tones of several concert grand pianos.  The 
 beautiful tone of a large grand piano is due to the steep decrease in 
-overtones from the bass to the treble. Since this is a natural consequence 
+overtones from the bass to the treble.  Since this is a natural consequence 
 of physics, if we have good sampling data from a non-large grand piano, we can
 obtain a sound very close to that of a large grand piano by adjusting its 
-frequency components. In this project, digital processing was used to adjust 
+frequency components.  In this project, digital processing was used to adjust 
 the amount of overtones by pitch and velocity as follows:
 
 - Applied 4 filtering from the bass to the treble:
@@ -43,10 +42,11 @@ In order to pursue natural sound quality, the levels of filtering and envelope
 modification were varied gradually according to the scale.
 
 The original sound source is a sampling of the YAMAHA C5, but these processes 
-make it possible to reproduce the tone of a larger grand piano.
+make it possible to reproduce the tone of a larger grand piano (Twilight-, 
+Moonlight- and Noct-Salamander Grand Piano).
 
-In Version 4, the homogeneity/continuity of sound quality and volume in the 
-scale was carefully adjusted:
+In Version 4 or later, the homogeneity/continuity of sound quality and volume 
+in the scale was carefully adjusted:
 
 - Reassigned WAV files to improve homogeneity/continuity of scale at each 
   velocity layer.
@@ -73,7 +73,7 @@ scale was carefully adjusted:
 The Salamander Grand had a major problem in "F#1" and "C3", which caused a 
 break in the continuity of sound quality.  The restoration process described 
 in the fifth item above enabled us to obtain the sound that we originally 
-wanted, and the sound source as a whole became more complete.
+wanted, and the soundbanks as a whole became more complete.
 
 The restoration process for "C3" and "F#1" was extremely difficult. "C3" had 
 a number of problems, such as strange noises when the strings were struck, 
@@ -123,6 +123,21 @@ V4.0RC1 (Mar.3,2024), V4.0RC8 (May.9,2024)
   notes around C3.
 V4.0 (May.14,2024)
 * Amount of delay was equalized for each note.
+V4.1 (May.29,2024)
+* Improved volume continuity.
+* Testing the balance between bass and treble.
+V5.0beta1 soundbank #0:"Daylight" (May.31,2024)
+* Improved processing system to release multiple soundbanks.
+* Minimized amount of delay.
+V5.0beta2 (Jun.7,2024)
+* soundbank #0:"Daylight" -- This offers instrument manufacturer-level quality 
+            while maintaining the tone of the original Salamander Grand.
+* soundbank #1:"Twilight" -- The low velocity side of soundbank #0 was adjusted
+            softly.
+* soundbank #2:"Moonlight" -- This provides softer sound than soundbank #1.
+            Inherits the sound of soundbank #0 in high velocity.
+* soundbank #3:"Noct" -- This emphasizes gentleness with a tone similar to that
+            of a large grand piano.  Most suitable for relaxation music.
 
 
 Licence: 
@@ -140,7 +155,7 @@ only Salamander Grand Piano had sufficient quality and freedom of development.
 We would like to thank Katsuhiro Oguri (Professional Musician) for allowing us
 to use his performance data.  The MIDI files not only made for an ideal 
 listening section on this site, but also greatly aided in the development of 
-the sound sources and in confirming the results of the adjustments. 
+the soundbanks and in confirming the results of the adjustments. 
 
 We would like to thank Frieve-A (Deep Learning Specialist) for his important
 evaluation of our product.  His Youtube video was a great help in creating our
@@ -151,5 +166,5 @@ Author:
 
 Chisato Yamauchi
 cyamauch (at) ir.isas.jaxa.jp
-
+x.com/999irf
 

@@ -2,12 +2,21 @@
 
 #### Creating SFZ ####
 
-SRC_SFZ=$1
-DEST_DIR=$2
-DEST_SFZ_BASENAME=$3
-SFZ_VOL_FACTOR_BASE_FILE=$4
-SFZ_SUFFIX=$5
-SFZ_SED_ARGS_FILE=$6
+if [ "$1" != "-" ]; then
+  SFZ_SED_ARGS_FILE="$1"
+else
+  SFZ_SED_ARGS_FILE="sfz_sed_args.txt"
+fi
+SRC_SFZ="$2"
+DEST_DIR="$3"
+DEST_SFZ_BASENAME="$4"
+SFZ_VOL_FACTOR_BASE_FILE="$5"
+SFZ_SUFFIX="$6"
+if [ "$7" != "" ]; then
+  SFZ_RECOMMENDED_SUFFIX=".$7"
+else
+  SFZ_RECOMMENDED_SUFFIX=""
+fi
 
 if [ "$4" != "" ]; then
 
@@ -16,11 +25,7 @@ if [ "$4" != "" ]; then
   ARG_OUTFILE_SED_1=`echo "1_2_3_4_5_6_7_8_9_" | tr '_' '\n' | awk '{printf("-e s/v%s[.]wav/v0%s.wav/ \n",$1,$1);}'`
   ARG_OUTFILE_SED=`echo "$ARG_OUTFILE_SED_0" "$ARG_OUTFILE_SED_1"`
 
-  if [ "$SFZ_SED_ARGS_FILE" = "" ]; then
-    SFZ_SED_ARGS=`cat sfz_sed_args.txt | tr -d '\r'`
-  else
-    SFZ_SED_ARGS=`cat $SFZ_SED_ARGS_FILE | tr -d '\r'`
-  fi
+  SFZ_SED_ARGS=`cat $SFZ_SED_ARGS_FILE | tr -d '\r'`
 
   SFZ_VOL_FACTOR_BASE=`cat $SFZ_VOL_FACTOR_BASE_FILE | tr -d '\r' | sed -e 's/^[ ]*//'`
 
@@ -69,7 +74,7 @@ if [ "$4" != "" ]; then
     } \
   }' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}.sfz
 
-  cat ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}.sfz | awk '{ if ( substr($0,1,13) == "//HammerNoise" ){ FLG=1; } if ( FLG == 1 ) {FLG=1;} else {print;} }'  > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}_withoutNoise.sfz
+  cat ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}.sfz | awk '{ if ( substr($0,1,13) == "//HammerNoise" ){ FLG=1; } if ( FLG == 1 ) {FLG=1;} else {print;} }'  > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}_withoutNoise${SFZ_RECOMMENDED_SUFFIX}.sfz
 
 fi
 
