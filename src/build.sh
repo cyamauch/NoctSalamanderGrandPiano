@@ -52,14 +52,15 @@ fi
 FFMPEG_LOG_FILE="ffmpeg_log.txt"
 
 
-#### FLAG for wav creation ####
+#### SELECTION of wav creation ####
 
 # ALL   ... create all
 # 1-16  ... create velocity=n WAV files
 # undef ... create none
-FLAG_CREATE_WAV=ALL
+LIST_CREATED_LAYER=ALL
+#LIST_CREATED_LAYER="1 2 3"
 
-#SELECTED_KEY="C5 D#5"
+#SELECTED_KEY="C3"
 #SELECTED_KEY="F#4 A4 C5 D#5 F#5 A5 C6"
 #SELECTED_KEY="C3 F#6 A6 C7 D#7 F#7 A7 C8"
 #SELECTED_KEY="A2 C3 D#3 F#3 C4 D#4"
@@ -223,13 +224,13 @@ for i in $LIST ; do
   KEY=`echo $i | awk -F, '{printf("%s\n",$1);}'`
   FREQ=`echo $i | awk -F, '{printf("%s\n",$2);}'`
   N_ID=`echo "$KEY_NID_TXT" | grep "^$KEY" | awk '{print $2;}'`
-  if [ "$FLAG_CREATE_WAV" = "" ]; then
+  if [ "$LIST_CREATED_LAYER" = "" ]; then
     LIST_VEL=""
   else
-    if [ "$FLAG_CREATE_WAV" = "ALL" ]; then
+    if [ "$LIST_CREATED_LAYER" = "ALL" ]; then
       LIST_VEL="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16"
     else
-      LIST_VEL="$FLAG_CREATE_WAV"
+      LIST_VEL="$LIST_CREATED_LAYER"
     fi
   fi
   echo "N_ID: $N_ID   KEY: $KEY    FREQ: $FREQ"
@@ -426,6 +427,7 @@ for i in $LIST ; do
       ARGS="-ss ${SEEK_THIS} -af ${FILTER_ASETRATE}${FILTER_DIRECT_KEY}${FILTER_DIRECT_ARG}${ARG_EQ_ROOT_1}${ARG_EQ_ROOT_2}${ARG_EQ_01}${ARG_EQ_23}volume=${VOL_THIS}dB -c:a pcm_f32le"
       echo FFMPEG -i "$IN_FILE" $ARGS "OUT.wav" >> $FFMPEG_LOG_FILE
       "$FFMPEG" -i "$IN_FILE" $ARGS tmp1.wav 2> /dev/null
+      # Adjust envelope
       "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" -c:a pcm_f32le tmp2.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -i tmp2.wav -filter_complex "amix=normalize=0" $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
     fi
