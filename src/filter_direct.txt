@@ -76,7 +76,7 @@ D#6v2 lowpass=f=3300.0:t=q:w=0.707:r=f32
 
 # Reduce overtone
 
-D#3v3  equalizer=f=4044.64:t=h:w=1244.5:g=-25:r=f32
+D#3v3  equalizer=f=4044.64:t=h:w=1244.5:g=-30:r=f32
 
 D#6  equalizer=f=4978.03:t=h:w=1742.31:g=-5:r=f32
 

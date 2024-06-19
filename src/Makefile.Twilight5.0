@@ -24,7 +24,7 @@ DEST_SFZ_BASENAME = Twilight-SalamanderGrandPiano
 #
 # Basename of destination directory
 #
-DESTDIR_BASENAME = TwilightSalamanderGrandPianoV5.0beta2
+DESTDIR_BASENAME = TwilightSalamanderGrandPianoV5.0RC1
 
 
 SRCDIR48 =  ../SalamanderGrandPianoV3_48khz24bit
@@ -74,7 +74,7 @@ noct48:: sfz48 src48 vol_factor.txt
 	cp -p $(SRCPCMDIR48)/h*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/p*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/r*.wav $(DESTPCMDIR48)/.
-	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48) 0.3
+	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48) 0.4
 
 sfz44::
 	mkdir -p $(DESTPCMDIR44)

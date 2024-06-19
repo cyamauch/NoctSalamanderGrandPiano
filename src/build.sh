@@ -61,6 +61,8 @@ LIST_CREATED_LAYER=ALL
 #LIST_CREATED_LAYER="1 2 3"
 
 #SELECTED_KEY="C3"
+#SELECTED_KEY="A0 C1 D#1 F#1 A1 C2 D#2 F#2 A2 C3 D#3 F#3"
+#SELECTED_KEY="A0 C1 D#1 F#1 A1"
 #SELECTED_KEY="F#4 A4 C5 D#5 F#5 A5 C6"
 #SELECTED_KEY="C3 F#6 A6 C7 D#7 F#7 A7 C8"
 #SELECTED_KEY="A2 C3 D#3 F#3 C4 D#4"
@@ -235,7 +237,7 @@ for i in $LIST ; do
   fi
   echo "N_ID: $N_ID   KEY: $KEY    FREQ: $FREQ"
   #
-  DURATION=`echo $FREQ | awk '{printf("%g\n",0.4*(800.0/log(800.0*2.0*$1)-48.0));}'`
+  DURATION=`echo $FREQ | awk '{printf("%g\n",0.4*(800.0/log(1600.0*$1)-48.0));}'`
   ENV_VOL=`echo $FREQ | awk '{ \
     if ($1 <= '$FREQ_ENV_VOL_MAX') { \
       val = '$ENV_VOL_MAX'; \

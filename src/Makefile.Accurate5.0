@@ -7,24 +7,24 @@ FFMPEG = /cygdrive/c/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-
 #
 # This file
 #
-MAKEFILE = Makefile.Daylight5.0
+MAKEFILE = Makefile.Accurate5.0
 
 #
 # Select an overtone settings
 #
-OVERTONE_CONFIG = overtone_config.daylight5.0.txt
-OVERTONE3_CONFIG = overtone3_config.daylight5.0.txt
-BASS_CONFIG = bass_config.daylight5.0.txt
+OVERTONE_CONFIG = overtone_config.accurate5.0.txt
+OVERTONE3_CONFIG = overtone3_config.accurate5.0.txt
+BASS_CONFIG = bass_config.accurate5.0.txt
 
 #
 # $(DEST_SFZ_BASENAME).sfz will be created
 #
-DEST_SFZ_BASENAME = Daylight-SalamanderGrandPiano
+DEST_SFZ_BASENAME = Accurate-SalamanderGrandPiano
 
 #
 # Basename of destination directory
 #
-DESTDIR_BASENAME = DaylightSalamanderGrandPianoV5.0RC1
+DESTDIR_BASENAME = AccurateSalamanderGrandPianoV5.0RC1
 
 
 SRCDIR48 =  ../SalamanderGrandPianoV3_48khz24bit
