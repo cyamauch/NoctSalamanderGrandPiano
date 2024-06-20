@@ -24,7 +24,7 @@ DEST_SFZ_BASENAME = Moonlight-SalamanderGrandPiano
 #
 # Basename of destination directory
 #
-DESTDIR_BASENAME = MoonlightSalamanderGrandPianoV5.0RC1
+DESTDIR_BASENAME = MoonlightSalamanderGrandPianoV5.0RC2
 
 
 SRCDIR48 =  ../SalamanderGrandPianoV3_48khz24bit

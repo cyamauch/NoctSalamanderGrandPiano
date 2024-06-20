@@ -24,7 +24,7 @@ DEST_SFZ_BASENAME = Twilight-SalamanderGrandPiano
 #
 # Basename of destination directory
 #
-DESTDIR_BASENAME = TwilightSalamanderGrandPianoV5.0RC1
+DESTDIR_BASENAME = TwilightSalamanderGrandPianoV5.0RC2
 
 
 SRCDIR48 =  ../SalamanderGrandPianoV3_48khz24bit
