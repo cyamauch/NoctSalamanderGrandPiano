@@ -10,7 +10,7 @@ PKG=$1
 
 if [ -d $PKG ]; then
   cd $PKG
-  zip -r ../${PKG}.zip *
+  zip -r ../${PKG}.zip * -x *_test-only*.sfz
   cd ..
 fi
 
