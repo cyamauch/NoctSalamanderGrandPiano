@@ -138,7 +138,7 @@ V5.0beta2 (Jun.7,2024)
             Inherits the sound of soundbank #0 in high velocity.
 * soundbank #3:"Noct" -- This emphasizes gentleness with a tone similar to that
             of a large grand piano.  Most suitable for relaxation music.
-V5.0RC1 (Jun.19,2024)
+V5.0RC1 (Jun.19,2024), V5.0RC3 (Jun.23,2024)
 * Tone of "C3" was further improved by a new restoration process.
 * Noise during the attack of "A2" was eliminated.
 * Waveform of "F#1" was improved.

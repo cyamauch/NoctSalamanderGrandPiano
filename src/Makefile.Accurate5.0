@@ -24,7 +24,7 @@ DEST_SFZ_BASENAME = Accurate-SalamanderGrandPiano
 #
 # Basename of destination directory
 #
-DESTDIR_BASENAME = AccurateSalamanderGrandPianoV5.0RC1
+DESTDIR_BASENAME = AccurateSalamanderGrandPianoV5.0RC3
 
 
 SRCDIR48 =  ../SalamanderGrandPianoV3_48khz24bit

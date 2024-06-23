@@ -24,7 +24,7 @@ DEST_SFZ_BASENAME = Noct-SalamanderGrandPiano
 #
 # Basename of destination directory
 #
-DESTDIR_BASENAME = NoctSalamanderGrandPianoV5.0RC2
+DESTDIR_BASENAME = NoctSalamanderGrandPianoV5.0RC3
 
 
 SRCDIR48 =  ../SalamanderGrandPianoV3_48khz24bit

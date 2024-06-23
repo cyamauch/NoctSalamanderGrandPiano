@@ -213,27 +213,19 @@ elif [ "$KEY" = "C3" ]; then
 
 
   ####
-  #### Adjustment of overtone "C5:523.3Hz"
+  #### Adjustment of overtone C5(523.3Hz), E5(659.255Hz) and G5(783.991Hz) on latter part
   ####
   PCM_IN=_tmp_sub_p1.wav
   PCM_OUT=_tmp_sub_p2.wav
 
-  T_ST_0=1.0
-  T_D_0=2.5
-  T_ST_1=2.5
-  T_D_1=2.0
+  T_ST_0=0.5
+  T_D_0=8.0
 
-  ### This makes strange stereo effect...
+  "$FFMPEG" -i $PCM_IN -af afade=t=out:st=${T_ST_0}:d=${T_D_0}:silence=0.0:curve=tri -c:a pcm_f32le _tmp_sub_3.wav
 
-  ###"$FFMPEG" -i $PCM_IN -af afade=t=out:st=${T_ST_0}:d=${T_D_0}:silence=0.0:curve=tri,equalizer=f=523.3:t=h:w=50.0:g=+8:r=f32 -c:a pcm_f32le _tmp_sub_3.wav
+  "$FFMPEG" -i $PCM_IN -af afade=t=in:st=${T_ST_0}:d=${T_D_0}:silence=0.0:curve=tri,equalizer=f=659:t=h:w=150.0:g=-10:r=f32,equalizer=f=523.3:t=h:w=50.0:g=-10:r=f32 -c:a pcm_f32le _tmp_sub_4.wav
 
-  ###"$FFMPEG" -i $PCM_IN -af afade=t=in:st=${T_ST_0}:d=${T_D_0}:silence=0.0:curve=tri,afade=t=out:st=${T_ST_1}:d=${T_D_1}:silence=0.0:curve=tri  -c:a pcm_f32le _tmp_sub_4.wav
-
-  ###"$FFMPEG" -i $PCM_IN -af afade=t=in:st=${T_ST_1}:d=${T_D_1}:silence=0.0:curve=tri,equalizer=f=523.3:t=h:w=50.0:g=-8:r=f32 -c:a pcm_f32le _tmp_sub_5.wav
-
-  ###"$FFMPEG" -i _tmp_sub_3.wav -i _tmp_sub_4.wav -i _tmp_sub_5.wav -filter_complex "amix=inputs=3:normalize=0,volume=1.0" -c:a pcm_f32le $PCM_OUT
-
-  cat $PCM_IN > $PCM_OUT
+  "$FFMPEG" -i _tmp_sub_3.wav -i _tmp_sub_4.wav -filter_complex "amix=inputs=2:normalize=0,volume=1.0" -c:a pcm_f32le $PCM_OUT
 
 
   ####
