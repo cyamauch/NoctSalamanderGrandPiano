@@ -239,17 +239,19 @@ elif [ "$KEY" = "C3" ]; then
   EQ_W=500
 
   T_ST_0=0.0
-  T_D_0=2.25
+  #T_D_0=2.25
+  T_D_0=1.75
 
   # This value greatly changes the sound quality
   FACTOR_REDUCE=0.15
-
   INV_FACTOR_REDUCE=`echo $FACTOR_REDUCE | awk '{printf("%g\n",1.0-$1);}'`
+
+  ATACK_SILENCE=0.25
 
   # TEST RESULT: volume=+0.5dB
   "$FFMPEG" -i $PCM_IN -af afade=t=in:st=${T_ST_0}:d=${T_D_0}:silence=${FACTOR_REDUCE}:curve=tri,equalizer=f=${EQ_F}:t=h:w=${EQ_W}:g=-33.0:r=f32,equalizer=f=932.3:t=h:w=50.0:g=-10:r=f32,volume=+0.5dB -c:a pcm_f32le _tmp_sub_6.wav
 
-  "$FFMPEG" -i $PCM_IN -af afade=t=out:st=${T_ST_0}:d=${T_D_0}:silence=0.0:curve=tri,volume=${INV_FACTOR_REDUCE} -c:a pcm_f32le _tmp_sub_7.wav
+  "$FFMPEG" -i $PCM_IN -af afade=t=out:st=${T_ST_0}:d=${T_D_0}:silence=${ATACK_SILENCE}:curve=tri,volume=${INV_FACTOR_REDUCE} -c:a pcm_f32le _tmp_sub_7.wav
 
   "$FFMPEG" -i _tmp_sub_6.wav -i _tmp_sub_7.wav -filter_complex "amix=inputs=2:normalize=0,volume=1.0" -c:a pcm_f32le $PCM_OUT
 
@@ -267,7 +269,8 @@ elif [ "$KEY" = "C3" ]; then
   EQ_W=750
 
   T_ST_0=0.0
-  T_D_0=2.0
+  #T_D_0=2.0
+  T_D_0=10.0
 
   #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
   ATACK_VOL_BASE=-0.7
