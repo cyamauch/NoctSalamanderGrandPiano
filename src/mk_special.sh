@@ -100,7 +100,7 @@ elif [ "$KEY" = "A2" ]; then
   SEEK=`echo $VEL $SEEK_ALL | awk '{ split($0,ARR," "); print ARR[1+$1]; }'`
 
   #########      v1     v2     v3     v4     v5      v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
-  HPASS_VOL=" -24dB      0  -24dB  -24dB  -12dB  -6.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB"
+  HPASS_VOL=" -24dB      0  -24dB  -24dB  -12dB  -6.0dB -5.0dB -4.0dB -3.5dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB"
   OUTPT_VOL="+2.3dB +2.3dB +2.3dB +1.6dB +0.8dB  +0.4dB    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
   H_VOL=`echo $VEL $HPASS_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
   O_VOL=`echo $VEL $OUTPT_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
@@ -147,7 +147,7 @@ elif [ "$KEY" = "C3" ]; then
   #            v1    v2    v3    v4    v5    v6    v7    v8    v9   v10   v11   v12   v13   v14   v15   v16
   # NOTE: unit is dB
   INPUT_VOL_BASE=0.0
-  INPUT_VOL="-0.8  -2.4  -1.3  -3.0  -2.9  -2.9  -3.2  -2.8  -3.6  -4.0  -5.0  -5.0  -5.3  -4.2  -5.7  -5.0"
+  INPUT_VOL="-0.8  -2.2  -1.1  -3.0  -2.9  -3.3  -3.2  -2.8  -3.6  -4.1  -5.1  -4.9  -5.2  -4.2  -5.5  -5.0"
   I_VOL=`echo $VEL $INPUT_VOL | awk '{ split($0,ARR," "); printf("%gdB\n",ARR[1 + ARR[1]] + ('${INPUT_VOL_BASE}') ); }'`
 
   "$FFMPEG" -i $IN_FILE -ss $SEEK -af volume=$I_VOL -c:a pcm_f32le _tmp_sub_seek.wav
@@ -201,9 +201,10 @@ elif [ "$KEY" = "C3" ]; then
   #ARG_EQ_MID="equalizer=f=450.0:t=h:w=1400.0:g=${OV_VOL}:r=f32,$ARG_EQ_MID_HIGH"
   #ARG_EQ_MID="equalizer=f=425.0:t=h:w=1500.0:g=${OV_VOL}:r=f32,$ARG_EQ_MID_HIGH"
 
-  # f=1200.0: This value greatly changes the sound quality
+  # f=1200.0,2200.0: This value greatly changes the sound quality
   ##ARG_EQ_HIGH="equalizer=f=1200.0:t=h:w=100.0:g=+10:r=f32"
-  ARG_EQ_HIGH="equalizer=f=1200.0:t=h:w=100.0:g=+10:r=f32,equalizer=f=1760.0:t=h:w=50.0:g=-12:r=f32,equalizer=f=1864.7:t=h:w=50.0:g=-20:r=f32"
+  ##ARG_EQ_HIGH="equalizer=f=1200.0:t=h:w=100.0:g=+10:r=f32,equalizer=f=1174.7:t=h:w=10.0:g=-12:r=f32,equalizer=f=1760.0:t=h:w=50.0:g=-12:r=f32,equalizer=f=1864.7:t=h:w=50.0:g=-20:r=f32"
+  ARG_EQ_HIGH="equalizer=f=1200.0:t=h:w=100.0:g=+10:r=f32,equalizer=f=1760.0:t=h:w=50.0:g=-12:r=f32,equalizer=f=1864.7:t=h:w=50.0:g=-20:r=f32,equalizer=f=2200.0:t=h:w=700.0:g=-3:r=f32"
 
   "$FFMPEG" -i $PCM_IN -af afade=t=out:st=${T_ST_0}:d=${T_D_0}:silence=0.0:curve=tri,equalizer=f=130.8:t=h:w=1.0:g=${FUND_GAIN_FIRST}:r=f32,${ARG_EQ_MID},${ARG_EQ_HIGH} -c:a pcm_f32le _tmp_sub_1.wav
 
@@ -238,15 +239,14 @@ elif [ "$KEY" = "C3" ]; then
   EQ_F=1500
   EQ_W=500
 
+  ATACK_SILENCE=0.25
+
   T_ST_0=0.0
-  #T_D_0=2.25
-  T_D_0=1.75
+  T_D_0=`echo 2.25 $ATACK_SILENCE | awk '{printf("%g\n",$1 * (1.0-$2));}'`
 
   # This value greatly changes the sound quality
   FACTOR_REDUCE=0.15
   INV_FACTOR_REDUCE=`echo $FACTOR_REDUCE | awk '{printf("%g\n",1.0-$1);}'`
-
-  ATACK_SILENCE=0.25
 
   # TEST RESULT: volume=+0.5dB
   "$FFMPEG" -i $PCM_IN -af afade=t=in:st=${T_ST_0}:d=${T_D_0}:silence=${FACTOR_REDUCE}:curve=tri,equalizer=f=${EQ_F}:t=h:w=${EQ_W}:g=-33.0:r=f32,equalizer=f=932.3:t=h:w=50.0:g=-10:r=f32,volume=+0.5dB -c:a pcm_f32le _tmp_sub_6.wav

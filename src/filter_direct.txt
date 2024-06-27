@@ -51,10 +51,10 @@ D#4v1  lowpass=f=1100.0:t=q:w=0.707:r=f32
 #C3v2   lowpass=f=1100.0:t=q:w=0.707:r=f32
 #C3v3   equalizer=f=3401.14:t=h:w=1046.5:g=-5:r=f32
 
-D#3v2  lowpass=f=1200.0:t=q:w=0.707:r=f32
-F#3v2  lowpass=f=1100.0:t=q:w=0.707:r=f32
+#D#3v2  lowpass=f=1200.0:t=q:w=0.707:r=f32
+#F#3v2  lowpass=f=1100.0:t=q:w=0.707:r=f32
 
-D#4v2  lowpass=f=1200.0:t=q:w=0.707:r=f32
+#D#4v2  lowpass=f=1200.0:t=q:w=0.707:r=f32
 
 
 #######################
@@ -63,10 +63,16 @@ D#4v2  lowpass=f=1200.0:t=q:w=0.707:r=f32
 
 # Reduce overtone for some v=[1,2] samples
 
+D#3v2  equalizer=f=1300.0:t=h:w=1300.0:g=-5.5:r=f32
+F#3v2  equalizer=f=1300.0:t=h:w=1300.0:g=-7.5:r=f32
+
+D#4v2  equalizer=f=1700.0:t=h:w=1700.0:g=-12.0:r=f32
+
 C5v1  lowpass=f=1600.0:t=q:w=0.707:r=f32
 D#5v1 lowpass=f=1200.0:t=q:w=0.707:r=f32
 
-C4v2  lowpass=f=2300.0:t=q:w=0.707:r=f32
+###C4v2  lowpass=f=2300.0:t=q:w=0.707:r=f32
+C4v2  equalizer=f=2300.0:t=h:w=2300.0:g=-4.0:r=f32
 
 C5v2  lowpass=f=1600.0:t=q:w=0.707:r=f32
 D#5v2 lowpass=f=1700.0:t=q:w=0.707:r=f32
@@ -77,6 +83,7 @@ D#6v2 lowpass=f=3300.0:t=q:w=0.707:r=f32
 # Reduce overtone
 
 D#3v3  equalizer=f=4044.64:t=h:w=1244.5:g=-30:r=f32
+D#3v4  equalizer=f=4044.64:t=h:w=1244.5:g=-30:r=f32
 
 D#6  equalizer=f=4978.03:t=h:w=1742.31:g=-5:r=f32
 
