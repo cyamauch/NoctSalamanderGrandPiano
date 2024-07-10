@@ -24,7 +24,7 @@ DEST_SFZ_BASENAME = Moonlight-SalamanderGrandPiano
 #
 # Basename of destination directory
 #
-DESTDIR_BASENAME = MoonlightSalamanderGrandPianoV5.0RC4
+DESTDIR_BASENAME = MoonlightSalamanderGrandPianoV5.0
 
 
 SRCDIR48 =  ../SalamanderGrandPianoV3_48khz24bit
@@ -52,6 +52,7 @@ sfz48::
 	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.5db.txt _bass1.5db
 	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.0db.txt _bass1.0db
 	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_flat.txt _flat
+	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble0.5db.txt _treble0.5db
 	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.0db.txt _treble1.0db Recommended
 	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.5db.txt _treble1.5db
 	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.0db.txt _treble2.0db

@@ -159,7 +159,7 @@ elif [ "$KEY" = "C3" ]; then
   PCM_IN=_tmp_sub_seek.wav
   PCM_OUT=_tmp_sub_p0.wav
 
-  "$FFMPEG" -i $PCM_IN -af "afade=t=in:st=0:d=4.0,volume=0.25" -c:a pcm_f32le _tmp_sub_0.wav
+  "$FFMPEG" -i $PCM_IN -af "afade=t=in:st=0:d=8.0,volume=0.5" -c:a pcm_f32le _tmp_sub_0.wav
   "$FFMPEG" -i $PCM_IN -i _tmp_sub_0.wav -filter_complex "amix=normalize=0" -c:a pcm_f32le $PCM_OUT
 
 
@@ -239,7 +239,7 @@ elif [ "$KEY" = "C3" ]; then
   EQ_F=1500
   EQ_W=500
 
-  ATACK_SILENCE=0.25
+  ATACK_SILENCE=0.175
 
   T_ST_0=0.0
   T_D_0=`echo 2.25 $ATACK_SILENCE | awk '{printf("%g\n",$1 * (1.0-$2));}'`
