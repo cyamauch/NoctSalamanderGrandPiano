@@ -26,7 +26,7 @@ while [ "$2" != "" ]; do
     "$FFMPEG" -i $IN_FILE -ss 0 -to $SPAN -c:a pcm_f32le $OUT_FILE 2> /dev/null
     "$FFMPEG" -i $OUT_FILE -af volumedetect -f null - 2> _result_.txt
 
-    echo -n "$IN_FILE "
+    echo -n "`basename $IN_FILE` "
     cat _result_.txt | grep mean_volume | sed -e 's/.*mean_volume[:][ ]//' -e 's/ dB//'
 
   fi
