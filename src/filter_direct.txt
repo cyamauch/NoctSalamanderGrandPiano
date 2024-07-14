@@ -104,10 +104,11 @@ F#4  equalizer=f=5421:t=h:w=50.0:g=-20.0:r=f32,equalizer=f=5863:t=h:w=50.0:g=-40
 A4   equalizer=f=4059:t=h:w=50.0:g=-20.0:r=f32,equalizer=f=4476:t=h:w=50.0:g=-20.0:r=f32,equalizer=f=6551:t=h:w=50.0:g=-40.0:r=f32,equalizer=f=6940:t=h:w=50.0:g=-40.0:r=f32
 D#5  equalizer=f=5151:t=h:w=50.0:g=-40.0:r=f32
 # This includes removal of very high frequency noise.
-F#5  equalizer=f=4555:t=h:w=20.0:g=-10.0:r=f32,equalizer=f=5353:t=h:w=20.0:g=-40.0:r=f32,equalizer=f=5457:t=h:w=20.0:g=-60.0:r=f32,equalizer=f=6200:t=h:w=50.0:g=-60.0:r=f32,equalizer=f=7000:t=h:w=50.0:g=-60.0:r=f32
+F#5  equalizer=f=3774:t=h:w=5.0:g=+8.0:r=f32,equalizer=f=4559:t=h:w=5.0:g=+10.0:r=f32,equalizer=f=4559:t=h:w=20.0:g=-15.0:r=f32,equalizer=f=5322:t=h:w=5.0:g=+5.0:r=f32,equalizer=f=5461:t=h:w=150.0:g=-40.0:r=f32,equalizer=f=6200:t=h:w=50.0:g=-60.0:r=f32,equalizer=f=7000:t=h:w=50.0:g=-60.0:r=f32
 A5   equalizer=f=5460:t=h:w=100.0:g=-65.0:r=f32
 C6   equalizer=f=5400:t=h:w=50.0:g=+10.0:r=f32
-F#6  equalizer=f=7767:t=h:w=100.0:g=-10.0:r=f32
+
+##F#6  equalizer=f=7767:t=h:w=100.0:g=-10.0:r=f32
 
 
 ##D#3v4  equalizer=f=4044.64:t=h:w=1244.5:g=-14:r=f32
