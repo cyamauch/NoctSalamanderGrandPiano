@@ -10,7 +10,9 @@ all::
 	sh add_mul.sh vol_factor.src.src.V4.0Rel.txt vol_fix_V4.0Rel-to-V5.0overall.txt > vol_factor.src.src.V5.0overall.txt
 	sh add_mul.sh vol_factor.src.src.V5.0overall.txt vol_fix_V4.0Rel-to-V5.0beta1.txt > vol_factor.src.src.V5.0beta1.txt
 	sh add_mul.sh vol_factor.src.src.V5.0beta1.txt vol_fix_V5.0beta1-to-V5.0RC1.txt > vol_factor.src.src.V5.0RC1.txt
-	sh mk_vol_factor.src4build.sh vol_factor.src.src.V5.0RC1.txt > vol_factor.src4build.txt
+	sh add_mul.sh vol_factor.src.src.V5.0RC1.txt vol_fix_V5.0RC1-to-V5.0overallVoladj.txt > vol_factor.src.src.V5.0overallVoladj.txt
+	sh add_mul.sh vol_factor.src.src.V5.0overallVoladj.txt vol_fix_V5.0RC1-to-V5.0voladj.txt > vol_factor.src.src.V5.0Rel.txt
+	sh mk_vol_factor.src4build.sh vol_factor.src.src.V5.0Rel.txt > vol_factor.src4build.txt
 
 copy::	all
 	cp -p vol_factor.src4build.txt ../vol_factor.src.txt
