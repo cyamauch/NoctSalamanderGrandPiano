@@ -58,10 +58,38 @@ FFMPEG_LOG_FILE="ffmpeg_log.txt"
 # 1-16  ... create velocity=n WAV files
 # undef ... create none
 LIST_CREATED_LAYER=ALL
-#LIST_CREATED_LAYER="8"
+#LIST_CREATED_LAYER="1 2 3"
 
+#SELECTED_KEY="D#5"
+#SELECTED_KEY="D#3 F#3 A3 C4"
+#SELECTED_KEY="C1 D#1"
+#SELECTED_KEY="A2 C3 D#3"
+#SELECTED_KEY="A2 C3"
+
+#SELECTED_KEY="C7 D#7 F#7"
+#SELECTED_KEY="C6 D#6 F#6"
+#SELECTED_KEY="C5 D#5 F#5 A5 C6 D#6 F#6 A6"
+
+#SELECTED_KEY="C4 D#4 F#4"
+#SELECTED_KEY="D#5 F#5 D#6 F#6"
+#SELECTED_KEY="A5 C6 D#6 F#6"
+#SELECTED_KEY="D#7 F#7 C8"
+#SELECTED_KEY="D#6 F#6 D#7 F#7"
+#SELECTED_KEY="C5 D#5 F#5 A5 C6 D#6 F#6 A6"
+#SELECTED_KEY="C5 D#5 F#5 A5 C6 D#6 F#6 A6 C7 D#7 F#7 A7 C8"
+#SELECTED_KEY="C6 D#6 F#6 A6"
+#SELECTED_KEY="D#6 D#7 F#7 A7 C8"
+#SELECTED_KEY="A0 C1 D#1 F#1 A1 C2 D#2 F#2 A2 C3 D#3 F#3 A3 C4 D#4 F#4 A4 C5"
+
+#SELECTED_KEY="A0 C1 F#1 C2 D#2"
+#SELECTED_KEY="F#5 F#6"
+#SELECTED_KEY="D#1 F#1 A1 C2"
+#SELECTED_KEY="C4 D#4 F#4 A4"
+
+#SELECTED_KEY="C4 D#4 F#4 A4 C5 D#5 F#5 A5 C6 D#6 F#6 A6 C7 D#7 F#7 A7 C8"
+
+#SELECTED_KEY="F#4 A4 D#5 F#5 A5 C6 D#6 F#6"
 #SELECTED_KEY="F#4 A4 C5 D#5 F#5 C6"
-#SELECTED_KEY="C3"
 #SELECTED_KEY="D#3 F#3 D#4 C4"
 #SELECTED_KEY="A2 C3 D#3 F#3"
 #SELECTED_KEY="C5 D#5 F#5 A5"
@@ -98,7 +126,7 @@ LIST_CREATED_LAYER=ALL
 
 #SELECTED_KEY="D#3 F#3 A3 C4 D#4 F#4 A4"
 
-#SELECTED_KEY="C4 D#4 F#4 A4 C5 D#5 F#5 A5 C6 D#6 F#6 A6 C7
+#SELECTED_KEY="C4 D#4 F#4 A4 C5 D#5 F#5 A5 C6 D#6 F#6 A6 C7"
 #SELECTED_KEY="F#5 A5 C6 D#6 F#6"
 
 #SELECTED_KEY="D#6 F#6 A6 C7 D#7 F#7 A7 C8"
@@ -353,7 +381,7 @@ for i in $LIST ; do
   FILTER_DIRECT_LINE=`echo "$FILTER_DIRECT_TXT" | grep "^${KEY}[ ]"`
   FILTER_DIRECT_KEY=""
   if [ "$FILTER_DIRECT_LINE" != "" ]; then
-    FILTER_DIRECT_KEY=`echo "${FILTER_DIRECT_LINE}," | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
+    FILTER_DIRECT_KEY=`echo "${FILTER_DIRECT_LINE}" | awk '{if ( $2 != "" ) { printf("%s,",$2); } } END{ printf("\n"); }'`
     echo "FILTER_DIRECT_KEY: $FILTER_DIRECT_KEY"
   fi
   # for one by one ...
@@ -417,12 +445,12 @@ for i in $LIST ; do
       if [ "$FILTER_DIRECT_LINE" != "" ]; then
         FD_TEST=`echo "$FILTER_DIRECT_LINE" | grep "^${ORIG_NAME}[ ]"`
         if [ "$FD_TEST" != "" ]; then
-          FILTER_DIRECT_ARG=`echo "${FD_TEST}," | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
+          FILTER_DIRECT_ARG=`echo "${FD_TEST}" | awk '{if ( $2 != "" ) { printf("%s,",$2); } } END{ printf("\n"); }'`
           echo "FILTER_DIRECT_ARG: $FILTER_DIRECT_ARG"
         fi
       fi
       # Special code: Fix strange envelope, noise, etc.
-      if [ "$KEY" = "F#1" -o "$KEY" = "F#2" -o "$KEY" = "A2" -o "$KEY" = "C3" -o "$KEY" = "D#3" ]; then
+      if [ "$KEY" = "F#1" -o "$KEY" = "F#2" -o "$KEY" = "A2" -o "$KEY" = "C3" -o "$KEY" = "D#3" -o "$KEY" = "C6" ]; then
         rm -f tmp_pcm.wav
         sh mk_special.sh "$FFMPEG" $KEY $j "$IN_FILE" tmp_pcm.wav 2> /dev/null
         IN_FILE=tmp_pcm.wav
