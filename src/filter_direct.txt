@@ -69,7 +69,6 @@ D#3v4  equalizer=f=4044.64:t=h:w=1244.5:g=-20:r=f32
 
 F#3v2  equalizer=f=1300.0:t=h:w=1300.0:g=-7.5:r=f32
 
-###C4v2  lowpass=f=2300.0:t=q:w=0.707:r=f32
 C4v2  equalizer=f=2300.0:t=h:w=2300.0:g=-4.0:r=f32
 
 D#4v2  equalizer=f=1700.0:t=h:w=1700.0:g=-12.0:r=f32
@@ -84,52 +83,71 @@ C6v2  lowpass=f=3000.0:t=q:w=0.707:r=f32,equalizer=f=1046.502:t=h:w=200.0:g=+1.0
 ##
 ## Improve continuity between C3 and C8
 ##
+## (See also mk_special.sh for D#3,F#4,A3,C4)
+##
 
-# Remove non-overtone frequency components + Adjust amount of high frequency components (around 6000Hz)
-C3   equalizer=f=3009:t=h:w=30:g=-30:r=f32
-D#3  equalizer=f=2308:t=h:w=50:g=-40:r=f32,equalizer=f=7000:t=h:w=3000:g=-10:r=f32
-F#3  equalizer=f=2698:t=h:w=20:g=-40:r=f32,equalizer=f=2780:t=h:w=20:g=-30,equalizer=f=7000:t=h:w=3000:g=-6:r=f32
-A3   equalizer=f=3213:t=h:w=20:g=-30:r=f32,equalizer=f=3320:t=h:w=20:g=-25,equalizer=f=3543:t=h:w=20:g=-16,equalizer=f=3769:t=h:w=20:g=-20,equalizer=f=7500:t=h:w=3000:g=-16:r=f32
-C4   equalizer=f=3419:t=h:w=20:g=-30:r=f32,equalizer=f=3955:t=h:w=20:g=-20:r=f32,equalizer=f=7500:t=h:w=3000.0:g=-22:r=f32
+# Reduce strike
+D#4  volume=-1.3dB,equalizer=f=311.127:t=h:w=30.0:g=+3.5:r=f32,equalizer=f=623:t=h:w=30.0:g=+3.5:r=f32,equalizer=f=935:t=h:w=30.0:g=+3.5:r=f32,equalizer=f=1248:t=h:w=30.0:g=+3.5:r=f32,equalizer=f=1562:t=h:w=30.0:g=+3.5:r=f32,equalizer=f=1878:t=h:w=30.0:g=+3.5:r=f32,equalizer=f=1878:t=h:w=30.0:g=+3.5:r=f32
 
-# Reduce strike + Remove non-overtone frequency components
-D#4  volume=-1.3dB,equalizer=f=311.127:t=h:w=30.0:g=+3.5:r=f32,equalizer=f=623:t=h:w=30.0:g=+3.5:r=f32,equalizer=f=935:t=h:w=30.0:g=+3.5:r=f32,equalizer=f=1248:t=h:w=30.0:g=+3.5:r=f32,equalizer=f=1562:t=h:w=30.0:g=+3.5:r=f32,equalizer=f=1878:t=h:w=30.0:g=+3.5:r=f32,equalizer=f=1878:t=h:w=30.0:g=+3.5:r=f32,equalizer=f=4075:t=h:w=50.0:g=-24:r=f32,equalizer=f=4715:t=h:w=50.0:g=-24:r=f32
-F#4  volume=-0.5dB,equalizer=f=369.994:t=h:w=30.0:g=+1.5:r=f32,equalizer=f=623:t=h:w=36.0:g=+1.5:r=f32,equalizer=f=935:t=h:w=36.0:g=+1.5:r=f32,equalizer=f=1248:t=h:w=36.0:g=+1.5:r=f32,equalizer=f=1562:t=h:w=36.0:g=+1.5:r=f32,equalizer=f=1878:t=h:w=30.0:g=+1.5:r=f32,equalizer=f=4863:t=h:w=50.0:g=-40.0:r=f32,equalizer=f=5421:t=h:w=50.0:g=-20.0:r=f32,equalizer=f=5860:t=h:w=50.0:g=-12.0:r=f32,equalizer=f=10000:t=h:w=2000.0:g=-20.0:r=f32
-# Note: dropdown of 6538Hz/7057Hz and erasing non-overtone around 6000Hz are important for continuity
-A4   equalizer=f=3700:t=h:w=50.0:g=-40.0:r=f32,equalizer=f=4476:t=h:w=50.0:g=-20.0:r=f32,equalizer=f=4890:t=h:w=50.0:g=-20.0:r=f32,equalizer=f=5798:t=h:w=50.0:g=-20.0:r=f32,equalizer=f=6720:t=h:w=50.0:g=-20.0:r=f32,equalizer=f=5847:t=h:w=50.0:g=-40.0:r=f32,equalizer=f=6362:t=h:w=50.0:g=-40.0:r=f32,equalizer=f=6538:t=h:w=140.0:g=-7.0:r=f32,equalizer=f=7057:t=h:w=140.0:g=-15.0:r=f32,equalizer=f=3901:t=h:w=50.0:g=-10.0:r=f32,equalizer=f=10000:t=h:w=2000.0:g=-20.0:r=f32
-
-# TEST for A4
-#equalizer=f=4235:t=h:w=50.0:g=-40.0:r=f32,equalizer=f=4395:t=h:w=50.0:g=-40.0:r=f32,equalizer=f=5847:t=h:w=50.0:g=-40.0:r=f32,equalizer=f=6362:t=h:w=50.0:g=-40.0:r=f32,equalizer=f=7057:t=h:w=140.0:g=-12.0:r=f32
-#equalizer=f=3890:t=h:w=50.0:g=-40.0:r=f32,equalizer=f=3437:t=h:w=50.0:g=-40.0:r=f32,equalizer=f=2985:t=h:w=50.0:g=-40.0:r=f32
+# Reduce strike
+F#4  volume=-0.5dB,equalizer=f=369.994:t=h:w=30.0:g=+1.5:r=f32,equalizer=f=623:t=h:w=36.0:g=+1.5:r=f32,equalizer=f=935:t=h:w=36.0:g=+1.5:r=f32,equalizer=f=1248:t=h:w=36.0:g=+1.5:r=f32,equalizer=f=1562:t=h:w=36.0:g=+1.5:r=f32,equalizer=f=1878:t=h:w=30.0:g=+1.5:r=f32
 
 # Remove non-overtone frequency components
-C5   equalizer=f=6930:t=h:w=69.0:g=-20.0:r=f32,equalizer=f=10000:t=h:w=2000.0:g=-20.0:r=f32
-D#5  equalizer=f=5173:t=h:w=50.0:g=-12.0:r=f32,equalizer=f=4778:t=h:w=50:g=-40.0:r=f32,equalizer=f=6558:t=h:w=50:g=-6:r=f32,equalizer=f=7287:t=h:w=50:g=-4:r=f32,equalizer=f=3756:t=h:w=20:g=-20:r=f32,equalizer=f=4393:t=h:w=20:g=-20:r=f32,equalizer=f=10000:t=h:w=2000.0:g=-20.0:r=f32
+A4   equalizer=f=4890:t=h:w=50:g=-20.0:r=f32,equalizer=f=5800:t=h:w=60:g=-40.0:r=f32,equalizer=f=6720:t=h:w=60:g=-20.0:r=f32
 
-# Remove very high frequency noise + Boost weakening component (1485Hz, 3774Hz)
-F#5  equalizer=f=1485:t=h:w=15.0:g=+7.0:r=f32,equalizer=f=2927:t=h:w=20.0:g=-20.0:r=f32,equalizer=f=3079:t=h:w=20.0:g=-20.0:r=f32,equalizer=f=3613:t=h:w=70.0:g=-12.0:r=f32,equalizer=f=3774:t=h:w=50.0:g=+9.0:r=f32,equalizer=f=4555:t=h:w=50.0:g=-3.0:r=f32,equalizer=f=5497:t=h:w=50.0:g=-60.0:r=f32,equalizer=f=6195:t=h:w=50.0:g=-0.0:r=f32,equalizer=f=7047:t=h:w=50.0:g=-10.0:r=f32,equalizer=f=10000:t=h:w=2000.0:g=-20.0:r=f32
+# Adjust overtone (A7) to keep continuity
+A4   equalizer=f=3129:t=h:w=60:g=-3:r=f32,equalizer=f=3594:t=h:w=70:g=-14:r=f32
 
-# TEST for F#5
-##F#5  equalizer=f=1485:t=h:w=15.0:g=+7.0:r=f32,equalizer=f=2996:t=h:w=30.0:g=-3.0:r=f32,equalizer=f=2996:t=h:w=30.0:g=-3.0:r=f32,equalizer=f=3774:t=h:w=5.0:g=+8.0:r=f32,equalizer=f=4559:t=h:w=5.0:g=+10.0:r=f32,equalizer=f=4559:t=h:w=20.0:g=-6.0:r=f32,equalizer=f=5322:t=h:w=5.0:g=+15.0:r=f32,equalizer=f=5461:t=h:w=150.0:g=-30.0:r=f32,equalizer=f=10000:t=h:w=2000.0:g=-20.0:r=f32
-##F#5  equalizer=f=1485:t=h:w=15.0:g=+7.0:r=f32,equalizer=f=2996:t=h:w=50.0:g=-14.0:r=f32,equalizer=f=2996:t=h:w=5.0:g=+0.0:r=f32,equalizer=f=3774:t=h:w=5.0:g=+12.0:r=f32,equalizer=f=4559:t=h:w=5.0:g=+10.0:r=f32,equalizer=f=4559:t=h:w=50.0:g=-6.0:r=f32,equalizer=f=5322:t=h:w=5.0:g=+15.0:r=f32,equalizer=f=5461:t=h:w=150.0:g=-30.0:r=f32,equalizer=f=10000:t=h:w=2000.0:g=-20.0:r=f32
+# Remove non-overtone frequency components
+C5   equalizer=f=6930:t=h:w=69.0:g=-20.0:r=f32
 
-# Reduce strike + Remove very high frequency noise.
-A5     volume=-3.9dB,equalizer=f=880.0:t=h:w=66.0:g=+6:r=f32,equalizer=f=1772:t=h:w=66.0:g=+4:r=f32,equalizer=f=2667:t=h:w=66.0:g=+2:r=f32,equalizer=f=3574:t=h:w=66.0:g=+0:r=f32,equalizer=f=4400:t=h:w=20:g=-30:r=f32,equalizer=f=4600:t=h:w=20:g=-30:r=f32,equalizer=f=3476:t=h:w=20:g=-30:r=f32,equalizer=f=4504:t=h:w=50:g=-0:r=f32,equalizer=f=5476:t=h:w=50:g=-0:r=f32
+# Remove noise (around 10kHz; common)
+##equalizer=f=10000:t=h:w=2000.0:g=-20.0:r=f32
 
-# Reduce strike + Remove non-overtone frequency components + Reduce overtone.
-D#6    volume=-1.6dB,equalizer=f=1244.508:t=h:w=90.0:g=+2.0:r=f32,equalizer=f=2511:t=h:w=90.0:g=+2.0:r=f32,equalizer=f=4869:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4990:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5030:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4978.03:t=h:w=1742.31:g=-5:r=f32,equalizer=f=9344:t=h:w=100:g=-6.0:r=f32
+# Remove non-overtone frequency components
+# candidate_1
+D#5  equalizer=f=3081:t=h:w=10:g=-30:r=f32,equalizer=f=3756:t=h:w=10:g=-30:r=f32,equalizer=f=4393:t=h:w=10:g=-40:r=f32,equalizer=f=4778:t=h:w=50:g=-40.0:r=f32,equalizer=f=5027:t=h:w=20.0:g=-20.0:r=f32,equalizer=f=5090:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5669:t=h:w=20.0:g=-20.0:r=f32
+# candidate_2
+##D#5  equalizer=f=3756:t=h:w=20:g=-20:r=f32,equalizer=f=4393:t=h:w=20:g=-20:r=f32,equalizer=f=4778:t=h:w=50:g=-40.0:r=f32,equalizer=f=5173:t=h:w=50.0:g=-12.0:r=f32,equalizer=f=6558:t=h:w=50:g=-6:r=f32,equalizer=f=7287:t=h:w=50:g=-4:r=f32
+
+# Remove very high frequency noise
+# candidate_1
+F#5  equalizer=f=2500:t=h:w=100.0:g=-20.0:r=f32,equalizer=f=3500:t=h:w=100.0:g=-20.0:r=f32,equalizer=f=2936:t=h:w=10.0:g=-30.0:r=f32,equalizer=f=3056:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=3720:t=h:w=10.0:g=-30.0:r=f32,equalizer=f=4472:t=h:w=10.0:g=-20.0:r=f32,equalizer=f=4661:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4796:t=h:w=20.0:g=-40.0:r=f32,equalizer=f=5252:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5460:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5547:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=8325:t=h:w=20.0:g=-20.0:r=f32
+# candidate_2
+##F#5  equalizer=f=2927:t=h:w=20.0:g=-20.0:r=f32,equalizer=f=3079:t=h:w=20.0:g=-20.0:r=f32,equalizer=f=3613:t=h:w=70.0:g=-12.0:r=f32,equalizer=f=3774:t=h:w=50.0:g=+9.0:r=f32,equalizer=f=4555:t=h:w=50.0:g=-3.0:r=f32,equalizer=f=5497:t=h:w=50.0:g=-60.0:r=f32,equalizer=f=6195:t=h:w=50.0:g=-0.0:r=f32,equalizer=f=7047:t=h:w=50.0:g=-10.0:r=f32
+
+# Boost weakening component (1485Hz, 3774Hz)
+F#5  equalizer=f=1485:t=h:w=15.0:g=+7.0:r=f32,equalizer=f=2996:t=h:w=20.0:g=+9.0:r=f32,equalizer=f=3771:t=h:w=20.0:g=+6.0:r=f32
+
+# Remove very high frequency noise.
+A5     equalizer=f=4400:t=h:w=20:g=-30:r=f32,equalizer=f=4600:t=h:w=20:g=-30:r=f32,equalizer=f=3476:t=h:w=20:g=-30:r=f32
+
+# Reduce strike
+A5     volume=-3.9dB,equalizer=f=880.0:t=h:w=66.0:g=+6:r=f32,equalizer=f=1772:t=h:w=66.0:g=+4:r=f32,equalizer=f=2667:t=h:w=66.0:g=+2:r=f32,equalizer=f=3574:t=h:w=66.0:g=+0:r=f32
+
+# Remove non-overtone frequency components
+D#6    equalizer=f=2470:t=h:w=10.0:g=-30.0:r=f32,equalizer=f=2671:t=h:w=20.0:g=-40.0:r=f32,equalizer=f=4869:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4990:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5030:t=h:w=10.0:g=-40.0:r=f32
+
+# Reduce strike + Boost weakening component (2511Hz)
+D#6    volume=-1.6dB,equalizer=f=1244.508:t=h:w=90.0:g=+2.0:r=f32,equalizer=f=2511:t=h:w=90.0:g=+6.0:r=f32
 D#6v4  equalizer=f=1244.508:t=h:w=90.0:g=+1.0:r=f32,equalizer=f=2511:t=h:w=90.0:g=+1.0:r=f32
 D#6v3  equalizer=f=1244.508:t=h:w=90.0:g=+2.5:r=f32,equalizer=f=2511:t=h:w=90.0:g=+2.5:r=f32
 D#6v2  equalizer=f=1244.508:t=h:w=90.0:g=+5.0:r=f32,equalizer=f=2511:t=h:w=90.0:g=+5.0:r=f32
 D#6v1  equalizer=f=1244.508:t=h:w=90.0:g=+7.0:r=f32,equalizer=f=2511:t=h:w=90.0:g=+7.0:r=f32
 
-# Reduce strike + Remove very high frequency noise.
-F#6    volume=-1.7dB,equalizer=f=1479.978:t=h:w=110.0:g=+5.0:r=f32,equalizer=f=2990:t=h:w=110.0:g=+3.0:r=f32,equalizer=f=4523:t=h:w=110.0:g=+1.0:r=f32,equalizer=f=5955:t=h:w=50:g=-20.0:r=f32,equalizer=f=5990:t=h:w=20:g=-20.0:r=f32,equalizer=f=6166:t=h:w=50:g=-3.0:r=f32,equalizer=f=7791:t=h:w=100:g=0.0:r=f32,equalizer=f=9514:t=h:w=100:g=-6.0:r=f32
+# Adjust overtone (wide)
+D#6  equalizer=f=4978.03:t=h:w=1742.31:g=-5:r=f32
+
+# Remove very high frequency noise
+F#6    equalizer=f=4646:t=h:w=10:g=-30.0:r=f32,equalizer=f=4797:t=h:w=20:g=-40.0:r=f32,equalizer=f=5955:t=h:w=50:g=-20.0:r=f32,equalizer=f=5990:t=h:w=20:g=-20.0:r=f32,equalizer=f=6600:t=h:w=100:g=-20.0:r=f32,equalizer=f=7200:t=h:w=100:g=-20.0:r=f32
+
+# Reduce strike
+F#6    volume=-1.7dB,equalizer=f=1479.978:t=h:w=110.0:g=+5.0:r=f32,equalizer=f=2990:t=h:w=110.0:g=+3.0:r=f32,equalizer=f=4523:t=h:w=110.0:g=+1.0:r=f32
 F#6v2  equalizer=f=1479.978:t=h:w=110.0:g=+1.0:r=f32,equalizer=f=2990:t=h:w=110.0:g=+1.0:r=f32
 F#6v1  equalizer=f=1479.978:t=h:w=110.0:g=+4.5:r=f32,equalizer=f=2990:t=h:w=110.0:g=+4.5:r=f32
 
 # Remove non-overtone frequency components
-A6     equalizer=f=4630:t=h:w=46:g=-30:r=f32,equalizer=f=5570:t=h:w=55:g=-20:r=f32,equalizer=f=5733:t=h:w=75:g=-20:r=f32,equalizer=f=7133:t=h:w=71:g=-12:r=f32,equalizer=f=7365:t=h:w=71:g=-4:r=f32
+A6     equalizer=f=4630:t=h:w=46:g=-30:r=f32,equalizer=f=5570:t=h:w=55:g=-20:r=f32,equalizer=f=5733:t=h:w=75:g=-20:r=f32,equalizer=f=7133:t=h:w=71:g=-12:r=f32
 
 # Remove non-overtone frequency components
 C7     equalizer=f=6627:t=h:w=66:g=-30:r=f32,equalizer=f=4630:t=h:w=46:g=-30:r=f32

@@ -58,16 +58,19 @@ FFMPEG_LOG_FILE="ffmpeg_log.txt"
 # 1-16  ... create velocity=n WAV files
 # undef ... create none
 LIST_CREATED_LAYER=ALL
+#LIST_CREATED_LAYER="10 16"
 #LIST_CREATED_LAYER="1 2 3"
 
-#SELECTED_KEY="D#5"
+#SELECTED_KEY="C5"
 #SELECTED_KEY="D#3 F#3 A3 C4"
+#SELECTED_KEY="C4 D#4 F#4 A4 C5"
 #SELECTED_KEY="C1 D#1"
 #SELECTED_KEY="A2 C3 D#3"
 #SELECTED_KEY="A2 C3"
 
 #SELECTED_KEY="C7 D#7 F#7"
 #SELECTED_KEY="C6 D#6 F#6"
+#SELECTED_KEY="C5 D#5 F#5 A5"
 #SELECTED_KEY="C5 D#5 F#5 A5 C6 D#6 F#6 A6"
 
 #SELECTED_KEY="C4 D#4 F#4"
@@ -450,7 +453,7 @@ for i in $LIST ; do
         fi
       fi
       # Special code: Fix strange envelope, noise, etc.
-      if [ "$KEY" = "F#1" -o "$KEY" = "F#2" -o "$KEY" = "A2" -o "$KEY" = "C3" -o "$KEY" = "D#3" -o "$KEY" = "C6" ]; then
+      if [ "$KEY" = "F#1" -o "$KEY" = "F#2" -o "$KEY" = "A2" -o "$KEY" = "C3" -o "$KEY" = "D#3" -o "$KEY" = "F#3" -o "$KEY" = "A3" -o "$KEY" = "C4" -o "$KEY" = "C6" ]; then
         rm -f tmp_pcm.wav
         sh mk_special.sh "$FFMPEG" $KEY $j "$IN_FILE" tmp_pcm.wav 2> /dev/null
         IN_FILE=tmp_pcm.wav
