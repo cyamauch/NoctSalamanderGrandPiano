@@ -116,11 +116,12 @@ F#5  equalizer=f=4659:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4453:t=h:w=10.0:g=-40
 # Boost weakening component (1485Hz, 2237Hz, 2996Hz, 3771Hz)
 F#5  equalizer=f=1485:t=h:w=15.0:g=+7.0:r=f32,equalizer=f=2237:t=h:w=20.0:g=+3.0:r=f32,equalizer=f=2996:t=h:w=20.0:g=+9.0:r=f32,equalizer=f=3771:t=h:w=20.0:g=+6.0:r=f32
 
-# Adjust overtone to keep continuity
-F#5  equalizer=f=5332:t=h:w=60:g=-6:r=f32,equalizer=f=6197:t=h:w=60:g=-10:r=f32,equalizer=f=7044:t=h:w=70:g=-14:r=f32
-F#5v14  equalizer=f=5332:t=h:w=60:g=+2:r=f32,equalizer=f=6197:t=h:w=60:g=+3:r=f32,equalizer=f=7044:t=h:w=70:g=+3:r=f32
-F#5v15  equalizer=f=5332:t=h:w=60:g=+4:r=f32,equalizer=f=6197:t=h:w=60:g=+6:r=f32,equalizer=f=7044:t=h:w=70:g=+6:r=f32
-F#5v16  equalizer=f=5332:t=h:w=60:g=+6:r=f32,equalizer=f=6197:t=h:w=60:g=+9:r=f32,equalizer=f=7044:t=h:w=70:g=+9:r=f32
+## Adjust overtone to keep continuity
+## Note: This process was moved into mk_special.sh.
+##F#5  equalizer=f=5332:t=h:w=60:g=-6:r=f32,equalizer=f=6197:t=h:w=60:g=-10:r=f32,equalizer=f=7044:t=h:w=70:g=-14:r=f32
+##F#5v14  equalizer=f=5332:t=h:w=60:g=+2:r=f32,equalizer=f=6197:t=h:w=60:g=+3:r=f32,equalizer=f=7044:t=h:w=70:g=+3:r=f32
+##F#5v15  equalizer=f=5332:t=h:w=60:g=+4:r=f32,equalizer=f=6197:t=h:w=60:g=+6:r=f32,equalizer=f=7044:t=h:w=70:g=+6:r=f32
+##F#5v16  equalizer=f=5332:t=h:w=60:g=+6:r=f32,equalizer=f=6197:t=h:w=60:g=+9:r=f32,equalizer=f=7044:t=h:w=70:g=+9:r=f32
 
 # Remove very high frequency noise.
 A5     equalizer=f=3508:t=h:w=20:g=-30:r=f32,equalizer=f=4429:t=h:w=20:g=-30:r=f32,equalizer=f=4620:t=h:w=20:g=-30:r=f32
