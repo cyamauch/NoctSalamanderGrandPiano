@@ -567,17 +567,21 @@ elif [ "$KEY" = "F#5" ]; then
 
   ############################################################################
 
+  # Remove very high frequency noise
+
+  EQ_STR="equalizer=f=4659:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4453:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4653:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5207:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5457:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5545:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=8325:t=h:w=20.0:g=-20.0:r=f32"
+
   # Adjust overtone to keep continuity
 
   #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
   F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.6    0.3    0.0"
   F_F=`echo $VEL $F_FACTOR | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
 
+  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=5332:t=h:w=60:g=%g:r=f32,equalizer=f=6197:t=h:w=60:g=%g:r=f32,equalizer=f=7044:t=h:w=70:g=%g:r=f32\n",-6.0*$1,-9.0*$1-1,-9.0*$1-5); }'`
+
   rm -f $OUT_FILE
 
-  EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=5332:t=h:w=60:g=%g:r=f32,equalizer=f=6197:t=h:w=60:g=%g:r=f32,equalizer=f=7044:t=h:w=70:g=%g:r=f32\n",-6.0*$1,-9.0*$1-1,-9.0*$1-5); }'`
-
-  "$FFMPEG" -i $IN_FILE -af ${EQ_STR} -c:a pcm_f32le $OUT_FILE
+  "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
 
   ############################################################################
 
