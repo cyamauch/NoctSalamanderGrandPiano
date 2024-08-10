@@ -19,12 +19,12 @@ func_output_main ()
 MF2T="mf2t"
 T2MF="t2mf"
 
-if [ "$5" == "" ]; then
+if [ "$6" == "" ]; then
   echo "[USAGE]"
-  echo "$0 80 10 10 80 filename.mid"
-  echo "$0 80 10 0 100 filename.mid"
-  echo "$0 0  0  10 80 filename.mid"
-  echo "$0 pedal_on pedal_off vel_offset vel_scale% filename.mid"
+  echo "$0 80 10 10 80 1.0 filename.mid"
+  echo "$0 80 10 0 100 1.0 filename.mid"
+  echo "$0 0  0  10 80 1.0 filename.mid"
+  echo "$0 pedal_on pedal_off vel_offset vel_scale power filename.mid"
   exit
 fi
 
@@ -32,24 +32,25 @@ ADJ_PEDAL_ON=$1
 ADJ_PEDAL_OFF=$2
 ADJ_VEL_OFF=$3
 ADJ_VEL_SCALE=$4
-INNAME=$5
+ADJ_VEL_POWER=`echo $5 | awk '{printf("%g\n",$1);}'`
+INNAME=$6
 
 
 echo "Adjusted Pedal Timing to -"$ADJ_PEDAL_ON" -"$ADJ_PEDAL_OFF
-echo "         Velocity offset="$ADJ_VEL_OFF" scale="$ADJ_VEL_SCALE
+echo "         Velocity offset="$ADJ_VEL_OFF" scale="$ADJ_VEL_SCALE" power="$ADJ_VEL_POWER
 
 $MF2T $INNAME | tr -d "\r" > _tmp_input.txt
 
-OUTBASENAME=`echo $INNAME | sed -e 's/[.][^.][^.]*//'`
+OUTBASENAME=`echo $INNAME | sed -e 's/[.][^.][^.]*$//'`
 OUTSUFFIX=`echo $INNAME | sed -e 's/^.*[.]//'`
 
-if [ "$ADJ_VEL_OFF" = "0" -a "$ADJ_VEL_SCALE" = "100" ]; then
+if [ "$ADJ_VEL_OFF" = "0" -a "$ADJ_VEL_SCALE" = "100" -a "$ADJ_VEL_POWER" = "1" ]; then
   OUTNAME=${OUTBASENAME}_pdl${ADJ_PEDAL_ON}.${ADJ_PEDAL_OFF}.${OUTSUFFIX}
 else
   if [ "$ADJ_PEDAL_ON" = "0" -a "$ADJ_PEDAL_OFF" = "0" ]; then
-    OUTNAME=${OUTBASENAME}_vel${ADJ_VEL_OFF}.${ADJ_VEL_SCALE}.${OUTSUFFIX}
+    OUTNAME=${OUTBASENAME}_vel${ADJ_VEL_OFF}.${ADJ_VEL_SCALE}.${ADJ_VEL_POWER}.${OUTSUFFIX}
   else
-    OUTNAME=${OUTBASENAME}_pdl${ADJ_PEDAL_ON}.${ADJ_PEDAL_OFF}_vel${ADJ_VEL_OFF}.${ADJ_VEL_SCALE}.${OUTSUFFIX}
+    OUTNAME=${OUTBASENAME}_pdl${ADJ_PEDAL_ON}.${ADJ_PEDAL_OFF}_vel${ADJ_VEL_OFF}.${ADJ_VEL_SCALE}.${ADJ_VEL_POWER}.${OUTSUFFIX}
   fi
 fi
 
@@ -119,7 +120,12 @@ cat $IN_TMP | awk '{if ($1!="0") {print;} }' | grep '^[0-9]' | awk '{ \
   else { \
     if ($2=="On" && $5!="v=0") { \
       VEL=substr($5,3); \
-      VEL_NEW='$ADJ_VEL_OFF' + int(VEL * '$ADJ_VEL_SCALE' * 0.01 + 0.5); \
+      if ( '$ADJ_VEL_POWER' == 1 ) { \
+        VEL_NEW='$ADJ_VEL_OFF' + int(VEL * '$ADJ_VEL_SCALE' * 0.01 + 0.5); \
+      } else { \
+        P_VEL=127.0 * ( (VEL/127.0) ^ '$ADJ_VEL_POWER' ); \
+        VEL_NEW='$ADJ_VEL_OFF' + int(P_VEL * '$ADJ_VEL_SCALE' * 0.01 + 0.5); \
+      } \
       if ( 127 < VEL_NEW ) { VEL_NEW=127; } \
       if ( VEL_NEW < 0 ) { VEL_NEW=0; } \
       printf("%d %s %s %s v=%d\n",$1,$2,$3,$4,VEL_NEW); \

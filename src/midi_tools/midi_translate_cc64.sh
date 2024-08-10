@@ -37,7 +37,7 @@ IN_NAME=$2
 
 $MF2T $IN_NAME | tr -d "\r" > _tmp_input.txt
 
-OUTBASENAME=`echo $IN_NAME | sed -e 's/[.][^.][^.]*//'`
+OUTBASENAME=`echo $IN_NAME | sed -e 's/[.][^.][^.]*$//'`
 OUTSUFFIX=`echo $IN_NAME | sed -e 's/^.*[.]//'`
 
 OUTNAME=${OUTBASENAME}_withoutCC64.${OUTSUFFIX}
