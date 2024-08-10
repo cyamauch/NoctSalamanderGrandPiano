@@ -161,7 +161,7 @@ elif [ "$KEY" = "C3" ]; then
   #########      v1     v2     v3     v4     v5      v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
   # NOTE: Unit is dB
   INPUT_VOL_BASE="-0.1"
-  INPUT_VOL="  +1.6   +3.1   +2.1   +0.2   -0.1    +0.5   +1.0    +1.9   +1.1   -0.4   -0.7   -0.4   -1.7   -0.9   -2.5   -2.4"
+  INPUT_VOL="  +1.6   +3.1   +2.1   +0.2   -0.1    +0.4   +1.0    +1.9   +1.1   -0.4   -0.7   -0.4   -1.7   -0.9   -2.5   -2.4"
   I_VOL=`echo $VEL $INPUT_VOL | awk '{ split($0,ARR," "); printf("%gdB\n",ARR[1 + ARR[1]] + ('${INPUT_VOL_BASE}') ); }'`
 
   # NOTE: All freq. must be written in "A2"-based.
@@ -494,7 +494,7 @@ elif [ "$KEY" = "D#3" ]; then
   EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=3017:t=h:w=60:g=%g:r=f32,equalizer=f=3186:t=h:w=60:g=%g:r=f32,equalizer=f=3522:t=h:w=70:g=%g:r=f32\n",-9.0*$1,-18.0*$1,-15.0*$1); }'`
 
   # Adjust amount of high frequency components (around 6000Hz)
-  EQ_STR2="equalizer=f=6000:t=h:w=1000:g=-12:r=f32"
+  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=6000:t=h:w=1000:g=%g:r=f32\n",-12.0*$1); }'`
 
   "$FFMPEG" -i _tmp_sub_2.wav -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
 
@@ -515,7 +515,7 @@ elif [ "$KEY" = "F#3" ]; then
   EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=3215:t=h:w=70:g=%g:r=f32,equalizer=f=3614:t=h:w=70:g=%g:r=f32,equalizer=f=3813:t=h:w=70:g=%g:r=f32\n",-12.0*$1,-15.0*$1,-18.0*$1); }'`
 
   # Adjust amount of high frequency components (around 6000Hz)
-  EQ_STR2="equalizer=f=6000:t=h:w=1000:g=-12:r=f32"
+  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=6000:t=h:w=1000:g=%g:r=f32\n",-12.0*$1); }'`
 
   "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
 
@@ -536,7 +536,7 @@ elif [ "$KEY" = "A3" ]; then
   EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=2680:t=h:w=70:g=%g:r=f32,equalizer=f=3144:t=h:w=70:g=%g:r=f32,equalizer=f=3379:t=h:w=70:g=%g:r=f32,equalizer=f=3617:t=h:w=70:g=%g:r=f32\n",-8.0*$1,-15.0*$1,-14.0*$1,-20.0*$1); }'`
 
   # Adjust amount of high frequency components (around 6000Hz)
-  EQ_STR2="equalizer=f=4900:t=h:w=1000:g=-8:r=f32,equalizer=f=6200:t=h:w=1000:g=-15:r=f32"
+  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=4900:t=h:w=1000:g=%g:r=f32,equalizer=f=6200:t=h:w=1000:g=%g:r=f32\n",-8.0*$1,-15.0*$1); }'`
 
   "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
 
@@ -557,7 +557,7 @@ elif [ "$KEY" = "C4" ]; then
   EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=2630:t=h:w=70:g=%g:r=f32,equalizer=f=3200:t=h:w=70:g=%g:r=f32,equalizer=f=3482:t=h:w=70:g=%g:r=f32,equalizer=f=3767:t=h:w=70:g=%g:r=f32,equalizer=f=4044:t=h:w=80:g=%g:r=f32,equalizer=f=4338:t=h:w=80:g=%g:r=f32\n",-5.0*$1,-7.0*$1,-13.0*$1,-6.0*$1,-18.0*$1,-10.0*$1); }'`
 
   # Adjust amount of high frequency components (around 6000Hz)
-  EQ_STR2="equalizer=f=6200:t=h:w=1000:g=-15:r=f32"
+  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=6200:t=h:w=1000:g=%g:r=f32\n",-15.0*$1); }'`
 
   "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
 
@@ -574,10 +574,11 @@ elif [ "$KEY" = "F#5" ]; then
   # Adjust overtone to keep continuity
 
   #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
-  F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.6    0.3    0.0"
+  #F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.6    0.3    0.0"
+  F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.7    0.5    0.3    0.1"
   F_F=`echo $VEL $F_FACTOR | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
 
-  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=5332:t=h:w=60:g=%g:r=f32,equalizer=f=6197:t=h:w=60:g=%g:r=f32,equalizer=f=7044:t=h:w=70:g=%g:r=f32\n",-6.0*$1,-9.0*$1-1,-9.0*$1-5); }'`
+  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=5332:t=h:w=60:g=%g:r=f32,equalizer=f=6197:t=h:w=60:g=%g:r=f32,equalizer=f=7044:t=h:w=70:g=%g:r=f32\n",-6.0*$1,-10.0*$1,-12.0*$1-2); }'`
 
   rm -f $OUT_FILE
 

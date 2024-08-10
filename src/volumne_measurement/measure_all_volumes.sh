@@ -41,6 +41,7 @@ done
 echo "set xlabel 'note-id'" > plot_meanvol-sec${SEC}.txt
 echo "set ylabel 'mean-volumne'" >> plot_meanvol-sec${SEC}.txt
 echo "set grid" >> plot_meanvol-sec${SEC}.txt
+#echo "set xrange [19:115]" >> plot_meanvol-sec${SEC}.txt
 
 echo $PLOT_CMD >> plot_meanvol-sec${SEC}.txt
 

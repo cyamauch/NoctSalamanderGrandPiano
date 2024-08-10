@@ -51,8 +51,7 @@ use floating-point arithmetic:
     (See pcm_seek_pos.txt and mk_special.txt)
 
  3. Fixed tuning errors.
-    (Note: The amount of error was negligible.  See tuned.txt...A0,C1,D#1,F#7 
-     and C8)
+    (Note: The amount of error was negligible.  See tuned.txt)
 
  4. Two filters (frequency x 12, frequency x 26) to adjust for excessive 
     amount of overtone that cannot be resolved by WAV file reassignment in 1.
@@ -81,7 +80,7 @@ use floating-point arithmetic:
 
  9. Excessive amount of overtones (mainly in Layer 1) that cannot be resolved 
     by the filter processing in 4. and high-frequency components 
-    (around 6000Hz) in mid-range notes are adjusted individually.
+    (around 3000Hz and 6000Hz) in mid-range notes are adjusted individually.
     (See filter_direct.txt)
 
 10. Problems that cannot be solved by any of the above processes (envelope 
@@ -239,7 +238,7 @@ V5.0RC1 (Jun.19,2024), V5.0RC3 (Jun.27,2024)
 * Noise during the attack of "A2" was eliminated.
 * Waveform of "F#1" was improved.
 * Renamed "Daylight" -> "Accurate".
-V5.0 (Aug.1,2024)
+V5.0 (Aug.5,2024)
 * Volume adjustment for all sound sources is performed using the values 
   measured by FFmpeg (first 0.5 seconds of each WAV file).
 * Adjustment of the volume ratio between hammered sound and string sound 
@@ -247,8 +246,8 @@ V5.0 (Aug.1,2024)
   (higher than F#4)
 * High-frequency vibration noises in several notes around F#5 are removed 
   by narrow-band filters.
-* High-frequency components (around 6000Hz) in mid-range notes are adjusted
-  individually to improve continuity.
+* High-frequency components (around 3000Hz and 6000Hz) in mid-range notes are 
+  adjusted individually to improve continuity.
 * "F#1" and "C3" are generated from "A1" and "A2" respectively.
 * Code for restoring "C6" is added to mk_special.sh.
 
