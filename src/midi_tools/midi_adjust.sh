@@ -95,19 +95,21 @@ while [ 1 ]; do
 
 cat $IN_TMP | awk '{if ($1!="0") {print;} }' | grep '^[0-9]' | awk '{ \
   if ($2=="Par" && $3=="ch=1" && $4=="c=64") { \
+    if ( $1 == PREV_T ) { THIS_T = $1 + 1; } \
+    else { THIS_T = $1; } \
     if ($5=="v=0") { \
-      if ( '$ADJ_PEDAL_OFF' < $1 ) { \
-        POFF=$1 - '$ADJ_PEDAL_OFF'; \
+      if ( '$ADJ_PEDAL_OFF' < THIS_T ) { \
+        POFF = THIS_T - '$ADJ_PEDAL_OFF'; \
       } \
       else { \
-        POFF=$1; \
+        POFF=THIS_T; \
       } \
       printf("%d %s %s %s %s\n",POFF,$2,$3,$4,$5); \
     } \
     else { \
       if ($5=="v=127") { \
-        if (POFF + '$ADJ_PEDAL_ON' < $1){ \
-          printf("%d %s %s %s %s\n",$1 - '$ADJ_PEDAL_ON',$2,$3,$4,$5); \
+        if (POFF + '$ADJ_PEDAL_ON' < THIS_T){ \
+          printf("%d %s %s %s %s\n",THIS_T - '$ADJ_PEDAL_ON',$2,$3,$4,$5); \
         } else { \
           printf("%d %s %s %s %s\n",POFF + 1,$2,$3,$4,$5); \
         } \
@@ -116,6 +118,7 @@ cat $IN_TMP | awk '{if ($1!="0") {print;} }' | grep '^[0-9]' | awk '{ \
         print; \
       } \
     } \
+    PREV_T=THIS_T; \
   } \
   else { \
     if ($2=="On" && $5!="v=0") { \
