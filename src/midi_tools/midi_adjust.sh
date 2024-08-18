@@ -19,21 +19,22 @@ func_output_main ()
 MF2T="mf2t"
 T2MF="t2mf"
 
-if [ "$6" == "" ]; then
+if [ "$7" == "" ]; then
   echo "[USAGE]"
-  echo "$0 80 10 10 80 1.0 filename.mid"
-  echo "$0 80 10 0 100 1.0 filename.mid"
-  echo "$0 0  0  10 80 1.0 filename.mid"
-  echo "$0 pedal_on pedal_off vel_offset vel_scale power filename.mid"
+  echo "$0 1 80 10 10 80 1.0 filename.mid"
+  echo "$0 1 80 10 0 100 1.0 filename.mid"
+  echo "$0 1 0  0  10 80 1.0 filename.mid"
+  echo "$0 ch pedal_on pedal_off vel_offset vel_scale power filename.mid"
   exit
 fi
 
-ADJ_PEDAL_ON=$1
-ADJ_PEDAL_OFF=$2
-ADJ_VEL_OFF=$3
-ADJ_VEL_SCALE=$4
-ADJ_VEL_POWER=`echo $5 | awk '{printf("%g\n",$1);}'`
-INNAME=$6
+ADJ_CH=$1
+ADJ_PEDAL_ON=$2
+ADJ_PEDAL_OFF=$3
+ADJ_VEL_OFF=$4
+ADJ_VEL_SCALE=$5
+ADJ_VEL_POWER=`echo $6 | awk '{printf("%g\n",$1);}'`
+INNAME=$7
 
 
 echo "Adjusted Pedal Timing to -"$ADJ_PEDAL_ON" -"$ADJ_PEDAL_OFF
@@ -94,7 +95,7 @@ while [ 1 ]; do
   cat $IN_TMP | awk '{if ($1=="0") {print;} }' >> _tmp_output.txt
 
 cat $IN_TMP | awk '{if ($1!="0") {print;} }' | grep '^[0-9]' | awk '{ \
-  if ($2=="Par" && $3=="ch=1" && $4=="c=64") { \
+  if ($3=="ch='$ADJ_CH'" && $2=="Par" && $4=="c=64") { \
     if ( $1 == PREV_T ) { THIS_T = $1 + 1; } \
     else { THIS_T = $1; } \
     if ($5=="v=0") { \
@@ -121,7 +122,7 @@ cat $IN_TMP | awk '{if ($1!="0") {print;} }' | grep '^[0-9]' | awk '{ \
     PREV_T=THIS_T; \
   } \
   else { \
-    if ($2=="On" && $5!="v=0") { \
+    if ($3=="ch='$ADJ_CH'" && $2=="On" && $5!="v=0") { \
       VEL=substr($5,3); \
       if ( '$ADJ_VEL_POWER' == 1 ) { \
         VEL_NEW='$ADJ_VEL_OFF' + int(VEL * '$ADJ_VEL_SCALE' * 0.01 + 0.5); \
