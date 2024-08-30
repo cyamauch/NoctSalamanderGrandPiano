@@ -569,7 +569,9 @@ elif [ "$KEY" = "F#5" ]; then
 
   # Remove very high frequency noise
 
-  EQ_STR="equalizer=f=4659:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4453:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4653:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5207:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5457:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5545:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=8325:t=h:w=20.0:g=-20.0:r=f32"
+  ##EQ_STR_0="equalizer=f=4453:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4653:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4659:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5207:t=h:w=10.0:g=-40.0:r=f32"
+
+  EQ_STR_1="equalizer=f=5457:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5545:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=8325:t=h:w=20.0:g=-20.0:r=f32"
 
   # Adjust overtone to keep continuity
 
@@ -582,7 +584,9 @@ elif [ "$KEY" = "F#5" ]; then
 
   rm -f $OUT_FILE
 
-  "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
+  ##"$FFMPEG" -i $IN_FILE -af ${EQ_STR_0},${EQ_STR_1},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
+
+  "$FFMPEG" -i $IN_FILE -af ${EQ_STR_1},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
 
   ############################################################################
 
@@ -602,12 +606,20 @@ elif [ "$KEY" = "C6" ]; then
     E_GIN="8,-6,3,0,4,2"
   fi
 
-  E_ARG=`echo $E_GIN | awk -F, '{printf("equalizer=f=1046.502:t=h:w=78:g=%s:r=f32,equalizer=f=2111:t=h:w=78:g=%s:r=f32,equalizer=f=3179:t=h:w=78:g=%s:r=f32,equalizer=f=4277:t=h:w=78:g=%s:r=f32,equalizer=f=5403:t=h:w=78:g=%s:r=f32,equalizer=f=6590:t=h:w=78:g=%s:r=f32\n",$1,$2,$3,$4,$5,$6);}'`
+  # Boost weakening component (high-freq.)
+  GIN4277=1.0
+  GIN5403=7.0
+  GIN6590=1.0
+
+  E_ARG=`echo $E_GIN | awk -F, '{printf("equalizer=f=1046.502:t=h:w=78:g=%s:r=f32,equalizer=f=2111:t=h:w=78:g=%s:r=f32,equalizer=f=3179:t=h:w=78:g=%s:r=f32,equalizer=f=4277:t=h:w=78:g=%s:r=f32,equalizer=f=5403:t=h:w=78:g=%s:r=f32,equalizer=f=6590:t=h:w=78:g=%s:r=f32\n",$1,$2,$3,'${GIN4277}'+$4,'${GIN5403}'+$5,'${GIN6590}'+$6);}'`
 
   rm -f _tmp_sub_0.wav _tmp_sub_1.wav _tmp_sub_2.wav $OUT_FILE
 
   # 4438Hz, 5583Hz, 6200Hz : Remove non-overtone frequency components
-  "$FFMPEG" -i $IN_FILE -af volume=-3.6dB,${E_ARG},equalizer=f=4438:t=h:w=20:g=-40:r=f32,equalizer=f=5583:t=h:w=10:g=-30:r=f32,equalizer=f=6200:t=h:w=100:g=-20:r=f32 -c:a pcm_f32le _tmp_sub_0.wav
+  ##"$FFMPEG" -i $IN_FILE -af volume=-3.6dB,${E_ARG},equalizer=f=4438:t=h:w=20:g=-40:r=f32,equalizer=f=5583:t=h:w=10:g=-30:r=f32,equalizer=f=6200:t=h:w=100:g=-20:r=f32 -c:a pcm_f32le _tmp_sub_0.wav
+
+  # 6200Hz : Remove non-overtone frequency components
+  "$FFMPEG" -i $IN_FILE -af volume=-3.6dB,${E_ARG},equalizer=f=6200:t=h:w=100:g=-20:r=f32 -c:a pcm_f32le _tmp_sub_0.wav
 
   # Adjust envelope (The purpose of the high-pass filter is to remove noise)
 

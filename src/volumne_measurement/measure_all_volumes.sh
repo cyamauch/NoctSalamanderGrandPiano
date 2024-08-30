@@ -9,7 +9,9 @@ fi
 
 SEC=$1
 
-DIR=../../AccurateSalamanderGrandPianoV5.0_48khz24bit/48khz24bit/
+DIR=../../AccurateSalamanderGrandPianoV5.1_48khz24bit/48khz24bit/
+
+echo "Note: Directory is $DIR"
 
 PLOT_CMD="plot "
 

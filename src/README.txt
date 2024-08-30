@@ -250,6 +250,12 @@ V5.0 (Aug.5,2024)
   adjusted individually to improve continuity.
 * "F#1" and "C3" are generated from "A1" and "A2" respectively.
 * Code for restoring "C6" is added to mk_special.sh.
+V5.1 (Aug.30,2024)
+* amp_veltrack of SFZ files are changed: 76 => 83.
+* Reviewed and improved removal of non-overtone frequency components between 
+  A4 and C8.
+* Improved amount of high-frequency component at A4,C5,A5,C6 and D#6.
+* Improved tuning of C3: -3 => -2 cent.
 
 
 
