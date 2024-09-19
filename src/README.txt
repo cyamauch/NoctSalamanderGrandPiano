@@ -256,7 +256,10 @@ V5.1 (Aug.30,2024)
   A4 and C8.
 * Improved amount of high-frequency component at A4,C5,A5,C6 and D#6.
 * Improved tuning of C3: -3 => -2 cent.
-
+V5.2 (Sep.18,2024)
+* Improved continuity and minimized filtering between C2 and C4.  This results
+  in a higher quality while keeping the tone closer to that of the original 
+  Salamander.
 
 
 *** Licence:

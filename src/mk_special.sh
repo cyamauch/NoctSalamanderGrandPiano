@@ -71,9 +71,16 @@ elif [ "$KEY" = "F#2" ]; then
 
   SEEK=`echo $VEL $SEEK_ALL | awk '{ split($0,ARR," "); print ARR[1+$1]; }'`
 
-  #########      v1     v2     v3     v4     v5      v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
-  HPASS_VOL="     0      0      0  -48dB  -24dB -12.0dB -6.0dB -6.0dB -6.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB"
-  OUTPT_VOL="   1.0 +2.3dB +2.3dB +2.0dB +1.6dB  +1.2dB +0.6dB +0.6dB +0.6dB    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
+  # V5.1
+  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
+  ##HPASS_VOL="   0      0      0  -24dB  -12dB -6.0dB -4.0dB -6.0dB -6.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB"
+  ##OUTPT_VOL=" 1.0 +2.3dB +2.3dB +2.0dB +1.6dB +1.2dB +0.6dB +0.6dB +0.6dB    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
+
+  # V5.2
+  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
+  HPASS_VOL="     0      0  -27dB -9.0dB -5.0dB -4.0dB -3.0dB -3.0dB -5.0dB -4.0dB -5.0dB -5.5dB -5.0dB -5.0dB -5.0dB -5.0dB"
+  OUTPT_VOL="   1.0 +2.3dB +2.3dB +2.0dB +1.5dB +1.0dB +0.5dB +0.4dB +0.5dB +0.1dB +0.2dB +0.2dB +0.2dB +0.2dB +0.2dB +0.2dB"
+
   H_VOL=`echo $VEL $HPASS_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
   O_VOL=`echo $VEL $OUTPT_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
 
@@ -103,14 +110,22 @@ elif [ "$KEY" = "A2" ]; then
 
   SEEK=`echo $VEL $SEEK_ALL | awk '{ split($0,ARR," "); print ARR[1+$1]; }'`
 
-  #########      v1     v2     v3     v4     v5      v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
-  EQUAL_GIN="     0      0      0      0      0       0      0      0      0      0      0   +3.0   -1.5      0      0      0"
-  HPASS_VOL=" -24dB      0  -24dB  -24dB  -12dB  -6.0dB -5.0dB -4.0dB -3.5dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB"
+  # V5.1
+  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
+  ##HPASS_VOL=" -24dB      0  -24dB  -24dB  -12dB -6.0dB -5.0dB -4.0dB -3.5dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB -3.0dB"
+  ##OUTPT_VOL="+2.3dB +2.3dB +2.3dB +1.6dB +0.8dB +0.4dB   1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
 
-  OUTPT_VOL="+2.3dB +2.3dB +2.3dB +1.6dB +0.8dB  +0.4dB    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
-  E_GIN=`echo $VEL $EQUAL_GIN | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
+  # V5.2
+  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
+  HPASS_VOL=" -24dB      0  -37dB  -37dB  -25dB  -19dB  -18dB  -17dB -16.5dB -16dB  -16dB  -16dB  -16dB  -16dB  -16dB  -16dB"
+  OUTPT_VOL="+2.3dB +2.3dB +2.3dB +1.6dB +0.9dB  +0.7dB +0.5dB +0.6dB +0.7dB +0.9dB +0.9dB +0.9dB +1.1dB +1.1dB +1.1dB +1.2dB"
+
   H_VOL=`echo $VEL $HPASS_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
   O_VOL=`echo $VEL $OUTPT_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
+
+  #########      v1     v2     v3     v4     v5      v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
+  EQUAL_GIN="     0      0      0      0      0       0      0      0      0      0      0   +3.0   -1.5      0      0      0"
+  E_GIN=`echo $VEL $EQUAL_GIN | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
 
   # Adjust high-freq.
   GAIN6000="-10"
@@ -152,16 +167,24 @@ elif [ "$KEY" = "C3" ]; then
 
   SEEK=`echo $VEL $SEEK_ALL | awk '{ split($0,ARR," "); printf("%g\n",(110.0/130.813) * ARR[1+$1] - 0.001); }'`
 
-  #########      v1     v2     v3     v4     v5      v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
-  EQUAL_GIN="  -3.0   -3.0   -5.0   -5.0   -4.0    -2.0   -2.0      0      0      0      0   +3.0   -1.5      0      0      0"
-  HPASS_VOL="     0      0      0      0      0       0      0  -35dB  -18dB  -12dB -8.0dB -6.0dB -6.0dB -6.0dB -6.0dB -6.0dB"
+  # V5.1
+  #########       v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
+  ##HPASS_VOL="    0      0      0      0      0      0      0  -35dB  -18dB  -12dB -8.0dB -6.0dB -6.0dB -6.0dB -6.0dB -6.0dB"
+  ##INPUT_VOL=" +1.6   +3.1   +2.1   +0.2   -0.1   +0.4   +1.0   +1.9   +1.1   -0.4   -0.7   -0.4   -1.7   -0.9   -2.5   -2.4"
+
+  # V5.2
+  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
+  HPASS_VOL="     0      0      0      0      0      0      0      0      0      0      0     0      0      0      0      0"
+  INPUT_VOL="  +1.6   +3.1   +2.1   +0.2   -0.1   +0.4   +1.0    +1.9   +1.1   -0.3   -0.5   -0.2   -1.4   -0.6   -2.1   -2.0"
+
+  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
+  EQUAL_GIN="  -3.0   -3.0   -5.0   -5.0   -4.0   -2.0   -2.0      0      0      0      0   +3.0   -1.5      0      0      0"
   E_GIN=`echo $VEL $EQUAL_GIN | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
+
   H_VOL=`echo $VEL $HPASS_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
 
-  #########      v1     v2     v3     v4     v5      v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
   # NOTE: Unit is dB
   INPUT_VOL_BASE="-0.1"
-  INPUT_VOL="  +1.6   +3.1   +2.1   +0.2   -0.1    +0.4   +1.0    +1.9   +1.1   -0.4   -0.7   -0.4   -1.7   -0.9   -2.5   -2.4"
   I_VOL=`echo $VEL $INPUT_VOL | awk '{ split($0,ARR," "); printf("%gdB\n",ARR[1 + ARR[1]] + ('${INPUT_VOL_BASE}') ); }'`
 
   # NOTE: All freq. must be written in "A2"-based.
@@ -206,8 +229,206 @@ elif [ "$KEY" = "C3" ]; then
 
   ############################################################################
 
+elif [ "$KEY" = "D#3" ]; then
+
+  ############################################################################
+
+  # D#3 ... 155.563
+
+  # V5.1
+  #########       v1     v2     v3     v4     v5     v6     v7    v8     v9    v10    v11    v12    v13    v14    v15    v16
+  ##HPASS_VOL="   0      0      0      0      0      0      0   -15dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB"
+  ##OUTPT_VOL="+1.5dB +1.5dB +1.5dB +1.5dB +1.5dB +1.0dB +1.0dB +0.5dB   1.0   1.0    1.0    1.0    1.0    1.0    1.0   1.0"
+
+  # V5.2
+  #########     v1     v2     v3     v4     v5   v6   v7     v8     v9     v10    v11    v12    v13    v14    v15    v16
+  HPASS_VOL="   0      0      0      0      0    0    0      0      0      0      0      0      0      0      0      0"
+  OUTPT_VOL="+1.5dB +1.5dB +1.5dB +1.4dB +1.5dB +1dB +1dB +0.7dB +0.8dB +0.8dB +0.8dB +0.8dB +0.9dB +1.0dB +1.0dB +1.0dB"
+
+  H_VOL=`echo $VEL $HPASS_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
+  O_VOL=`echo $VEL $OUTPT_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
+
+  rm -f _tmp_sub_0.wav _tmp_sub_1.wav _tmp_sub_2.wav $OUT_FILE
+
+  "$FFMPEG" -i $IN_FILE -af volume=-1.5dB -c:a pcm_f32le _tmp_sub_0.wav
+
+  # Enhance overtone
+  "$FFMPEG" -i $IN_FILE -af highpass=f=270.0:t=q:w=0.707:r=f32,volume=$H_VOL -c:a pcm_f32le _tmp_sub_1.wav
+  "$FFMPEG" -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex "amix=normalize=0,volume=${O_VOL}" -c:a pcm_f32le _tmp_sub_2.wav
+  # Supress unnecessary sympathetic vibration to keep continuity
+
+  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
+  F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.7    0.5    0.3    0.1"
+
+  # V5.1
+  ##F_FACTOR_EFF=1.0
+  # V5.2
+  F_FACTOR_EFF=0.15
+
+  F_F=`echo $VEL $F_FACTOR_EFF $F_FACTOR | awk '{ split($0,ARR," "); print ARR[2] * ARR[2 + ARR[1]]; }'`
+
+  rm -f $OUT_FILE
+
+  EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=3017:t=h:w=60:g=%g:r=f32,equalizer=f=3186:t=h:w=60:g=%g:r=f32,equalizer=f=3522:t=h:w=70:g=%g:r=f32\n",-9.0*$1,-18.0*$1,-15.0*$1); }'`
+
+  # Adjust amount of high frequency components (around 6000Hz)
+  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=6000:t=h:w=1000:g=%g:r=f32\n",-12.0*$1); }'`
+
+  "$FFMPEG" -i _tmp_sub_2.wav -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
+
+  ############################################################################
+
+elif [ "$KEY" = "F#3" ]; then
+
+  ############################################################################
+
+  # Supress unnecessary sympathetic vibration to keep continuity
+
+  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
+  F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.7    0.5    0.3    0.1"
+
+  # V5.1
+  ##F_FACTOR_EFF=1.0
+  # V5.2
+  F_FACTOR_EFF=0.5
+
+  F_F=`echo $VEL $F_FACTOR_EFF $F_FACTOR | awk '{ split($0,ARR," "); print ARR[2] * ARR[2 + ARR[1]]; }'`
+
+  rm -f $OUT_FILE
+
+  EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=3215:t=h:w=70:g=%g:r=f32,equalizer=f=3614:t=h:w=70:g=%g:r=f32,equalizer=f=3813:t=h:w=70:g=%g:r=f32\n",-12.0*$1,-15.0*$1,-18.0*$1); }'`
+
+  # Adjust amount of high frequency components (around 6000Hz)
+  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=6000:t=h:w=1000:g=%g:r=f32\n",-12.0*$1); }'`
+
+  "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
+
+  ############################################################################
+
+elif [ "$KEY" = "A3" ]; then
+
+  ############################################################################
+
+  # Supress unnecessary sympathetic vibration to keep continuity
+
+  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
+  F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.7    0.5    0.3    0.1"
+
+  # V5.1
+  ##F_FACTOR_EFF=1.0
+  # V5.2
+  F_FACTOR_EFF=0.7
+
+  F_F=`echo $VEL $F_FACTOR_EFF $F_FACTOR | awk '{ split($0,ARR," "); print ARR[2] * ARR[2 + ARR[1]]; }'`
+
+  rm -f $OUT_FILE
+
+  EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=2680:t=h:w=70:g=%g:r=f32,equalizer=f=3144:t=h:w=70:g=%g:r=f32,equalizer=f=3379:t=h:w=70:g=%g:r=f32,equalizer=f=3617:t=h:w=70:g=%g:r=f32\n",-8.0*$1,-15.0*$1,-14.0*$1,-20.0*$1); }'`
+
+  # Adjust amount of high frequency components (around 6000Hz)
+  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=4900:t=h:w=1000:g=%g:r=f32,equalizer=f=6200:t=h:w=1000:g=%g:r=f32\n",-8.0*$1,-15.0*$1); }'`
+
+  "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
+
+  ############################################################################
+
+elif [ "$KEY" = "C4" ]; then
+
+  ############################################################################
+
+  # Supress unnecessary sympathetic vibration to keep continuity
+
+  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
+  F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.7    0.5    0.3    0.1"
+
+  # V5.1
+  ##F_FACTOR_EFF=1.0
+  # V5.2
+  F_FACTOR_EFF=0.9
+
+  F_F=`echo $VEL $F_FACTOR_EFF $F_FACTOR | awk '{ split($0,ARR," "); print ARR[2] * ARR[2 + ARR[1]]; }'`
+
+  rm -f $OUT_FILE
+
+  EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=2630:t=h:w=70:g=%g:r=f32,equalizer=f=3200:t=h:w=70:g=%g:r=f32,equalizer=f=3482:t=h:w=70:g=%g:r=f32,equalizer=f=3767:t=h:w=70:g=%g:r=f32,equalizer=f=4044:t=h:w=80:g=%g:r=f32,equalizer=f=4338:t=h:w=80:g=%g:r=f32\n",-5.0*$1,-7.0*$1,-13.0*$1,-6.0*$1,-18.0*$1,-10.0*$1); }'`
+
+  # Adjust amount of high frequency components (around 6000Hz)
+  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=6200:t=h:w=1000:g=%g:r=f32\n",-15.0*$1); }'`
+
+  "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
+
+  ############################################################################
+
+elif [ "$KEY" = "F#5" ]; then
+
+  ############################################################################
+
+  # Remove very high frequency noise
+
+  ##EQ_STR_0="equalizer=f=4453:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4653:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4659:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5207:t=h:w=10.0:g=-40.0:r=f32"
+
+  EQ_STR_1="equalizer=f=5457:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5545:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=8325:t=h:w=20.0:g=-20.0:r=f32"
+
+  # Adjust overtone to keep continuity
+
+  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
+  #F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.6    0.3    0.0"
+  F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.7    0.5    0.3    0.1"
+  F_F=`echo $VEL $F_FACTOR | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
+
+  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=5332:t=h:w=60:g=%g:r=f32,equalizer=f=6197:t=h:w=60:g=%g:r=f32,equalizer=f=7044:t=h:w=70:g=%g:r=f32\n",-6.0*$1,-10.0*$1,-12.0*$1-2); }'`
+
+  rm -f $OUT_FILE
+
+  ##"$FFMPEG" -i $IN_FILE -af ${EQ_STR_0},${EQ_STR_1},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
+
+  "$FFMPEG" -i $IN_FILE -af ${EQ_STR_1},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
+
+  ############################################################################
+
+elif [ "$KEY" = "C6" ]; then
+
+  ############################################################################
+
+  # C6 ... 1046.502
+
+  # Reduce strike and adjust the balance between the fundamental/overtone
+
+  #########          v1            v2            v3            v4            v5            v6            v7
+  EQ_GIN="11,-3,6,3,7,5 10,-4,5,2,6,4 10,-4,5,2,6,4 10,-4,5,2,6,4  9,-5,4,1,5,3  9,-5,4,1,5,3  9,-5,4,1,5,3"
+  E_GIN=`echo $VEL $EQ_GIN | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
+  if [ "$E_GIN" = "" ]; then
+    # DEFAULT
+    E_GIN="8,-6,3,0,4,2"
+  fi
+
+  # Boost weakening component (high-freq.)
+  GIN4277=1.0
+  GIN5403=7.0
+  GIN6590=1.0
+
+  E_ARG=`echo $E_GIN | awk -F, '{printf("equalizer=f=1046.502:t=h:w=78:g=%s:r=f32,equalizer=f=2111:t=h:w=78:g=%s:r=f32,equalizer=f=3179:t=h:w=78:g=%s:r=f32,equalizer=f=4277:t=h:w=78:g=%s:r=f32,equalizer=f=5403:t=h:w=78:g=%s:r=f32,equalizer=f=6590:t=h:w=78:g=%s:r=f32\n",$1,$2,$3,'${GIN4277}'+$4,'${GIN5403}'+$5,'${GIN6590}'+$6);}'`
+
+  rm -f _tmp_sub_0.wav _tmp_sub_1.wav _tmp_sub_2.wav $OUT_FILE
+
+  # 4438Hz, 5583Hz, 6200Hz : Remove non-overtone frequency components
+  ##"$FFMPEG" -i $IN_FILE -af volume=-3.6dB,${E_ARG},equalizer=f=4438:t=h:w=20:g=-40:r=f32,equalizer=f=5583:t=h:w=10:g=-30:r=f32,equalizer=f=6200:t=h:w=100:g=-20:r=f32 -c:a pcm_f32le _tmp_sub_0.wav
+
+  # 6200Hz : Remove non-overtone frequency components
+  "$FFMPEG" -i $IN_FILE -af volume=-3.6dB,${E_ARG},equalizer=f=6200:t=h:w=100:g=-20:r=f32 -c:a pcm_f32le _tmp_sub_0.wav
+
+  # Adjust envelope (The purpose of the high-pass filter is to remove noise)
+
+  "$FFMPEG" -i _tmp_sub_0.wav -af "afade=t=out:st=0:d=3.0,volume=1.0" -c:a pcm_f32le _tmp_sub_1.wav
+  "$FFMPEG" -i _tmp_sub_0.wav -af "highpass=f=700.0:t=q:w=0.707:r=f32,afade=t=in:st=0:d=3.0,volume=5.0" -c:a pcm_f32le _tmp_sub_2.wav
+
+  "$FFMPEG" -i _tmp_sub_1.wav -i _tmp_sub_2.wav -filter_complex "amix=normalize=0" -c:a pcm_f32le $OUT_FILE
+
+  ############################################################################
+
 elif [ "$KEY" = "C3_NOT_USED" ]; then
 
+  ############################################################################
   ############################################################################
 
   # FFmpeg afade/acrossfade filter curves illustration
@@ -459,175 +680,6 @@ elif [ "$KEY" = "C3_NOT_USED" ]; then
   cat $PCM_OUT > $OUT_FILE
 
   ############################################################################
-
-elif [ "$KEY" = "D#3" ]; then
-
-  ############################################################################
-
-  # D#3 ... 155.563
-
-  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
-  ##HPASS_VOL="     0      0      0  -30dB  -23dB  -15dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB"
-  ##OUTPT_VOL="+1.5dB +1.5dB +1.5dB +1.2dB +1.0dB +0.7dB   1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
-
-  ##HPASS_VOL="     0      0      0     0     0   -15dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB"
-  HPASS_VOL="     0      0      0     0     0     0     0      -15dB  -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB -7.5dB"
-  OUTPT_VOL="+1.5dB +1.5dB +1.5dB +1.5dB +1.5dB +1.0dB +1.0dB  +0.5dB    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0"
-  H_VOL=`echo $VEL $HPASS_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
-  O_VOL=`echo $VEL $OUTPT_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
-
-  rm -f _tmp_sub_0.wav _tmp_sub_1.wav _tmp_sub_2.wav $OUT_FILE
-
-  "$FFMPEG" -i $IN_FILE -af volume=-1.5dB -c:a pcm_f32le _tmp_sub_0.wav
-
-  # Enhance overtone
-  "$FFMPEG" -i $IN_FILE -af highpass=f=270.0:t=q:w=0.707:r=f32,volume=$H_VOL -c:a pcm_f32le _tmp_sub_1.wav
-  "$FFMPEG" -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex "amix=normalize=0,volume=${O_VOL}" -c:a pcm_f32le _tmp_sub_2.wav
-  # Supress unnecessary sympathetic vibration to keep continuity
-
-  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
-  F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.7    0.5    0.3    0.1"
-  F_F=`echo $VEL $F_FACTOR | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
-
-  rm -f $OUT_FILE
-
-  EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=3017:t=h:w=60:g=%g:r=f32,equalizer=f=3186:t=h:w=60:g=%g:r=f32,equalizer=f=3522:t=h:w=70:g=%g:r=f32\n",-9.0*$1,-18.0*$1,-15.0*$1); }'`
-
-  # Adjust amount of high frequency components (around 6000Hz)
-  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=6000:t=h:w=1000:g=%g:r=f32\n",-12.0*$1); }'`
-
-  "$FFMPEG" -i _tmp_sub_2.wav -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
-
-  ############################################################################
-
-elif [ "$KEY" = "F#3" ]; then
-
-  ############################################################################
-
-  # Supress unnecessary sympathetic vibration to keep continuity
-
-  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
-  F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.7    0.5    0.3    0.1"
-  F_F=`echo $VEL $F_FACTOR | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
-
-  rm -f $OUT_FILE
-
-  EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=3215:t=h:w=70:g=%g:r=f32,equalizer=f=3614:t=h:w=70:g=%g:r=f32,equalizer=f=3813:t=h:w=70:g=%g:r=f32\n",-12.0*$1,-15.0*$1,-18.0*$1); }'`
-
-  # Adjust amount of high frequency components (around 6000Hz)
-  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=6000:t=h:w=1000:g=%g:r=f32\n",-12.0*$1); }'`
-
-  "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
-
-  ############################################################################
-
-elif [ "$KEY" = "A3" ]; then
-
-  ############################################################################
-
-  # Supress unnecessary sympathetic vibration to keep continuity
-
-  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
-  F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.7    0.5    0.3    0.1"
-  F_F=`echo $VEL $F_FACTOR | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
-
-  rm -f $OUT_FILE
-
-  EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=2680:t=h:w=70:g=%g:r=f32,equalizer=f=3144:t=h:w=70:g=%g:r=f32,equalizer=f=3379:t=h:w=70:g=%g:r=f32,equalizer=f=3617:t=h:w=70:g=%g:r=f32\n",-8.0*$1,-15.0*$1,-14.0*$1,-20.0*$1); }'`
-
-  # Adjust amount of high frequency components (around 6000Hz)
-  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=4900:t=h:w=1000:g=%g:r=f32,equalizer=f=6200:t=h:w=1000:g=%g:r=f32\n",-8.0*$1,-15.0*$1); }'`
-
-  "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
-
-  ############################################################################
-
-elif [ "$KEY" = "C4" ]; then
-
-  ############################################################################
-
-  # Supress unnecessary sympathetic vibration to keep continuity
-
-  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
-  F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.7    0.5    0.3    0.1"
-  F_F=`echo $VEL $F_FACTOR | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
-
-  rm -f $OUT_FILE
-
-  EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=2630:t=h:w=70:g=%g:r=f32,equalizer=f=3200:t=h:w=70:g=%g:r=f32,equalizer=f=3482:t=h:w=70:g=%g:r=f32,equalizer=f=3767:t=h:w=70:g=%g:r=f32,equalizer=f=4044:t=h:w=80:g=%g:r=f32,equalizer=f=4338:t=h:w=80:g=%g:r=f32\n",-5.0*$1,-7.0*$1,-13.0*$1,-6.0*$1,-18.0*$1,-10.0*$1); }'`
-
-  # Adjust amount of high frequency components (around 6000Hz)
-  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=6200:t=h:w=1000:g=%g:r=f32\n",-15.0*$1); }'`
-
-  "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
-
-  ############################################################################
-
-elif [ "$KEY" = "F#5" ]; then
-
-  ############################################################################
-
-  # Remove very high frequency noise
-
-  ##EQ_STR_0="equalizer=f=4453:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4653:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=4659:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5207:t=h:w=10.0:g=-40.0:r=f32"
-
-  EQ_STR_1="equalizer=f=5457:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=5545:t=h:w=10.0:g=-40.0:r=f32,equalizer=f=8325:t=h:w=20.0:g=-20.0:r=f32"
-
-  # Adjust overtone to keep continuity
-
-  #########      v1     v2     v3     v4     v5     v6     v7     v8     v9    v10    v11    v12    v13    v14    v15    v16
-  #F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.6    0.3    0.0"
-  F_FACTOR="    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    1.0    0.9    0.8    0.7    0.5    0.3    0.1"
-  F_F=`echo $VEL $F_FACTOR | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
-
-  EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=5332:t=h:w=60:g=%g:r=f32,equalizer=f=6197:t=h:w=60:g=%g:r=f32,equalizer=f=7044:t=h:w=70:g=%g:r=f32\n",-6.0*$1,-10.0*$1,-12.0*$1-2); }'`
-
-  rm -f $OUT_FILE
-
-  ##"$FFMPEG" -i $IN_FILE -af ${EQ_STR_0},${EQ_STR_1},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
-
-  "$FFMPEG" -i $IN_FILE -af ${EQ_STR_1},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
-
-  ############################################################################
-
-elif [ "$KEY" = "C6" ]; then
-
-  ############################################################################
-
-  # C6 ... 1046.502
-
-  # Reduce strike and adjust the balance between the fundamental/overtone
-
-  #########          v1            v2            v3            v4            v5            v6            v7
-  EQ_GIN="11,-3,6,3,7,5 10,-4,5,2,6,4 10,-4,5,2,6,4 10,-4,5,2,6,4  9,-5,4,1,5,3  9,-5,4,1,5,3  9,-5,4,1,5,3"
-  E_GIN=`echo $VEL $EQ_GIN | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
-  if [ "$E_GIN" = "" ]; then
-    # DEFAULT
-    E_GIN="8,-6,3,0,4,2"
-  fi
-
-  # Boost weakening component (high-freq.)
-  GIN4277=1.0
-  GIN5403=7.0
-  GIN6590=1.0
-
-  E_ARG=`echo $E_GIN | awk -F, '{printf("equalizer=f=1046.502:t=h:w=78:g=%s:r=f32,equalizer=f=2111:t=h:w=78:g=%s:r=f32,equalizer=f=3179:t=h:w=78:g=%s:r=f32,equalizer=f=4277:t=h:w=78:g=%s:r=f32,equalizer=f=5403:t=h:w=78:g=%s:r=f32,equalizer=f=6590:t=h:w=78:g=%s:r=f32\n",$1,$2,$3,'${GIN4277}'+$4,'${GIN5403}'+$5,'${GIN6590}'+$6);}'`
-
-  rm -f _tmp_sub_0.wav _tmp_sub_1.wav _tmp_sub_2.wav $OUT_FILE
-
-  # 4438Hz, 5583Hz, 6200Hz : Remove non-overtone frequency components
-  ##"$FFMPEG" -i $IN_FILE -af volume=-3.6dB,${E_ARG},equalizer=f=4438:t=h:w=20:g=-40:r=f32,equalizer=f=5583:t=h:w=10:g=-30:r=f32,equalizer=f=6200:t=h:w=100:g=-20:r=f32 -c:a pcm_f32le _tmp_sub_0.wav
-
-  # 6200Hz : Remove non-overtone frequency components
-  "$FFMPEG" -i $IN_FILE -af volume=-3.6dB,${E_ARG},equalizer=f=6200:t=h:w=100:g=-20:r=f32 -c:a pcm_f32le _tmp_sub_0.wav
-
-  # Adjust envelope (The purpose of the high-pass filter is to remove noise)
-
-  "$FFMPEG" -i _tmp_sub_0.wav -af "afade=t=out:st=0:d=3.0,volume=1.0" -c:a pcm_f32le _tmp_sub_1.wav
-  "$FFMPEG" -i _tmp_sub_0.wav -af "highpass=f=700.0:t=q:w=0.707:r=f32,afade=t=in:st=0:d=3.0,volume=5.0" -c:a pcm_f32le _tmp_sub_2.wav
-
-  "$FFMPEG" -i _tmp_sub_1.wav -i _tmp_sub_2.wav -filter_complex "amix=normalize=0" -c:a pcm_f32le $OUT_FILE
-
   ############################################################################
 
 fi

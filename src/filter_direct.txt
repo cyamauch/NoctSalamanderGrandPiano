@@ -68,8 +68,8 @@ D#4v1  lowpass=f=1100.0:t=q:w=0.707:r=f32
 ##
 
 D#3v2  equalizer=f=1300.0:t=h:w=1300.0:g=-5.5:r=f32
-D#3v3  equalizer=f=4044.64:t=h:w=1244.5:g=-30:r=f32
-D#3v4  equalizer=f=4044.64:t=h:w=1244.5:g=-20:r=f32
+D#3v3  equalizer=f=4044.64:t=h:w=1244.5:g=-38:r=f32
+D#3v4  equalizer=f=4044.64:t=h:w=1244.5:g=-35:r=f32
 
 F#3v2  equalizer=f=1300.0:t=h:w=1300.0:g=-7.5:r=f32
 
