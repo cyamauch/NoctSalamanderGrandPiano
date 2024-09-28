@@ -9,7 +9,7 @@ fi
 
 SEC=$1
 
-DIR=../../AccurateSalamanderGrandPianoV5.1_48khz24bit/48khz24bit/
+DIR=../../AccurateSalamanderGrandPianoV5.2_48khz24bit/48khz24bit/
 
 echo "Note: Directory is $DIR"
 
@@ -24,13 +24,13 @@ for i in $LAYER_LIST ; do
 
   LIST=`ls $DIR | grep '[0-1][0-9][0-9]_[^_v]*'"v${i}"'[.]wav' | awk '{printf("%s/%s\n","'${DIR}'",$1);}'`
   #LIST=`ls $DIR | grep '[0][23][0-9]_[^_v]*'"v${i}"'[.]wav' | awk '{printf("%s/%s\n","'${DIR}'",$1);}'`
-  #LIST=`ls $DIR | grep '[0][456][0-9]_[^_v]*'"v${i}"'[.]wav' | awk '{printf("%s/%s\n","'${DIR}'",$1);}'`
+  #LIST=`ls $DIR | grep '[0][3456][0-9]_[^_v]*'"v${i}"'[.]wav' | awk '{printf("%s/%s\n","'${DIR}'",$1);}'`
   #LIST=`ls $DIR | grep '[01][06789][0-9]_[^_v]*'"v${i}"'[.]wav' | awk '{printf("%s/%s\n","'${DIR}'",$1);}'`
   #LIST=`ls $DIR | grep '[01][0789][0-9]_[^_v]*'"v${i}"'[.]wav' | awk '{printf("%s/%s\n","'${DIR}'",$1);}'`
   #LIST=`ls $DIR | grep '[0][789][0-9]_[^_v]*'"v${i}"'[.]wav' | awk '{printf("%s/%s\n","'${DIR}'",$1);}'`
 
   OUTPUT="meanvol-sec${SEC}_v${i}.txt"
-  sh measure_volume.sh $SEC $LIST | awk '{printf("%d %s\n",int(substr($1,1,3)),$2);}' > $OUTPUT
+  sh measure_volume.sh $SEC $LIST > $OUTPUT
 
   if [ "$i" = "16" ]; then
     PLOT_CMD="$PLOT_CMD '${OUTPUT}' with linesp title '$i'"
@@ -40,10 +40,13 @@ for i in $LAYER_LIST ; do
 
 done
 
-echo "set xlabel 'note-id'" > plot_meanvol-sec${SEC}.txt
-echo "set ylabel 'mean-volumne'" >> plot_meanvol-sec${SEC}.txt
-echo "set grid" >> plot_meanvol-sec${SEC}.txt
-#echo "set xrange [19:115]" >> plot_meanvol-sec${SEC}.txt
+OUTPUT_PLOT=plot_meanvol-sec${SEC}.txt
 
-echo $PLOT_CMD >> plot_meanvol-sec${SEC}.txt
+echo "set xlabel 'note-id'" > $OUTPUT_PLOT
+echo "set ylabel 'mean-volumne (${SEC} sec.)'" >> $OUTPUT_PLOT
+echo "set grid" >> $OUTPUT_PLOT
+echo "set xtics 10" >> $OUTPUT_PLOT
+#echo "set xrange [19:120]" >> $OUTPUT_PLOT
+
+echo $PLOT_CMD >> $OUTPUT_PLOT
 

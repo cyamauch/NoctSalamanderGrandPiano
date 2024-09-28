@@ -26,7 +26,14 @@ while [ "$2" != "" ]; do
     "$FFMPEG" -i $IN_FILE -ss 0 -to $SPAN -c:a pcm_f32le $OUT_FILE 2> /dev/null
     "$FFMPEG" -i $OUT_FILE -af volumedetect -f null - 2> _result_.txt
 
-    echo -n "`basename $IN_FILE` "
+    NAME="`basename $IN_FILE | sed -e 's/v[0-9][0-9]*[.]wav//'`"
+    TST1=`echo $NAME | awk -F_ '{print $1;}'`
+    TST2=`echo $NAME | awk -F_ '{print $2;}'`
+    if [ "$TST2" = "" ]; then
+	echo -n `cat ../key_n-id.txt | grep $TST1 | sed -e 's/^[^ ][^ ]*[ ]//'`" "
+    else
+	echo -n "${TST1} "
+    fi
     cat _result_.txt | grep mean_volume | sed -e 's/.*mean_volume[:][ ]//' -e 's/ dB//'
 
   fi
