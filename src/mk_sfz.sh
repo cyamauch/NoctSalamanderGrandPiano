@@ -63,7 +63,16 @@ if [ "$4" != "" ]; then
         p_amp = match($0, /amp_veltrack=73/); \
       } \
       if ( 0 < p0 && 0 < p1 && volume != 0.0 ) { \
-        gsub(/[.]wav[ ]/, ".wav volume=" volume " ", $0); print $0; \
+        p_v=match($0, /volume[=][0123456789.]*/); \
+        if ( 0 < p_v ) { \
+          vol_org = substr($0,p_v+7,RLENGTH-7); \
+          vol_str = sprintf("volume=%g",vol_org + volume); \
+          sub(/volume=[^ ][^ ]*/,vol_str,$0); \
+        } \
+        else { \
+          sub(/[.]wav[ ]/, ".wav volume=" volume " ", $0); \
+        } \
+        print $0; \
       } \
       else if ( 0 < p_amp ) { \
         gsub(/amp_veltrack=73/, "amp_veltrack=" AMP_VEL, $0); print $0; \
