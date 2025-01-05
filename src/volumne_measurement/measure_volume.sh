@@ -1,9 +1,12 @@
 #!/bin/sh
 
-# for MinGW
-#FFMPEG="C:/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
-# for cygwin
-FFMPEG="/cygdrive/c/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
+FFMPEG="C:/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
+
+# "C:" -> "/cygdrive/c" for cygwin
+if [ "$OSTYPE" = "cygwin" ]; then
+  FFMPEG="`echo $FFMPEG | sed -e 's/C:/\/cygdrive\/c/'`"
+fi
+
 
 if [ "$2" = "" ]; then
 

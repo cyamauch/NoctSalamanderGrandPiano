@@ -11,7 +11,12 @@ fi
 if [ -f "$1" ]; then
   FFMPEG="$1"
 else
-  FFMPEG="/cygdrive/c/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
+  FFMPEG="C:/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
+fi
+
+# "C:" -> "/cygdrive/c" for cygwin
+if [ "$OSTYPE" = "cygwin" ]; then
+  FFMPEG="`echo $FFMPEG | sed -e 's/C:/\/cygdrive\/c/'`"
 fi
 
 KEY=$2

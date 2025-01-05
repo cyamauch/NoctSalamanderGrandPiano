@@ -4,7 +4,7 @@
 #                                                             #
 #     Main script for Noct-Salamander Grand Piano Project.    #
 #                                                             #
-#                          (C) 2023-2024 Chisato Yamauchi     #
+#                          (C) 2023-2025 Chisato Yamauchi     #
 #                                                             #
 ###############################################################
 
@@ -14,7 +14,12 @@
 #### Set your ffmpeg.exe in Makefile.  Native Windows binary is OK. ####
 
 if [ "$FFMPEG" = "" ]; then
-  FFMPEG="/cygdrive/c/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
+  FFMPEG="C:/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
+fi
+
+# "C:" -> "/cygdrive/c" for cygwin
+if [ "$OSTYPE" = "cygwin" ]; then
+  FFMPEG="`echo $FFMPEG | sed -e 's/C:/\/cygdrive\/c/'`"
 fi
 
 if [ "$FFMPEG_OPT" = "" ]; then
