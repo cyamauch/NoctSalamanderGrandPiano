@@ -58,7 +58,7 @@ func_merge ()
       if ( 0 < flg ) { \
         printf("%s",ARR[1]); \
         for ( i=1 ; i <= 16 ; i++ ) { \
-          printf(" %.2f", ARR[1+i]); \
+          printf(" %.3f", ARR[1+i]); \
         } \
         printf("\n"); \
       } \
@@ -84,7 +84,7 @@ func_output_overtone1 ()
         split($0,ARR," "); \
         idx=1; \
         for ( i=1 ; i <= 16 ; i++ ) { \
-          printf(" %.2f",$2 * ARR[4+idx]); \
+          printf(" %.3f",$2 * ARR[4+idx]); \
           if ( 4 + i < length(ARR) ) idx++; \
         } \
         printf("\n"); \
@@ -107,7 +107,7 @@ func_output_overtone2 ()
         split($0,ARR," "); \
         idx=1; \
         for ( i=1 ; i <= 16 ; i++ ) { \
-          printf(" %.2f",$3 * ARR[4+idx]); \
+          printf(" %.3f",$3 * ARR[4+idx]); \
           if ( 4 + i < length(ARR) ) idx++; \
         } \
         printf("\n"); \
@@ -209,7 +209,7 @@ cat overtone_root.txt $OVERTONE_CONFIG $OVERTONE3_CONFIG $BASS_CONFIG | awk '{ \
       split($0,ARR," "); \
       idx=1; \
       for ( i=1 ; i <= 16 ; i++ ) { \
-        printf(" %.2f",$4 * ARR[4+idx]); \
+        printf(" %.3f",$4 * ARR[4+idx]); \
         if ( 4 + i < length(ARR) ) idx++; \
       } \
       printf("\n"); \

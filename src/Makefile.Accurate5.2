@@ -2,6 +2,9 @@
 #
 # Set your ffmpeg.exe.  Native Windows binary is OK.
 #
+# for MinGW
+#FFMPEG = C:/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe
+# for cygwin
 FFMPEG = /cygdrive/c/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe
 
 #

@@ -49,7 +49,15 @@ fi
 
 ####
 
+if [ ! -x "$FFMPEG" ]; then
+  echo "Not found: $FFMPEG"
+  exit 127
+fi
+
+####
+
 FFMPEG_LOG_FILE="ffmpeg_log.txt"
+FFMPEG_SP_LOG_FILE="ffmpeg-sp_log.txt"
 
 
 #### SELECTION of wav creation ####
@@ -201,6 +209,7 @@ ARG_OUTFILE_SED=`echo "$ARG_OUTFILE_SED_0" "$ARG_OUTFILE_SED_1"`
 ########
 
 rm -f $FFMPEG_LOG_FILE
+rm -f $FFMPEG_SP_LOG_FILE
 
 
 #### COPY MODE ####
@@ -457,15 +466,21 @@ for i in $LIST ; do
       # Special code: Fix strange envelope, noise, etc.
       if [ "$KEY" = "F#1" -o "$KEY" = "F#2" -o "$KEY" = "A2" -o "$KEY" = "C3" -o "$KEY" = "D#3" -o "$KEY" = "F#3" -o "$KEY" = "A3" -o "$KEY" = "C4" -o "$KEY" = "F#5" -o "$KEY" = "C6" ]; then
         rm -f tmp_pcm.wav
-        sh mk_special.sh "$FFMPEG" $KEY $j "$IN_FILE" tmp_pcm.wav 2> /dev/null
+        sh mk_special.sh "$FFMPEG" $KEY $j "$IN_FILE" tmp_pcm.wav "$FFMPEG_SP_LOG_FILE" 2> /dev/null
         IN_FILE=tmp_pcm.wav
       fi
       #
       rm -f tmp1.wav tmp2.wav "$OUT_FILE"
       ARGS="-ss ${SEEK_THIS} -af ${FILTER_ASETRATE}${FILTER_DIRECT_KEY}${FILTER_DIRECT_ARG}${ARG_EQ_ROOT_1}${ARG_EQ_ROOT_2}${ARG_EQ_01}${ARG_EQ_23}volume=${VOL_THIS}dB -c:a pcm_f32le"
-      echo FFMPEG -i "$IN_FILE" $ARGS "OUT.wav" >> $FFMPEG_LOG_FILE
+      ###LOG###
+      echo FFMPEG -i "$IN_FILE" $ARGS tmp1.wav >> $FFMPEG_LOG_FILE
+      #########
       "$FFMPEG" -i "$IN_FILE" $ARGS tmp1.wav 2> /dev/null
       # Adjust envelope
+      ###LOG###
+      echo FFMPEG -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" -c:a pcm_f32le tmp2.wav >> $FFMPEG_LOG_FILE
+      echo FFMPEG -i tmp1.wav -i tmp2.wav -filter_complex "amix=normalize=0" $FFMPEG_OPT "$OUT_FILENAME" >> $FFMPEG_LOG_FILE
+      #########
       "$FFMPEG" -i tmp1.wav -af "afade=t=in:st=0:d=${DURATION},volume=${ENV_VOL}" -c:a pcm_f32le tmp2.wav 2> /dev/null
       "$FFMPEG" -i tmp1.wav -i tmp2.wav -filter_complex "amix=normalize=0" $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
     fi

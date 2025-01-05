@@ -18,6 +18,11 @@ KEY=$2
 VEL=$3
 IN_FILE=$4
 OUT_FILE=$5
+if [ "$6" = "" ]; then
+  FFMPEG_SP_LOG_FILE=/dev/null
+else
+  FFMPEG_SP_LOG_FILE=$6
+fi
 
   ############################################################################
 
@@ -49,6 +54,15 @@ if [ "$KEY" = "F#1" ]; then
   EQ_BASE="equalizer=f=1665:t=h:w=1665:g=${GAIN1665}:r=f32,equalizer=f=220.0:t=h:w=10:g=${GAIN220}:r=f32,equalizer=f=329.6:t=h:w=10:g=${GAIN330}:r=f32,equalizer=f=392.0:t=h:w=10:g=${GAIN392}:r=f32"
 
   rm -f _tmp_sub_seek.wav _tmp_sub_0.wav _tmp_sub_1.wav $OUT_FILE
+
+  ###LOG###
+  echo FFMPEG -i $IN_FILE -ss $SEEK -c:a pcm_f32le _tmp_sub_seek.wav >> $FFMPEG_SP_LOG_FILE
+
+  echo FFMPEG -i _tmp_sub_seek.wav -af equalizer=f=1439:t=h:w=8:g=-40:r=f32,equalizer=f=2176:t=h:w=8:g=-40:r=f32,${EQ_BASE},afade=t=out:st=0:d=0.5:silence=0.0:curve=tri -c:a pcm_f32le _tmp_sub_0.wav >> $FFMPEG_SP_LOG_FILE
+  echo FFMPEG -i _tmp_sub_seek.wav -af ${EQ_BASE},afade=t=in:st=0:d=0.5:silence=0.0:curve=tri -c:a pcm_f32le _tmp_sub_1.wav >> $FFMPEG_SP_LOG_FILE
+
+  echo FFMPEG -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex "amix=normalize=0,volume=-1.2dB" -c:a pcm_f32le $OUT_FILE >> $FFMPEG_SP_LOG_FILE
+  #########
 
   "$FFMPEG" -i $IN_FILE -ss $SEEK -c:a pcm_f32le _tmp_sub_seek.wav
 
@@ -85,14 +99,26 @@ elif [ "$KEY" = "F#2" ]; then
   O_VOL=`echo $VEL $OUTPT_VOL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
 
   rm -f _tmp_sub_seek.wav _tmp_sub_0.wav _tmp_sub_1.wav _tmp_sub_2.wav _tmp_sub_3.wav $OUT_FILE
+  ###LOG###
+  echo FFMPEG -i $IN_FILE -ss $SEEK -c:a pcm_f32le _tmp_sub_seek.wav >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i $IN_FILE -ss $SEEK -c:a pcm_f32le _tmp_sub_seek.wav
 
   # Erase strange noise of attack
+  ###LOG###
+  echo FFMPEG -i _tmp_sub_seek.wav -af afade=t=in:st=0:d=0.2:silence=0.0:curve=tri,volume=-2.3dB -c:a pcm_f32le _tmp_sub_0.wav >> $FFMPEG_SP_LOG_FILE
+  echo FFMPEG -i _tmp_sub_seek.wav -af afade=t=out:st=0:d=0.2:silence=0.0:curve=tri,equalizer=f=1035.0:t=h:w=1.0:g=-80:r=f32,volume=-0.3dB -c:a pcm_f32le _tmp_sub_1.wav >> $FFMPEG_SP_LOG_FILE
+  echo FFMPEG -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex "amix=normalize=0" -c:a pcm_f32le _tmp_sub_2.wav >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i _tmp_sub_seek.wav -af afade=t=in:st=0:d=0.2:silence=0.0:curve=tri,volume=-2.3dB -c:a pcm_f32le _tmp_sub_0.wav
   "$FFMPEG" -i _tmp_sub_seek.wav -af afade=t=out:st=0:d=0.2:silence=0.0:curve=tri,equalizer=f=1035.0:t=h:w=1.0:g=-80:r=f32,volume=-0.3dB -c:a pcm_f32le _tmp_sub_1.wav
   "$FFMPEG" -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex "amix=normalize=0" -c:a pcm_f32le _tmp_sub_2.wav
 
   # Enhance overtone
+  ###LOG###
+  echo FFMPEG -i _tmp_sub_2.wav -af highpass=f=250.0:t=q:w=0.707:r=f32,volume=$H_VOL -c:a pcm_f32le _tmp_sub_3.wav >> $FFMPEG_SP_LOG_FILE
+  echo FFMPEG -i _tmp_sub_2.wav -i _tmp_sub_3.wav -filter_complex "amix=normalize=0,volume=${O_VOL}" -c:a pcm_f32le $OUT_FILE  >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i _tmp_sub_2.wav -af highpass=f=250.0:t=q:w=0.707:r=f32,volume=$H_VOL -c:a pcm_f32le _tmp_sub_3.wav
   "$FFMPEG" -i _tmp_sub_2.wav -i _tmp_sub_3.wav -filter_complex "amix=normalize=0,volume=${O_VOL}" -c:a pcm_f32le $OUT_FILE
 
@@ -131,9 +157,18 @@ elif [ "$KEY" = "A2" ]; then
   GAIN6000="-10"
 
   rm -f _tmp_sub_seek.wav _tmp_sub_0.wav _tmp_sub_1.wav _tmp_sub_2.wav _tmp_sub_3.wav _tmp_sub_4.wav $OUT_FILE
+  ###LOG###
+  echo FFMPEG -i $IN_FILE -ss $SEEK -c:a pcm_f32le _tmp_sub_seek.wav >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i $IN_FILE -ss $SEEK -c:a pcm_f32le _tmp_sub_seek.wav
 
   # Erase strange noise of attack
+  ###LOG###
+  echo FFMPEG -i _tmp_sub_seek.wav -af afade=t=in:st=0:d=0.8:silence=0.0:curve=tri,volume=-2.3dB -c:a pcm_f32le _tmp_sub_0.wav >> $FFMPEG_SP_LOG_FILE
+
+  echo FFMPEG -i _tmp_sub_seek.wav -af afade=t=out:st=0:d=0.8:silence=0.0:curve=tri,equalizer=f=3848.0:t=h:w=3.0:g=-80:r=f32,volume=-0.3dB -c:a pcm_f32le _tmp_sub_1.wav >> $FFMPEG_SP_LOG_FILE
+  echo FFMPEG -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex "amix=normalize=0" -c:a pcm_f32le _tmp_sub_2.wav >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i _tmp_sub_seek.wav -af afade=t=in:st=0:d=0.8:silence=0.0:curve=tri,volume=-2.3dB -c:a pcm_f32le _tmp_sub_0.wav
 
   "$FFMPEG" -i _tmp_sub_seek.wav -af afade=t=out:st=0:d=0.8:silence=0.0:curve=tri,equalizer=f=3848.0:t=h:w=3.0:g=-80:r=f32,volume=-0.3dB -c:a pcm_f32le _tmp_sub_1.wav
@@ -145,9 +180,16 @@ elif [ "$KEY" = "A2" ]; then
     # Eliminate strange noises after t=?[s]
     EQ_ARG="${EQ_ARG},afade=t=out:st=14.2:d=1.5"
   fi
+  ###LOG###
+  echo FFMPEG -i _tmp_sub_2.wav -af $EQ_ARG -c:a pcm_f32le _tmp_sub_3.wav >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i _tmp_sub_2.wav -af $EQ_ARG -c:a pcm_f32le _tmp_sub_3.wav
 
   # Enhance overtone
+  ###LOG####
+  echo FFMPEG -i _tmp_sub_3.wav -af highpass=f=270.0:t=q:w=0.707:r=f32,volume=$H_VOL -c:a pcm_f32le _tmp_sub_4.wav >> $FFMPEG_SP_LOG_FILE
+  echo FFMPEG -i _tmp_sub_3.wav -i _tmp_sub_4.wav -filter_complex "amix=normalize=0,volume=${O_VOL}" -c:a pcm_f32le $OUT_FILE >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i _tmp_sub_3.wav -af highpass=f=270.0:t=q:w=0.707:r=f32,volume=$H_VOL -c:a pcm_f32le _tmp_sub_4.wav
   "$FFMPEG" -i _tmp_sub_3.wav -i _tmp_sub_4.wav -filter_complex "amix=normalize=0,volume=${O_VOL}" -c:a pcm_f32le $OUT_FILE
 
@@ -207,9 +249,17 @@ elif [ "$KEY" = "C3" ]; then
 
   rm -f _tmp_sub_seek.wav _tmp_sub_0.wav _tmp_sub_1.wav _tmp_sub_2.wav _tmp_sub_3.wav _tmp_sub_4.wav $OUT_FILE
 
+  ###LOG###
+  echo FFMPEG -i $IN_FILE -ss $SEEK -af volume=$I_VOL -c:a pcm_f32le _tmp_sub_seek.wav >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i $IN_FILE -ss $SEEK -af volume=$I_VOL -c:a pcm_f32le _tmp_sub_seek.wav
 
   # Erase strange noise of attack
+  ###LOG###
+  echo FFMPEG -i _tmp_sub_seek.wav -af afade=t=in:st=0:d=0.8:silence=0.0:curve=tri,volume=-2.3dB -c:a pcm_f32le _tmp_sub_0.wav >> $FFMPEG_SP_LOG_FILE
+  echo FFMPEG -i _tmp_sub_seek.wav -af afade=t=out:st=0:d=0.8:silence=0.0:curve=tri,equalizer=f=3848.0:t=h:w=3.0:g=-80:r=f32,volume=-0.3dB -c:a pcm_f32le _tmp_sub_1.wav >> $FFMPEG_SP_LOG_FILE
+  echo FFMPEG -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex "amix=normalize=0" -c:a pcm_f32le _tmp_sub_2.wav >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i _tmp_sub_seek.wav -af afade=t=in:st=0:d=0.8:silence=0.0:curve=tri,volume=-2.3dB -c:a pcm_f32le _tmp_sub_0.wav
   "$FFMPEG" -i _tmp_sub_seek.wav -af afade=t=out:st=0:d=0.8:silence=0.0:curve=tri,equalizer=f=3848.0:t=h:w=3.0:g=-80:r=f32,volume=-0.3dB -c:a pcm_f32le _tmp_sub_1.wav
   "$FFMPEG" -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex "amix=normalize=0" -c:a pcm_f32le _tmp_sub_2.wav
@@ -220,9 +270,16 @@ elif [ "$KEY" = "C3" ]; then
     # Eliminate strange noises after t=?[s]
     EQ_ARG="${EQ_ARG},afade=t=out:st=14.2:d=1.5"
   fi
+  ###LOG###
+  echo FFMPEG -i _tmp_sub_2.wav -af $EQ_ARG -c:a pcm_f32le _tmp_sub_3.wav >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i _tmp_sub_2.wav -af $EQ_ARG -c:a pcm_f32le _tmp_sub_3.wav
 
   # Enhance overtone
+  ###LOG###
+  echo FFMPEG -i _tmp_sub_3.wav -af highpass=f=270.0:t=q:w=0.707:r=f32,volume=$H_VOL -c:a pcm_f32le _tmp_sub_4.wav >> $FFMPEG_SP_LOG_FILE
+  echo FFMPEG -i _tmp_sub_3.wav -i _tmp_sub_4.wav -filter_complex "amix=normalize=0" -c:a pcm_f32le $OUT_FILE >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i _tmp_sub_3.wav -af highpass=f=270.0:t=q:w=0.707:r=f32,volume=$H_VOL -c:a pcm_f32le _tmp_sub_4.wav
   "$FFMPEG" -i _tmp_sub_3.wav -i _tmp_sub_4.wav -filter_complex "amix=normalize=0" -c:a pcm_f32le $OUT_FILE
 
@@ -250,9 +307,16 @@ elif [ "$KEY" = "D#3" ]; then
 
   rm -f _tmp_sub_0.wav _tmp_sub_1.wav _tmp_sub_2.wav $OUT_FILE
 
+  ###LOG###
+  echo FFMPEG -i $IN_FILE -af volume=-1.5dB -c:a pcm_f32le _tmp_sub_0.wav >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i $IN_FILE -af volume=-1.5dB -c:a pcm_f32le _tmp_sub_0.wav
 
   # Enhance overtone
+  ###LOG###
+  echo FFMPEG -i $IN_FILE -af highpass=f=270.0:t=q:w=0.707:r=f32,volume=$H_VOL -c:a pcm_f32le _tmp_sub_1.wav >> $FFMPEG_SP_LOG_FILE
+  echo FFMPEG -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex "amix=normalize=0,volume=${O_VOL}" -c:a pcm_f32le _tmp_sub_2.wav >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i $IN_FILE -af highpass=f=270.0:t=q:w=0.707:r=f32,volume=$H_VOL -c:a pcm_f32le _tmp_sub_1.wav
   "$FFMPEG" -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex "amix=normalize=0,volume=${O_VOL}" -c:a pcm_f32le _tmp_sub_2.wav
   # Supress unnecessary sympathetic vibration to keep continuity
@@ -274,6 +338,9 @@ elif [ "$KEY" = "D#3" ]; then
   # Adjust amount of high frequency components (around 6000Hz)
   EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=6000:t=h:w=1000:g=%g:r=f32\n",-12.0*$1); }'`
 
+  ###LOG###
+  echo FFMPEG -i _tmp_sub_2.wav -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i _tmp_sub_2.wav -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
 
   ############################################################################
@@ -301,6 +368,9 @@ elif [ "$KEY" = "F#3" ]; then
   # Adjust amount of high frequency components (around 6000Hz)
   EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=6000:t=h:w=1000:g=%g:r=f32\n",-12.0*$1); }'`
 
+  ###LOG###
+  echo FFMPEG -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
 
   ############################################################################
@@ -328,6 +398,9 @@ elif [ "$KEY" = "A3" ]; then
   # Adjust amount of high frequency components (around 6000Hz)
   EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=4900:t=h:w=1000:g=%g:r=f32,equalizer=f=6200:t=h:w=1000:g=%g:r=f32\n",-8.0*$1,-15.0*$1); }'`
 
+  ###LOG###
+  echo FFMPEG -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
 
   ############################################################################
@@ -355,6 +428,9 @@ elif [ "$KEY" = "C4" ]; then
   # Adjust amount of high frequency components (around 6000Hz)
   EQ_STR2=`echo $F_F | awk '{ printf("equalizer=f=6200:t=h:w=1000:g=%g:r=f32\n",-15.0*$1); }'`
 
+  ###LOG###
+  echo FFMPEG -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i $IN_FILE -af ${EQ_STR},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
 
   ############################################################################
@@ -382,6 +458,9 @@ elif [ "$KEY" = "F#5" ]; then
 
   ##"$FFMPEG" -i $IN_FILE -af ${EQ_STR_0},${EQ_STR_1},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
 
+  ###LOG###
+  echo FFMPEG -i $IN_FILE -af ${EQ_STR_1},${EQ_STR2} -c:a pcm_f32le $OUT_FILE >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i $IN_FILE -af ${EQ_STR_1},${EQ_STR2} -c:a pcm_f32le $OUT_FILE
 
   ############################################################################
@@ -415,10 +494,18 @@ elif [ "$KEY" = "C6" ]; then
   ##"$FFMPEG" -i $IN_FILE -af volume=-3.6dB,${E_ARG},equalizer=f=4438:t=h:w=20:g=-40:r=f32,equalizer=f=5583:t=h:w=10:g=-30:r=f32,equalizer=f=6200:t=h:w=100:g=-20:r=f32 -c:a pcm_f32le _tmp_sub_0.wav
 
   # 6200Hz : Remove non-overtone frequency components
+  ###LOG###
+  echo FFMPEG -i $IN_FILE -af volume=-3.6dB,${E_ARG},equalizer=f=6200:t=h:w=100:g=-20:r=f32 -c:a pcm_f32le _tmp_sub_0.wav >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i $IN_FILE -af volume=-3.6dB,${E_ARG},equalizer=f=6200:t=h:w=100:g=-20:r=f32 -c:a pcm_f32le _tmp_sub_0.wav
 
   # Adjust envelope (The purpose of the high-pass filter is to remove noise)
 
+  ###LOG###
+  echo FFMPEG -i _tmp_sub_0.wav -af "afade=t=out:st=0:d=3.0,volume=1.0" -c:a pcm_f32le _tmp_sub_1.wav >> $FFMPEG_SP_LOG_FILE
+  echo FFMPEG -i _tmp_sub_0.wav -af "highpass=f=700.0:t=q:w=0.707:r=f32,afade=t=in:st=0:d=3.0,volume=5.0" -c:a pcm_f32le _tmp_sub_2.wav >> $FFMPEG_SP_LOG_FILE
+  echo FFMPEG -i _tmp_sub_1.wav -i _tmp_sub_2.wav -filter_complex "amix=normalize=0" -c:a pcm_f32le $OUT_FILE >> $FFMPEG_SP_LOG_FILE
+  #########
   "$FFMPEG" -i _tmp_sub_0.wav -af "afade=t=out:st=0:d=3.0,volume=1.0" -c:a pcm_f32le _tmp_sub_1.wav
   "$FFMPEG" -i _tmp_sub_0.wav -af "highpass=f=700.0:t=q:w=0.707:r=f32,afade=t=in:st=0:d=3.0,volume=5.0" -c:a pcm_f32le _tmp_sub_2.wav
 

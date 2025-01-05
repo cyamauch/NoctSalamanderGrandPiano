@@ -82,7 +82,7 @@ cat _tmp3_.txt | awk '{ \
     split($0,ARR," "); \
     printf("%-7s",$1); \
     for ( i=1 ; i <= 16 ; i++ ) { \
-      printf(" %+.1f",VEL_ALL[1+i] + ARR[1+i]); \
+      printf(" %+.2f",VEL_ALL[1+i] + ARR[1+i]); \
     } \
     printf("\n"); \
   } \

@@ -35,7 +35,8 @@ if [ "$4" != "" ]; then
   echo >> tmp.sfz
   echo "$SFZ_VOL_FACTOR_BASE" | grep '^[0-1][0-9][0-9][_][A-Z]' | awk '{printf("%s ",$2);}' >> tmp.sfz
   echo >> tmp.sfz
-  cat ${SRC_SFZ} | sed $ARG_OUTFILE_SED $SFZ_SED_ARGS >> tmp.sfz
+  # Using '\r' '\a' and ' ' '~' is for MinGW shell
+  cat ${SRC_SFZ} | tr '\r' '\a' | tr ' ' '~' | sed $ARG_OUTFILE_SED $SFZ_SED_ARGS | tr '~' ' ' >> tmp.sfz
 
   cat tmp.sfz | awk '{ \
     if ( NR==1 ) { AMP_VEL=$1; if ( AMP_VEL == "" ){ AMP_VEL=73; } } \
@@ -81,9 +82,10 @@ if [ "$4" != "" ]; then
         print $0; \
       } \
     } \
-  }' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}.sfz
+  }' > tmp_out.sfz
+  cat tmp_out.sfz | tr '\a' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}.sfz
 
-  cat ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}.sfz | awk '{ if ( substr($0,1,13) == "//HammerNoise" ){ FLG=1; } if ( FLG == 1 ) {FLG=1;} else {print;} }'  > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}_withoutNoise${SFZ_RECOMMENDED_SUFFIX}.sfz
+  cat tmp_out.sfz | awk '{ if ( substr($0,1,13) == "//HammerNoise" ){ FLG=1; } if ( FLG == 1 ) {FLG=1;} else {print;} }' | tr '\a' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}_withoutNoise${SFZ_RECOMMENDED_SUFFIX}.sfz
 
 fi
 

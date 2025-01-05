@@ -1,10 +1,10 @@
--e s/Salamander\x20Grand\x20Piano\x20V2/Noct-Salamander\x20Grand\x20Piano/
--e s/lovel=1\x20hivel=26/lovel=1\x20hivel=26/
--e s/lovel=27\x20hivel=34/lovel=27\x20hivel=33/
--e s/lovel=35\x20hivel=36/lovel=34\x20hivel=37/
--e s/lovel=37\x20hivel=43/lovel=38\x20hivel=43/
--e s/lovel=44\x20hivel=46/lovel=44\x20hivel=47/
--e s/lovel=47\x20hivel=50/lovel=48\x20hivel=52/
--e s/lovel=51\x20hivel=56/lovel=53\x20hivel=58/
--e s/lovel=57\x20hivel=64/lovel=59\x20hivel=64/
+-e s/Salamander~Grand~Piano~V2/Noct-Salamander~Grand~Piano/
+-e s/lovel=1~hivel=26/lovel=1~hivel=26/
+-e s/lovel=27~hivel=34/lovel=27~hivel=33/
+-e s/lovel=35~hivel=36/lovel=34~hivel=37/
+-e s/lovel=37~hivel=43/lovel=38~hivel=43/
+-e s/lovel=44~hivel=46/lovel=44~hivel=47/
+-e s/lovel=47~hivel=50/lovel=48~hivel=52/
+-e s/lovel=51~hivel=56/lovel=53~hivel=58/
+-e s/lovel=57~hivel=64/lovel=59~hivel=64/
 
