@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# for MinGW
+#FFMPEG="C:/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
+# for cygwin
 FFMPEG="/cygdrive/c/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
 
 if [ "$2" = "" ]; then
