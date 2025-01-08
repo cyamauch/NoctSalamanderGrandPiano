@@ -45,6 +45,7 @@ DESTDIR44TEST = ../$(DESTDIR_BASENAME)_Test
 DESTPCMDIR44TEST = $(DESTDIR44TEST)/44.1khz16bit
 
 vol_factor.txt::
+	echo "$(FFMPEG)" > ffmpeg_path.txt
 	sh setup_overtone.sh $(OVERTONE_CONFIG) $(OVERTONE3_CONFIG) $(BASS_CONFIG)
 	sh mk_vol_factor.sh  > vol_factor.txt
 
@@ -81,7 +82,7 @@ noct48:: sfz48 src48 vol_factor.txt
 
 wav48only::
 	mkdir -p $(DESTPCMDIR48)
-	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48) 0.0
+	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" SELECTED_KEY="$(SELECTED_KEY)" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48) 0.0
 
 sfz44::
 	mkdir -p $(DESTPCMDIR44)

@@ -45,6 +45,7 @@ DESTDIR44TEST = ../$(DESTDIR_BASENAME)_Test
 DESTPCMDIR44TEST = $(DESTDIR44TEST)/44.1khz16bit
 
 vol_factor.txt::
+	echo "$(FFMPEG)" > ffmpeg_path.txt
 	sh setup_overtone.sh $(OVERTONE_CONFIG) $(OVERTONE3_CONFIG) $(BASS_CONFIG)
 	sh mk_vol_factor.sh  > vol_factor.txt
 

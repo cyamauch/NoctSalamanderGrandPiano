@@ -11,12 +11,22 @@ fi
 if [ -f "$1" ]; then
   FFMPEG="$1"
 else
-  FFMPEG="C:/archives/Piano/VirtualMIDISynth/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe"
+  if [ -f ffmpeg_path.txt ]; then
+    FFMPEG="`cat ffmpeg_path.txt`"
+  else
+    echo "ERROR: Not found ffmpeg_path.txt" 1>&2
+    exit 127
+  fi
 fi
 
 # "C:" -> "/cygdrive/c" for cygwin
 if [ "$OSTYPE" = "cygwin" ]; then
   FFMPEG="`echo $FFMPEG | sed -e 's/C:/\/cygdrive\/c/'`"
+fi
+
+if [ ! -x "$FFMPEG" ]; then
+  echo "Not found: $FFMPEG" 1>&2
+  exit 127
 fi
 
 KEY=$2
