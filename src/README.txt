@@ -260,6 +260,11 @@ V5.2 (Sep.18,2024)
 * Improved continuity and minimized filtering between C2 and C4.  This results
   in a higher quality while keeping the tone closer to that of the original 
   Salamander.
+V5.2a (Jan.23,2025)
+* Updated the SFZ files that are SFZ v1 compliant and use SFZ v2 features to
+  fixed CC64 problems found on SFZ v1 softwares such as VirtualMIDISynth.
+  By making F6 a half damper and F#6 and higher damperless, the behavior of a 
+  grand piano is perfectly reproduced.
 
 
 *** Licence:

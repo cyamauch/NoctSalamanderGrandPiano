@@ -54,53 +54,56 @@ cat sfz_inserted.txt $SRC_SFZ | tr '\r' '~' | sed -e 's/[ ]*[~]$//' $ARG_OUTFILE
   } \
 }' > tmp0.sfz
 
-
-if [ "$SRC_UNSAMPLED" = "" ]; then
-  #
-  # for Version 5
-  # to be TRUE Grand piano: i.e. F6 with half damper and F#6-C8 without damper.
-  #
-  cat tmp0.sfz | grep 'F#6v' | sed -e 's/lokey/key/' -e 's/hikey=91[ ]//' > tmp1.sfz
-  cat tmp1.sfz tmp0.sfz | awk '{ \
-    if ( FLG == "" ) { \
-      if ( substr($0,1,2) == "//" ) { FLG=1; print; } \
-      else { \
-        ins_parts = sprintf("%s%s\n",ins_parts,$0); \
-      } \
+#
+# to be TRUE Grand piano: i.e. F6 with half damper and F#6-C8 without damper.
+#
+cat tmp0.sfz | grep 'F#6v' | sed -e 's/lokey/key/' -e 's/hikey=91[ ]//' > tmp1.sfz
+cat tmp1.sfz tmp0.sfz | awk '{ \
+  if ( FLG == "" ) { \
+    if ( substr($0,1,2) == "//" ) { FLG=1; print; } \
+    else { \
+      ins_parts = sprintf("%s%s\n",ins_parts,$0); \
+    } \
+  } \
+  else { \
+    if ( match($0,/\/\/Notes without dampers$/) == 1 ) { \
+      printf("//F6 with half damper\n\n<group> amp_veltrack=73 ampeg_release=5.0\n\n"); \
+      printf("%s\n%s\n",ins_parts,$0); \
     } \
     else { \
-      if ( match($0,/\/\/Notes without dampers$/) == 1 ) { \
-        printf("//F6 with half damper\n\n<group> amp_veltrack=73 ampeg_release=5.0\n\n"); \
-        printf("%s\n%s\n",ins_parts,$0); \
-      } \
-      else { \
-        if ( 0 < match($0,/F#6v/) ) { \
-          if ( FLG == 3 ) { \
-            gsub(/[ ]lokey=89[ ]/, " lokey=90 ",$0); print $0; \
-          } \
-          else { \
-            print; \
-          } \
-        } \
-        else if ( 0 < match($0,/[ ]ampeg_release=/) ) { \
-          if ( FLG == 1 ) { \
-            printf("<group> amp_veltrack=73 ampeg_release=1.0\n"); \
-            FLG = 2; \
-          } \
-          else if ( FLG == 2 ) { \
-            printf("<group> amp_veltrack=73 ampeg_release=100\n"); \
-            FLG = 3; \
-          } \
-          else { \
-            print; \
-          } \
+      if ( 0 < match($0,/F#6v/) ) { \
+        if ( FLG == 3 ) { \
+          gsub(/[ ]lokey=89[ ]/, " lokey=90 ",$0); print $0; \
         } \
         else { \
           print; \
         } \
       } \
+      else if ( 0 < match($0,/[ ]ampeg_release=/) ) { \
+        if ( FLG == 1 ) { \
+          printf("<group> amp_veltrack=73 ampeg_release=1.0\n"); \
+          FLG = 2; \
+        } \
+        else if ( FLG == 2 ) { \
+          printf("<group> amp_veltrack=73 ampeg_release=100\n"); \
+          FLG = 3; \
+        } \
+        else { \
+          print; \
+        } \
+      } \
+      else { \
+        print; \
+      } \
     } \
-}' | awk '{ printf("%s~\n",$0); }' | tr '~' '\r'
+  } \
+}' > tmp2.sfz
+
+#
+# for Version 5
+#
+if [ "$SRC_UNSAMPLED" = "" ]; then
+  cat tmp2.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r'
   exit 0
 fi
 
@@ -108,8 +111,11 @@ fi
 # for Version 6
 # Expand WAV file assignment: lokey,hikey => key
 #
-cat tmp0.sfz | awk '{ \
+cat tmp2.sfz | awk '{ \
   p0 = match($0, /[A-Z#][0-9]v[0-9]/); \
+  if ( 0 < p0 ) { \
+    p0 = match($0, /[ ]lokey=/); \
+  } \
   if ( 0 < p0 ) { \
      split($0,KEYS," "); \
      for ( i=1 ; i <= length(KEYS) ; i++ ) { \
@@ -129,28 +135,30 @@ cat tmp0.sfz | awk '{ \
        } \
      } \
      for ( i=lokey ; i <= hikey ; i++ ) { \
-       for ( j=1 ; j <= length(KEYS) ; j++ ) { \
-         if ( 1 < j ) { printf(" "); } \
-         if ( j == idx1 ) { printf("key=%d",i); } \
-         else if ( j == idx2 ) { printf(""); } \
-         else { \
-           printf("%s",KEYS[j]); \
+       if ( i != 89 ) { \
+         for ( j=1 ; j <= length(KEYS) ; j++ ) { \
+           if ( 1 < j ) { printf(" "); } \
+           if ( j == idx1 ) { printf("key=%d",i); } \
+           else if ( j == idx2 ) { printf(""); } \
+           else { \
+             printf("%s",KEYS[j]); \
+           } \
          } \
+         printf("\n"); \
        } \
-       printf("\n"); \
      } \
   } \
   else { \
      print; \
   } \
-}' > tmp2.sfz
+}' > tmp3.sfz
 
 cat $SRC_UNSAMPLED | sed -e 's/[ ][ ]*/ /g' -e 's/[ ]/,-,/g' | tr ',' ' ' > tmp_unsampled.txt
 
 #
 # Insert volume parameters
 #
-cat tmp_unsampled.txt tmp2.sfz | awk '{ \
+cat tmp_unsampled.txt tmp3.sfz | awk '{ \
   if ( FLG != 1 ) { \
     idx = int($1); \
     if ( idx == 1 ) { split(substr($0,4),VOL1," "); } \

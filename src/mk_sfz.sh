@@ -75,11 +75,12 @@ if [ "$4" != "" ]; then
         p_v=match($0, /volume[=][0123456789.+-]*/); \
         if ( 0 < p_v ) { \
           vol_org = substr($0,p_v+7,RLENGTH-7); \
-          vol_str = sprintf("volume=%g",vol_org + volume); \
+          vol_str = sprintf("volume=%+.2f",vol_org + volume); \
           sub(/volume=[^ ][^ ]*/,vol_str,$0); \
         } \
         else { \
-          sub(/[.]wav[ ]/, ".wav volume=" volume " ", $0); \
+          vol_str = sprintf("volume=%+.2f",volume); \
+          sub(/[.]wav[ ]/, ".wav " vol_str " ", $0); \
         } \
         print $0; \
       } \
