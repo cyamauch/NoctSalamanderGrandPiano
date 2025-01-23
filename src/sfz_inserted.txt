@@ -1,9 +1,15 @@
 // This SFZ file is SFZ v1 compliant and uses SFZ v2 features to the extent that they do not 
 // interfere with its use in SFZ v1 software.
 
+// To enable "String Resonance Release", "Hammer Noise", and "Pedal Noise", set CC20=64, CC21=64,
+// and CC22=64 respectively.
+
+// To change the release time, set CC20=0 and CC72 to 1 or higher. CC72=127 will extend the 
+// release time by 2 seconds.
+
 // Warning: Many SFZ v1 software fail to process CC64 when String_Res/Hammer noise are enabled.
 //          To avoid this problem, we recommend turning off CC20 and CC21 in SFZ v1 software.
-//
+
 // Info: The following MIDI CCxx default values (=> 1 for enabled) apply to SFZ v2 software only.
 //       In SFZ v1 software, initial CC[20,21,22] values are 0 (<control> section is ignored).
 //
