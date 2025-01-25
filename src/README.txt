@@ -261,10 +261,14 @@ V5.2 (Sep.18,2024)
   in a higher quality while keeping the tone closer to that of the original 
   Salamander.
 V5.2a (Jan.23,2025)
-* Updated the SFZ files that are SFZ v1 compliant and use SFZ v2 features to
-  fixed CC64 problems found on SFZ v1 softwares such as VirtualMIDISynth.
-  By making F6 a half damper and F#6 and higher damperless, the behavior of a 
-  grand piano is perfectly reproduced.
+* Updated the SFZ files:
+ - Compliant with SFZ v1 and uses SFZ v2 features.
+ - Fixed CC64 problems found on SFZ v1 softwares such as VirtualMIDISynth.
+ - To enable "Release String Resonances", "Hammer Noise", and "Pedal Noise", 
+   set CC20=64, CC21=64, and CC22=64 respectively.  They are disabled by 
+   default.
+ - By making F6 a half damper and F#6 and higher damperless, the behavior of a
+   grand piano is perfectly reproduced.
 
 
 *** Licence:
