@@ -1,5 +1,7 @@
 // This SFZ file is SFZ v1 compliant and uses SFZ v2 features to the extent that they do not 
-// interfere with its use in SFZ v1 software.
+// interfere with its use in SFZ v1 software.   This file was created with reference to 
+// "Salamander Grand Piano V3.sfz" at https://github.com/sfzinstruments/SalamanderGrandPiano/.
+// Please refer to this file if you want to make full use of the SFZ v2 standard.
 
 // To enable "String Resonance Release", "Hammer Noise", and "Pedal Noise", set CC20=64, CC21=64,
 // and CC22=64 respectively.
@@ -37,6 +39,9 @@ amplitude_curvecc7=4
 pan_oncc10=100
 pan_curvecc10=1
 ampeg_release_oncc72=2
+// "repedaling" ability (suggested by Andrew <https://github.com/esesur>)
+ampeg_dynamic=1
+ampeg_releasecc64=100
 
 <master>
 

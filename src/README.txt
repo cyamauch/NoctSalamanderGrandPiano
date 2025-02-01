@@ -269,6 +269,9 @@ V5.2a (Jan.23,2025)
    default.
  - By making F6 a half damper and F#6 and higher damperless, the behavior of a
    grand piano is perfectly reproduced.
+V5.2c (Feb.1,2025)
+* Updated the SFZ files to enable "repedaling".
+  (Thanks to Andrew <https://github.com/esesur>)
 
 
 *** Licence:
