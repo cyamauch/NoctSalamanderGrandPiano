@@ -67,7 +67,7 @@ cat tmp1.sfz tmp0.sfz | awk '{ \
   } \
   else { \
     if ( match($0,/\/\/Notes without dampers$/) == 1 ) { \
-      printf("//F6 with half damper\n\n<group> amp_veltrack=73 ampeg_release=5.0\n\n"); \
+      printf("//F6 with half damper\n\n<group> ampeg_release=5.0\n\n"); \
       printf("%s\n%s\n",ins_parts,$0); \
     } \
     else { \
@@ -81,11 +81,11 @@ cat tmp1.sfz tmp0.sfz | awk '{ \
       } \
       else if ( 0 < match($0,/[ ]ampeg_release=/) ) { \
         if ( FLG == 1 ) { \
-          printf("<group> amp_veltrack=73 ampeg_release=1.0\n"); \
+          printf("<group> ampeg_release=1.0\n"); \
           FLG = 2; \
         } \
         else if ( FLG == 2 ) { \
-          printf("<group> amp_veltrack=73 ampeg_release=100\n"); \
+          printf("<group> ampeg_release=100\n"); \
           FLG = 3; \
         } \
         else { \

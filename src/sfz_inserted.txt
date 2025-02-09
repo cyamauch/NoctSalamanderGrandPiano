@@ -32,6 +32,7 @@ label_cc72=Release
 //Notes
 
 <global>
+amp_veltrack=73
 note_polyphony=1
 off_time=1.0
 amplitude_oncc7=100
