@@ -34,7 +34,7 @@ if [ "$VERSION5" = "1" ]; then
   sh prep_sfz.sh ${SRC_SFZ} > prep.sfz
 else
   # Version 6 : Volume settings will be added for all 88 keys.
-  sh prep_sfz.sh ${SRC_SFZ} volumne_measurement/unsampled_volumes.txt > prep.sfz
+  sh prep_sfz.sh ${SRC_SFZ} volume_measurement/unsampled_volumes.txt > prep.sfz
 fi
 
 #
