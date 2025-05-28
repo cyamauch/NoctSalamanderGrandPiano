@@ -10,6 +10,10 @@
 
 #### This script can be used under Cygwin Terminal. ####
 
+# Version 5
+VERSION5=1
+# Version 6
+#VERSION5=0
 
 #### Set your ffmpeg.exe in Makefile.  Native Windows binary is OK. ####
 
@@ -213,8 +217,13 @@ GAIN0_FACTOR_TXT=`cat gain0_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[
 GAIN1_FACTOR_TXT=`cat gain1_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
 GAIN2_FACTOR_TXT=`cat gain2_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
 GAIN3_FACTOR_TXT=`cat gain3_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
-TUNED_TXT=`cat tuned.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 FILTER_DIRECT_TXT=`cat filter_direct.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
+
+if [ "$VERSION5" = "1" ]; then
+  TUNED_TXT=`cat tuned_v5.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
+else
+  TUNED_TXT=`cat tuned.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
+fi
 
 ARG_OUTFILE_SED_0=`echo "$KEY_NID_TXT" | awk '{printf("-e s/%sv/%s_%sv/ \n",$1,$2,$1);}'`
 ARG_OUTFILE_SED_1=`echo "1_2_3_4_5_6_7_8_9_" | tr '_' '\n' | awk '{printf("-e s/v%s[.]wav/v0%s.wav/ \n",$1,$1);}'`

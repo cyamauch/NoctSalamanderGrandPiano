@@ -4,6 +4,11 @@
 ####   Creating SFZ   ####
 ##########################
 
+# Version 5
+VERSION5=1
+# Version 6
+#VERSION5=0
+
 if [ "$1" != "-" ]; then
   SFZ_SED_ARGS_FILE="$1"
 else
@@ -20,47 +25,133 @@ else
   SFZ_RECOMMENDED_SUFFIX=""
 fi
 
+#
 # Preprocessing SFZ
+#
 
-# Version 5
-sh prep_sfz.sh ${SRC_SFZ} > prep.sfz
+if [ "$VERSION5" = "1" ]; then
+  # Version 5
+  sh prep_sfz.sh ${SRC_SFZ} > prep.sfz
+else
+  # Version 6 : Volume settings will be added for all 88 keys.
+  sh prep_sfz.sh ${SRC_SFZ} volumne_measurement/unsampled_volumes.txt > prep.sfz
+fi
 
-# Version 6
-#sh prep_sfz.sh ${SRC_SFZ} volumne_measurement/unsampled_volumes.txt > prep.sfz
+#
+# Main Processing
+#
 
-if [ "$4" != "" ]; then
+if [ "$5" != "" ]; then
 
   SFZ_SED_ARGS=`cat $SFZ_SED_ARGS_FILE | tr -d '\r'`
 
   SFZ_VOL_FACTOR_BASE=`cat $SFZ_VOL_FACTOR_BASE_FILE | tr -d '\r' | sed -e 's/^[ ]*//'`
 
-  echo "$SFZ_VOL_FACTOR_BASE" | grep '^AMP_VEL' | sed -e 's/[^ ][^ ]*[ ][ ]*//' > tmp.sfz
-  echo "$SFZ_VOL_FACTOR_BASE" | grep '^VEL_ALL' | sed -e 's/[^ ][^ ]*[ ][ ]*//' >> tmp.sfz
-  echo "$SFZ_VOL_FACTOR_BASE" | grep '^[0-1][0-9][0-9][_][A-Z]' | awk '{printf("%s ",substr($1,1,3));}' >> tmp.sfz
-  echo >> tmp.sfz
-  echo "$SFZ_VOL_FACTOR_BASE" | grep '^[0-1][0-9][0-9][_][A-Z]' | awk '{printf("%s ",$2);}' >> tmp.sfz
-  echo >> tmp.sfz
+  if [ "$VERSION5" = "1" ]; then
+    # Version 5
+    echo "5" > tmp.sfz
+  else
+    # Version 6
+    echo "6" > tmp.sfz
+  fi
+
+  # Create an 88 note setting by linearly interpolating a 30 note setting (A0,C1,...C8).
+  echo "$SFZ_VOL_FACTOR_BASE" | awk '{ \
+    if ( NR==1 ) { ix_k=1; ix_v=1; } \
+    if ( $1 == "AMP_VELTRACK" ) { \
+      print $2;
+    } \
+    else if ( $1 == "VEL_ALL" ) { \
+      split($0,ARR," "); \
+      for ( i=2 ; i <= length(ARR) ; i++ ) { \
+        if ( i != 2 ) { printf(" "); } \
+        printf("%s",ARR[i]); \
+      } \
+      printf("\n"); \
+    } \
+    else if ( substr($1,1,1) != "#" ) { \
+      p0 = match($0, /[0-1][0-9][0-9]_[A-Z]/); \
+      if ( 0 < p0 ) { \
+        KEY = sprintf("%d",substr($1,1,3)); \
+        if ( PREV_KEY != "" ) { \
+          OUT_KEYS[ix_k] = sprintf("%03d",PREV_KEY + 1 * (KEY - PREV_KEY) / 3); ix_k++; \
+          OUT_KEYS[ix_k] = sprintf("%03d",PREV_KEY + 2 * (KEY - PREV_KEY) / 3); ix_k++; \
+        } \
+        OUT_KEYS[ix_k] = sprintf("%03d",KEY); ix_k++; \
+        PREV_KEY = KEY; \
+        VOL = $2; \
+        if ( PREV_VOL != "" ) { \
+          OUT_VOLS[ix_v] = sprintf("%.3f",PREV_VOL + 1.0 * (VOL - PREV_VOL) / 3.0); ix_v++; \
+          OUT_VOLS[ix_v] = sprintf("%.3f",PREV_VOL + 2.0 * (VOL - PREV_VOL) / 3.0); ix_v++; \
+        } \
+        OUT_VOLS[ix_v] = sprintf("%s",VOL); ix_v++; \
+        PREV_VOL = VOL; \
+      } \
+    } \
+  } \
+  END { \
+    for ( i=1 ; i <= length(OUT_KEYS) ; i++ ) { \
+      if ( i != 1 ) { printf(" "); } \
+      printf("%s",OUT_KEYS[i]); \
+    } \
+    printf("\n"); \
+    for ( i=1 ; i <= length(OUT_VOLS) ; i++ ) { \
+      if ( i != 1 ) { printf(" "); } \
+      printf("%s",OUT_VOLS[i]); \
+    } \
+    printf("\n"); \
+  }' >> tmp.sfz
+
+  if [ "$VERSION5" = "1" ]; then
+    # Version 5
+    echo "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" >> tmp.sfz
+  else
+    # Version 6 : Add the final tuning result (tuned_sfz.txt) to the SFZ file.
+    cat tuned_sfz.txt | tr -d '\r' | awk '{ \
+      if ( NR==1 ) { ix=1; } \
+      if ( substr($1,1,1) != "#" ) { \
+        p0 = match($0, /[0-1][0-9][0-9]_[A-Z]/); \
+        if ( 0 < p0 ) { \
+          if ( ix != 1 ) { printf(" "); } \
+          printf("%s",$2); \
+          ix++; \
+        } \
+      } \
+    } END { printf("\n"); }' >> tmp.sfz
+  fi
+
   # Using '~' is for MinGW shell
   cat prep.sfz | tr -d '\r' | tr ' ' '~' | sed $SFZ_SED_ARGS | tr '~' ' ' >> tmp.sfz
 
+  # Main AWK process
   cat tmp.sfz | awk '{ \
-    if ( NR==1 ) { AMP_VEL=$1; if ( AMP_VEL == "" ){ AMP_VEL=73; } } \
-    else if ( NR==2 ) { split($0,VOL_VEL," "); } \
-    else if ( NR==3 ) { split($0,KEYS," "); } \
-    else if ( NR==4 ) { split($0,VOL_KEY," "); } \
+    if ( NR==1 ) { VERSION=$1; } \
+    else if ( NR==2 ) { AMP_VEL=$1; if ( AMP_VEL == "" ) { AMP_VEL=73; } } \
+    else if ( NR==3 ) { split($0,VOL_VEL," "); } \
+    else if ( NR==4 ) { split($0,KEYS," "); } \
+    else if ( NR==5 ) { split($0,VOL_KEY," "); } \
+    else if ( NR==6 ) { split($0,TUNED_SFZ," "); } \
     else { \
       volume = 0.0; \
+      tune = 0; \
       p0 = match($0, /[0-1][0-9][0-9]_[A-Z]/); \
       p1 = 0; \
       p_amp = 0; \
       if ( 0 < p0 ) { \
         p1 = match($0, /v[0-9][0-9][.]wav/); \
         if ( 0 < p1 ) { \
-          key = substr($0,p0,3); \
+          p2 = match($0, /key=[0-9]./); \
+          if ( 5 < VERSION && 0 < p2 ) { \
+            key = sprintf("%03d",substr($0,p2+4,3)); \
+          } \
+          else { \
+            key = substr($0,p0,3); \
+          } \
           for ( i=1 ; i <= length(KEYS) ; i++ ) { \
             if ( key == KEYS[i] ) { \
               v = int(substr($0,p1+1,2)); \
               volume = 0.0 + VOL_VEL[v] + VOL_KEY[i]; \
+              tune = TUNED_SFZ[i]; \
             } \
           } \
         } \
@@ -69,32 +160,39 @@ if [ "$4" != "" ]; then
         p_amp = match($0, /amp_veltrack=73/); \
         if ( p_amp < 1 ) { \
           p_amp = match($0, /amp_veltrack=82/); \
-        }
+        } \
+      } \
+      if ( 0 < p0 && 0 < p1 && tune != 0 ) { \
+        OUTPUT_LINE = $0 " tune=" tune; \
+      } \
+      else { \
+        OUTPUT_LINE = $0; \
       } \
       if ( 0 < p0 && 0 < p1 && volume != 0.0 ) { \
-        p_v=match($0, /volume[=][0123456789.+-]*/); \
+        p_v=match(OUTPUT_LINE, /volume[=][0123456789.+-]*/); \
         if ( 0 < p_v ) { \
-          vol_org = substr($0,p_v+7,RLENGTH-7); \
+          vol_org = substr(OUTPUT_LINE,p_v+7,RLENGTH-7); \
           vol_str = sprintf("volume=%+.2f",vol_org + volume); \
-          sub(/volume=[^ ][^ ]*/,vol_str,$0); \
+          sub(/volume=[^ ][^ ]*/,vol_str,OUTPUT_LINE); \
         } \
         else { \
           vol_str = sprintf("volume=%+.2f",volume); \
-          sub(/[.]wav[ ]/, ".wav " vol_str " ", $0); \
+          sub(/[.]wav[ ]/, ".wav " vol_str " ", OUTPUT_LINE); \
         } \
-        print $0; \
+        print OUTPUT_LINE; \
       } \
       else if ( 0 < p_amp ) { \
-        gsub(/amp_veltrack=[0-9][0-9]*/, "amp_veltrack=" AMP_VEL, $0); print $0; \
+        gsub(/amp_veltrack=[0-9][0-9]*/, "amp_veltrack=" AMP_VEL, OUTPUT_LINE); print OUTPUT_LINE; \
       } \
       else { \
-        print $0; \
+        print OUTPUT_LINE; \
       } \
     } \
   }' > tmp_out.sfz
   #cat tmp_out.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}.sfz
   cat tmp_out.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
 
+  # Creating SFZ without Noise.
   #cat tmp_out.sfz | awk '{ \
   #  if ( substr($0,1,13) == "//HammerNoise" ) { FLG=1; } \
   #  if ( FLG == 1 ) { FLG=1; } \
@@ -102,5 +200,4 @@ if [ "$4" != "" ]; then
   #}' | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}_withoutNoise${SFZ_RECOMMENDED_SUFFIX}.sfz
 
 fi
-
 
