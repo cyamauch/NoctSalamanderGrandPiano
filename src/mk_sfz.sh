@@ -57,17 +57,22 @@ if [ "$5" != "" ]; then
 
   # Create an 88 note setting by linearly interpolating a 30 note setting (A0,C1,...C8).
   echo "$SFZ_VOL_FACTOR_BASE" | awk '{ \
-    if ( NR==1 ) { ix_k=1; ix_v=1; } \
+    if ( NR==1 ) { \
+      ix_k=1; ix_v=1; \
+    } \
     if ( $1 == "AMP_VELTRACK" ) { \
-      print $2;
+      PRM_L2 = $2;
+    } \
+    else if ( $1 == "AMPEG_RELEASE" ) { \
+      PRM_L3 = $2;
     } \
     else if ( $1 == "VEL_ALL" ) { \
       split($0,ARR," "); \
+      PRM_L4 = ""; \
       for ( i=2 ; i <= length(ARR) ; i++ ) { \
-        if ( i != 2 ) { printf(" "); } \
-        printf("%s",ARR[i]); \
+        if ( i != 2 ) { PRM_L4 = PRM_L4 " "; } \
+        PRM_L4 = PRM_L4 ARR[i]; \
       } \
-      printf("\n"); \
     } \
     else if ( substr($1,1,1) != "#" ) { \
       p0 = match($0, /[0-1][0-9][0-9]_[A-Z]/); \
@@ -90,6 +95,9 @@ if [ "$5" != "" ]; then
     } \
   } \
   END { \
+    print PRM_L2;
+    print PRM_L3;
+    print PRM_L4;
     for ( i=1 ; i <= length(OUT_KEYS) ; i++ ) { \
       if ( i != 1 ) { printf(" "); } \
       printf("%s",OUT_KEYS[i]); \
@@ -125,12 +133,37 @@ if [ "$5" != "" ]; then
 
   # Main AWK process
   cat tmp.sfz | awk '{ \
-    if ( NR==1 ) { VERSION=$1; } \
-    else if ( NR==2 ) { AMP_VEL=$1; if ( AMP_VEL == "" ) { AMP_VEL=73; } } \
-    else if ( NR==3 ) { split($0,VOL_VEL," "); } \
-    else if ( NR==4 ) { split($0,KEYS," "); } \
-    else if ( NR==5 ) { split($0,VOL_KEY," "); } \
-    else if ( NR==6 ) { split($0,TUNED_SFZ," "); } \
+    if ( NR==1 ) { \
+      VERSION=$1; \
+      ix_rel=1; \
+    } \
+    else if ( NR==2 ) { \
+      if ( $1 == "" ) { \
+        AMP_VEL=73; \
+      } \
+      else { \
+        AMP_VEL=$1; \
+      } \
+    } \
+    else if ( NR==3 ) { \
+      if ( $1 == "" ) { \
+        AMPEG_RELEASE[1]=1.0; AMPEG_RELEASE[2]=5.0; AMPEG_RELEASE[3]=100; \
+      } \
+      else { \
+        split($1,AMPEG_RELEASE,","); \
+      } \
+    } \
+    else if ( NR==4 ) { \
+      if ( $0 == "" ) { \
+        for ( i=1 ; i <= 16 ; i++ ) { VOL_VEL[i] = 0.0; } \
+      } \
+      else { \
+        split($0,VOL_VEL," "); \
+      } \
+    } \
+    else if ( NR==5 ) { split($0,KEYS," "); } \
+    else if ( NR==6 ) { split($0,VOL_KEY," "); } \
+    else if ( NR==7 ) { split($0,TUNED_SFZ," "); } \
     else { \
       volume = 0.0; \
       tune = 0; \
@@ -161,6 +194,7 @@ if [ "$5" != "" ]; then
         if ( p_amp < 1 ) { \
           p_amp = match($0, /amp_veltrack=82/); \
         } \
+        p_rel = match($0, /ampeg_release=[0-9]/); \
       } \
       if ( 0 < p0 && 0 < p1 && tune != 0 ) { \
         OUTPUT_LINE = $0 " tune=" tune; \
@@ -183,6 +217,11 @@ if [ "$5" != "" ]; then
       } \
       else if ( 0 < p_amp ) { \
         gsub(/amp_veltrack=[0-9][0-9]*/, "amp_veltrack=" AMP_VEL, OUTPUT_LINE); print OUTPUT_LINE; \
+      } \
+      else if ( 0 < p_rel ) { \
+        gsub(/ampeg_release=[0-9][0-9.]*/, "ampeg_release=" AMPEG_RELEASE[ix_rel], OUTPUT_LINE); \
+        print OUTPUT_LINE; \
+        ix_rel++; \
       } \
       else { \
         print OUTPUT_LINE; \
