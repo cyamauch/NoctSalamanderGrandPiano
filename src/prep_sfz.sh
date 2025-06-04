@@ -9,7 +9,8 @@ if [ "$1" = "" ]; then
   echo "$0 src_sfz src_unsampled"
 fi
 SRC_SFZ="$1"
-SRC_UNSAMPLED="$2"
+FLAG_TEST="$2"
+SRC_UNSAMPLED="$3"
 
 KEY_NID_TXT=`cat key_n-id.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 ARG_OUTFILE_SED_0=`echo "$KEY_NID_TXT" | awk '{printf("-e s/%sv/%s_%sv/ \n",$1,$2,$1);}'`
@@ -48,6 +49,9 @@ cat sfz_inserted.txt $SRC_SFZ | tr '\r' '~' | sed -e 's/[ ]*[~]$//' $ARG_OUTFILE
       print; \
       printf("%s",ins_parts[6]); \
     } \
+    else if ( 0 < match($0,/C4v[0-9]/) ) { \
+      print $0 " pitch_keycenter=60"; \
+    } \
     else { \
       print; \
     } \
@@ -58,6 +62,7 @@ cat sfz_inserted.txt $SRC_SFZ | tr '\r' '~' | sed -e 's/[ ]*[~]$//' $ARG_OUTFILE
 # to be TRUE Grand piano: i.e. F6 with half damper and F#6-C8 without damper.
 #
 cat tmp0.sfz | grep 'F#6v' | sed -e 's/lokey/key/' -e 's/hikey=91[ ]//' > tmp1.sfz
+echo ${FLAG_TEST} > tmp2.sfz
 cat tmp1.sfz tmp0.sfz | awk '{ \
   if ( FLG == "" ) { \
     if ( substr($0,1,2) == "//" ) { FLG=1; print; } \
@@ -97,59 +102,129 @@ cat tmp1.sfz tmp0.sfz | awk '{ \
       } \
     } \
   } \
-}' > tmp2.sfz
+}' >> tmp2.sfz
 
 #
 # for Version 5
 #
 if [ "$SRC_UNSAMPLED" = "" ]; then
-  cat tmp2.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r'
+  cat tmp2.sfz | awk '{ \
+    if ( NR != 1 ) { \
+      printf("%s~\n",$0); \
+    } \
+  }' | tr '~' '\r'
   exit 0
 fi
 
 #
 # for Version 6
-# Expand WAV file assignment: lokey,hikey => key
+# - Expand WAV file assignment: lokey,hikey => key.
+# - 88 <group> sections are used for each note.
+# - "tune=xx" is written in <group> section.
+# - If a test flag is specified, the minimum necessary code will be output.
 #
 cat tmp2.sfz | awk '{ \
-  p0 = match($0, /[A-Z#][0-9]v[0-9]/); \
-  if ( 0 < p0 ) { \
-    p0 = match($0, /[ ]lokey=/); \
-  } \
-  if ( 0 < p0 ) { \
-     split($0,KEYS," "); \
-     for ( i=1 ; i <= length(KEYS) ; i++ ) { \
-       p1 = match(KEYS[i], /lokey=/); \
-       if ( p1 == 1 ) { \
-         lokey = int(substr(KEYS[i], p1 + 6)); \
-         idx1 = i; \
-       } \
-       p2 = match(KEYS[i], /hikey=/); \
-       if ( p2 == 1 ) { \
-         hikey = int(substr(KEYS[i], p2 + 6)); \
-         idx2 = i; \
-       } \
-       p3 = match(KEYS[i], /pitch_keycenter=/); \
-       if ( p3 == 1 ) { \
-         keycenter = int(substr(KEYS[i], p3 + 16)); \
-       } \
-     } \
-     for ( i=lokey ; i <= hikey ; i++ ) { \
-       if ( i != 89 ) { \
-         for ( j=1 ; j <= length(KEYS) ; j++ ) { \
-           if ( 1 < j ) { printf(" "); } \
-           if ( j == idx1 ) { printf("key=%d",i); } \
-           else if ( j == idx2 ) { printf(""); } \
-           else { \
-             printf("%s",KEYS[j]); \
-           } \
-         } \
-         printf("\n"); \
-       } \
-     } \
+  if ( NR == 1 ) { \
+    FLAG_TEST=$1; \
+    if ( substr($1,1,1) == "v" ) { \
+      SEL_VEL = $1; \
+    } \
+    else { \
+      SEL_VEL = ""; \
+    } \
   } \
   else { \
-     print; \
+    p0 = match($0, /[A-Z#][0-9]v[0-9]/); \
+    if ( 0 < p0 ) { \
+      p0 = match($0, /[ ]lokey=/); \
+    } \
+  } \
+  if ( NR == 1 ) { \
+  } \
+  else if ( 0 < p0 ) { \
+    split($0,KEYS," "); \
+    for ( i=1 ; i <= length(KEYS) ; i++ ) { \
+      p1 = match(KEYS[i], /lokey=/); \
+      if ( p1 == 1 ) { \
+        lokey = int(substr(KEYS[i], p1 + 6)); \
+        idx1 = i; \
+      } \
+      p2 = match(KEYS[i], /hikey=/); \
+      if ( p2 == 1 ) { \
+        hikey = int(substr(KEYS[i], p2 + 6)); \
+        idx2 = i; \
+      } \
+      p3 = match(KEYS[i], /pitch_keycenter=/); \
+      if ( p3 == 1 ) { \
+        keycenter = int(substr(KEYS[i], p3 + 16)); \
+      } \
+    } \
+    for ( i=lokey ; i <= hikey ; i++ ) { \
+      if ( i != 89 ) { \
+        for ( j=1 ; j <= length(KEYS) ; j++ ) { \
+          if ( 1 < j ) { \
+            LINES[i] = LINES[i] " "; \
+          } \
+          if ( j == idx1 ) { \
+            LINES[i] = LINES[i] sprintf("key=%d",i); \
+          } \
+          else if ( j == idx2 ) { } \
+          else { \
+            LINES[i] = LINES[i] sprintf("%s",KEYS[j]); \
+          } \
+        } \
+        LINES[i] = LINES[i] sprintf("\n"); \
+      } \
+    } \
+    if ( hikey == 88 ) { \
+      NR_LAST_HIKEY88 = NR; \
+    } \
+  } \
+  else if ( 0 < match($0, /[ ]key=89/) ) { \
+    i=89; \
+    LINES[i] = LINES[i] sprintf("%s\n",$0); \
+  } \
+  else if ( $0 == "<master>" && FLG_1ST_MASTER_DEL == "" ) { \
+    FLG_1ST_MASTER_DEL = 1; \
+  } \
+  else if ( NR == NR_LAST_HIKEY88 + 1 && substr($0,1,4) == "//==" ) { \
+  } \
+  else if ( $1 == "<group>" && substr($2,1,14) == "ampeg_release=" ) { \
+    split($0,ARR," "); \
+    printf("<master>"); \
+    for ( i=2 ; i <= length(ARR) ; i++ ) { \
+      printf(" %s",ARR[i]); \
+    } \
+  } \
+  else { \
+    if ( $0 == "//F6 with half damper" ) { KEY_S=21; KEY_E=88; } \
+    else if ( $0 == "//Notes without dampers" ) { KEY_S=89; KEY_E=89; } \
+    else if ( $0 == "//Release string resonances" ) { KEY_S=90; KEY_E=108; } \
+    else { KEY_S=0; KEY_E=0; } \
+    if ( KEY_S != 0 ) { \
+      for ( i=KEY_S ; i <= KEY_E ; i++ ) { \
+        printf("<group> // key_group=%d\n",i); \
+        if ( SEL_VEL == "" ) { print LINES[i]; } \
+        else { \
+          split(LINES[i],ARR,"\n"); \
+          for ( j=1 ; j <= length(ARR) ; j++ ) { \
+            p_vxx = match(ARR[j], /v[0-9][0-9][.]wav/); \
+            if ( 0 < p_vxx && substr(ARR[j],p_vxx,3) == SEL_VEL ) { \
+              gsub(/[ ]lovel=[0-9]*[ ]hivel=[0-9]*[ ]/, " lovel=1 ",ARR[j]); \
+              printf("%s\n\n",ARR[j]); \
+            } \
+          } \
+        } \
+      } \
+      printf("\n"); \
+      if ( KEY_E == 108 && 0 < match(FLAG_TEST, /[a-zA-Z]/) ) { \
+        exit; \
+      } \
+      print $0; \
+    } \
+    else { \
+      print; \
+    } \
   } \
 }' > tmp3.sfz
 
@@ -196,7 +271,7 @@ cat tmp_unsampled.txt tmp3.sfz | awk '{ \
         if ( 1 <= p3 ) { \
           keycenter = int(substr($0, p3 + 17)); \
         } \
-        actual_n = n - 20 + (this_key - keycenter);
+        actual_n = n - 20 + (this_key - keycenter); \
         if ( v == 1 ) { vol = VOL1[actual_n]; } \
         else if ( v == 2 ) { vol = VOL2[actual_n]; } \
         else if ( v == 3 ) { vol = VOL3[actual_n]; } \

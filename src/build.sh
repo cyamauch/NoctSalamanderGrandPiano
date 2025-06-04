@@ -10,10 +10,12 @@
 
 #### This script can be used under Cygwin Terminal. ####
 
-# Version 5
-VERSION5=1
-# Version 6
-#VERSION5=0
+if [ "$VERSION5" = "" ]; then
+  # Version 5
+  VERSION5=1
+  # Version 6
+  #VERSION5=0
+fi
 
 #### Set your ffmpeg.exe in Makefile.  Native Windows binary is OK. ####
 
@@ -405,14 +407,19 @@ for i in $LIST ; do
   # cent = 1200.0 * log_2 (f_tuned / f_orig)
   #
   TUNE_BY_CENT=""
+  TUNE_BY_CENT_ALL=""
   FILTER_ASETRATE=""
   if [ "$FS_SRC" != "" ]; then
+    TUNE_BY_CENT_ALL=`echo "$TUNED_TXT" | grep "^ALL" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
+    if [ "$TUNE_BY_CENT_ALL" = "" ] ; then
+      TUNE_BY_CENT_ALL=0
+    fi
     TUNE_BY_CENT=`echo "$TUNED_TXT" | grep "^$KEY" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
     if [ "$TUNE_BY_CENT" = "" ] ; then
       TUNE_BY_CENT=0
     fi
-    if [ "$TUNE_BY_SCALE" != "0" -o "$TUNE_BY_CENT" != "0" ] ; then
-      FILTER_ASETRATE=`echo $FS_SRC $TUNE_BY_SCALE $TUNE_BY_CENT | awk '{printf("asetrate=%g,\n",$1 * 2.0^((100.0 * $2 + $3)/1200.0));}'`
+    if [ "$TUNE_BY_SCALE" != "0" -o "$TUNE_BY_CENT" != "0" -o "$TUNE_BY_CENT_ALL" != "0" ] ; then
+      FILTER_ASETRATE=`echo $FS_SRC $TUNE_BY_SCALE $TUNE_BY_CENT_ALL $TUNE_BY_CENT | awk '{printf("asetrate=%g,\n",($1) * 2.0^((100.0 * ($2) + (($3)+($4)))/1200.0));}'`
     fi
   fi
   # Direct filtering args for ffmpeg
@@ -426,7 +433,7 @@ for i in $LIST ; do
   FILTER_DIRECT_LINE=`echo "$FILTER_DIRECT_TXT" | grep "^${KEY}v[0-9]"`
   #
   echo "GAIN_ROOT_1: $GAIN1_ROOT_THIS    GAIN_ROOT_2: $GAIN2_ROOT_THIS"
-  echo "GAIN_01: $GAIN01_THIS    GAIN_23: $GAIN23_THIS   TUNE: ${TUNE_BY_SCALE} + ${TUNE_BY_CENT}/100"
+  echo "GAIN_01: $GAIN01_THIS    GAIN_23: $GAIN23_THIS   TUNE: ${TUNE_BY_SCALE} + ((${TUNE_BY_CENT_ALL}) + (${TUNE_BY_CENT}))/100"
   echo "EFF_RATIO_01: $EFF_RATIO_01"
   #
   for j in $LIST_VEL ; do

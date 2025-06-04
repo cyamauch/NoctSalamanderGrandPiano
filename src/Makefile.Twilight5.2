@@ -51,15 +51,15 @@ vol_factor.txt::
 
 sfz48::
 	mkdir -p $(DESTPCMDIR48)
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.5db.txt _bass1.5db
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.0db.txt _bass1.0db
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_flat.txt _flat
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble0.5db.txt _treble0.5db Recommended
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.0db.txt _treble1.0db
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.5db.txt _treble1.5db
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.0db.txt _treble2.0db
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.5db.txt _treble2.5db
-	sh mk_sfz.sh sfz_sed_args_test-only.txt $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_test-only.txt _test-only
+	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.5db.txt _bass1.5db
+	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.0db.txt _bass1.0db
+	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_flat.txt _flat
+	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble0.5db.txt _treble0.5db Recommended
+	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.0db.txt _treble1.0db
+	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.5db.txt _treble1.5db
+	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.0db.txt _treble2.0db
+	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.5db.txt _treble2.5db
+	sh mk_sfz.sh sfz_sed_args_test-only.txt $(SRCDIR48)/SalamanderGrandPianoV3.sfz test $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_test-only.txt _test-only
 
 src48::
 	mkdir -p $(DESTDIR48)/src
@@ -81,7 +81,7 @@ noct48:: sfz48 src48 vol_factor.txt
 
 sfz44::
 	mkdir -p $(DESTPCMDIR44)
-	sh mk_sfz.sh $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR44) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_flat.txt _flat
+	sh mk_sfz.sh $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR44) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_flat.txt _flat
 
 noct44:: sfz44
 	mkdir -p $(DESTPCMDIR44)

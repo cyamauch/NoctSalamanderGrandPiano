@@ -54,7 +54,7 @@ func_merge ()
     else { \
       if ( 1 < flg ) { flg = 1; } \
     } \
-    if ( flg != 3 ) {
+    if ( flg != 3 ) { \
       if ( 0 < flg ) { \
         printf("%s",ARR[1]); \
         for ( i=1 ; i <= 16 ; i++ ) { \

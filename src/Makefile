@@ -51,14 +51,19 @@ vol_factor.txt::
 
 sfz48::
 	mkdir -p $(DESTPCMDIR48)
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.5db.txt _bass1.5db
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.0db.txt _bass1.0db
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_flat.txt _flat
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.0db.txt _treble1.0db
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.5db.txt _treble1.5db
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.0db.txt _treble2.0db Recommended
-	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.5db.txt _treble2.5db
-	sh mk_sfz.sh sfz_sed_args_test-only.txt $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_test-only.txt _test-only
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.5db.txt _bass1.5db
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.0db.txt _bass1.0db
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_flat.txt _flat
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.0db.txt _treble1.0db
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.5db.txt _treble1.5db
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.0db.txt _treble2.0db Recommended
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.5db.txt _treble2.5db
+
+sfz48test::
+	mkdir -p $(DESTPCMDIR48)
+	VERSION5=0 sh mk_sfz.sh sfz_sed_args_test-only.txt $(SRCDIR48)/SalamanderGrandPianoV3.sfz test $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_test-only.txt _test-only
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz test $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_vol-test-only.txt _vol-test-only
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz v08 $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_vol-test-only.txt _tune-test-only
 
 src48::
 	mkdir -p $(DESTDIR48)/src
@@ -76,11 +81,11 @@ noct48:: sfz48 src48 vol_factor.txt
 	cp -p $(SRCPCMDIR48)/h*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/p*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/r*.wav $(DESTPCMDIR48)/.
-	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48) 1.0
+	VERSION5=0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48) 1.0
 
 sfz44::
 	mkdir -p $(DESTPCMDIR44)
-	sh mk_sfz.sh $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR44) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_flat.txt _flat
+	VERSION5=0 sh mk_sfz.sh $(SRCDIR48)/SalamanderGrandPianoV3.sfz $(DESTPCMDIR44) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_flat.txt _flat
 
 noct44:: sfz44
 	mkdir -p $(DESTPCMDIR44)
@@ -96,7 +101,7 @@ noct44:: sfz44
 	cp -p $(SRCPCMDIR44)/h*.wav $(DESTPCMDIR44)/.
 	cp -p $(SRCPCMDIR44)/p*.wav $(DESTPCMDIR44)/.
 	cp -p $(SRCPCMDIR44)/r*.wav $(DESTPCMDIR44)/.
-	FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s16le -ar 44100" sh build.sh copy $(DESTPCMDIR48) $(DESTPCMDIR44)
+	VERSION5=0 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s16le -ar 44100" sh build.sh copy $(DESTPCMDIR48) $(DESTPCMDIR44)
 
 clean48::
 	rm -rf $(DESTDIR48)
@@ -109,9 +114,9 @@ clean44::
 #
 test48:: vol_factor.txt
 	mkdir -p $(DESTPCMDIR48TEST)
-	FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-ac 1 -c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48TEST)
+	VERSION5=0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-ac 1 -c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48TEST)
 
 test44:: vol_factor.txt
 	mkdir -p $(DESTPCMDIR44TEST)
-	FS_SRC=44100 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-ac 1 -c:a pcm_s16le" sh build.sh make $(SRCPCMDIR44) $(DESTPCMDIR44TEST)
+	VERSION5=0 FS_SRC=44100 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-ac 1 -c:a pcm_s16le" sh build.sh make $(SRCPCMDIR44) $(DESTPCMDIR44TEST)
 

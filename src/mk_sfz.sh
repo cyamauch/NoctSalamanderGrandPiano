@@ -4,10 +4,12 @@
 ####   Creating SFZ   ####
 ##########################
 
-# Version 5
-VERSION5=1
-# Version 6
-#VERSION5=0
+if [ "$VERSION5" = "" ]; then
+  # Version 5
+  VERSION5=1
+  # Version 6
+  #VERSION5=0
+fi
 
 if [ "$1" != "-" ]; then
   SFZ_SED_ARGS_FILE="$1"
@@ -15,12 +17,13 @@ else
   SFZ_SED_ARGS_FILE="sfz_sed_args.txt"
 fi
 SRC_SFZ="$2"
-DEST_DIR="$3"
-DEST_SFZ_BASENAME="$4"
-SFZ_VOL_FACTOR_BASE_FILE="$5"
-SFZ_SUFFIX="$6"
-if [ "$7" != "" ]; then
-  SFZ_RECOMMENDED_SUFFIX=".$7"
+FLAG_TEST="$3"
+DEST_DIR="$4"
+DEST_SFZ_BASENAME="$5"
+SFZ_VOL_FACTOR_BASE_FILE="$6"
+SFZ_SUFFIX="$7"
+if [ "$8" != "" ]; then
+  SFZ_RECOMMENDED_SUFFIX=".$8"
 else
   SFZ_RECOMMENDED_SUFFIX=""
 fi
@@ -31,17 +34,17 @@ fi
 
 if [ "$VERSION5" = "1" ]; then
   # Version 5
-  sh prep_sfz.sh ${SRC_SFZ} > prep.sfz
+  sh prep_sfz.sh ${SRC_SFZ} ${FLAG_TEST} > prep.sfz
 else
   # Version 6 : Volume settings will be added for all 88 keys.
-  sh prep_sfz.sh ${SRC_SFZ} volume_measurement/unsampled_volumes.txt > prep.sfz
+  sh prep_sfz.sh ${SRC_SFZ} ${FLAG_TEST} volume_measurement/unsampled_volumes.txt > prep.sfz
 fi
 
 #
 # Main Processing
 #
 
-if [ "$5" != "" ]; then
+if [ "$DEST_SFZ_BASENAME" != "" ]; then
 
   SFZ_SED_ARGS=`cat $SFZ_SED_ARGS_FILE | tr -d '\r'`
 
@@ -61,10 +64,10 @@ if [ "$5" != "" ]; then
       ix_k=1; ix_v=1; \
     } \
     if ( $1 == "AMP_VELTRACK" ) { \
-      PRM_L2 = $2;
+      PRM_L2 = $2; \
     } \
     else if ( $1 == "AMPEG_RELEASE" ) { \
-      PRM_L3 = $2;
+      PRM_L3 = $2; \
     } \
     else if ( $1 == "VEL_ALL" ) { \
       split($0,ARR," "); \
@@ -95,9 +98,9 @@ if [ "$5" != "" ]; then
     } \
   } \
   END { \
-    print PRM_L2;
-    print PRM_L3;
-    print PRM_L4;
+    print PRM_L2; \
+    print PRM_L3; \
+    print PRM_L4; \
     for ( i=1 ; i <= length(OUT_KEYS) ; i++ ) { \
       if ( i != 1 ) { printf(" "); } \
       printf("%s",OUT_KEYS[i]); \
@@ -170,6 +173,8 @@ if [ "$5" != "" ]; then
       p0 = match($0, /[0-1][0-9][0-9]_[A-Z]/); \
       p1 = 0; \
       p_amp = 0; \
+      p_rel = 0; \
+      p_kyg = 0; \
       if ( 0 < p0 ) { \
         p1 = match($0, /v[0-9][0-9][.]wav/); \
         if ( 0 < p1 ) { \
@@ -184,7 +189,6 @@ if [ "$5" != "" ]; then
             if ( key == KEYS[i] ) { \
               v = int(substr($0,p1+1,2)); \
               volume = 0.0 + VOL_VEL[v] + VOL_KEY[i]; \
-              tune = TUNED_SFZ[i]; \
             } \
           } \
         } \
@@ -195,13 +199,9 @@ if [ "$5" != "" ]; then
           p_amp = match($0, /amp_veltrack=82/); \
         } \
         p_rel = match($0, /ampeg_release=[0-9]/); \
+        p_kyg = match($0, /key_group=[0-9]/); \
       } \
-      if ( 0 < p0 && 0 < p1 && tune != 0 ) { \
-        OUTPUT_LINE = $0 " tune=" tune; \
-      } \
-      else { \
-        OUTPUT_LINE = $0; \
-      } \
+      OUTPUT_LINE = $0; \
       if ( 0 < p0 && 0 < p1 && volume != 0.0 ) { \
         p_v=match(OUTPUT_LINE, /volume[=][0123456789.+-]*/); \
         if ( 0 < p_v ) { \
@@ -214,6 +214,25 @@ if [ "$5" != "" ]; then
           sub(/[.]wav[ ]/, ".wav " vol_str " ", OUTPUT_LINE); \
         } \
         print OUTPUT_LINE; \
+      } \
+      else if ( 0 < p_kyg ) { \
+        split(OUTPUT_LINE,ARR," "); \
+        i = int(substr($0, p_kyg + 10, 3)); \
+        tune = TUNED_SFZ[i - 20]; \
+        for ( i=1 ; i <= length(ARR) ; i++ ) { \
+          if ( i == 1 ) { \
+            if ( tune == 0 ) { \
+              printf("%s tune=%d",ARR[i],tune); \
+            } \
+            else { \
+              printf("%s tune=%+d",ARR[i],tune); \
+            } \
+          } \
+          else { \
+            printf(" %s",ARR[i]); \
+          } \
+        } \
+        printf("\n"); \
       } \
       else if ( 0 < p_amp ) { \
         gsub(/amp_veltrack=[0-9][0-9]*/, "amp_veltrack=" AMP_VEL, OUTPUT_LINE); print OUTPUT_LINE; \
@@ -229,6 +248,7 @@ if [ "$5" != "" ]; then
     } \
   }' > tmp_out.sfz
   #cat tmp_out.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}.sfz
+  #echo output: ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
   cat tmp_out.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
 
   # Creating SFZ without Noise.
