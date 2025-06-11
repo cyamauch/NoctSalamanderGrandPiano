@@ -62,8 +62,8 @@ sfz48::
 sfz48test::
 	mkdir -p $(DESTPCMDIR48)
 	VERSION5=0 sh mk_sfz.sh sfz_sed_args_test-only.txt $(SRCDIR48)/SalamanderGrandPianoV3.sfz test $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_test-only.txt _test-only
-	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz test $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_vol-test-only.txt _vol-test-only
-	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz v08 $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_vol-test-only.txt _tune-test-only
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz test $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_vol-eval-only.txt _vol-eval-only
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz v08 $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_vol-eval-only.txt _tune-test-only
 
 src48::
 	mkdir -p $(DESTDIR48)/src
