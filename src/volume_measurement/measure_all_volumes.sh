@@ -30,7 +30,7 @@ for i in $LAYER_LIST ; do
   #LIST=`ls $DIR | grep '[0][789][0-9]_[^_v]*'"v${i}"'[.]wav' | awk '{printf("%s/%s\n","'${DIR}'",$1);}'`
 
   OUTPUT="meanvol-sec${SEC}_v${i}.txt"
-  sh measure_volume.sh $SEC $LIST > $OUTPUT
+  sh measure_volume.sh 0 $SEC $LIST > $OUTPUT
 
   if [ "$i" = "16" ]; then
     PLOT_CMD="$PLOT_CMD '${OUTPUT}' with linesp title '$i'"
