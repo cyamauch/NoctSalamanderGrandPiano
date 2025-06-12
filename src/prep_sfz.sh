@@ -63,6 +63,7 @@ cat sfz_inserted.txt $SRC_SFZ | tr '\r' '~' | sed -e 's/[ ]*[~]$//' $ARG_OUTFILE
 #
 cat tmp0.sfz | grep 'F#6v' | sed -e 's/lokey/key/' -e 's/hikey=91[ ]//' > tmp1.sfz
 echo ${FLAG_TEST} > tmp2.sfz
+cat key_n-id_all.txt | awk '{printf("%s,%s ",$2,$1);} END {printf("\n");}' >> tmp2.sfz
 cat tmp1.sfz tmp0.sfz | awk '{ \
   if ( FLG == "" ) { \
     if ( substr($0,1,2) == "//" ) { FLG=1; print; } \
@@ -109,7 +110,7 @@ cat tmp1.sfz tmp0.sfz | awk '{ \
 #
 if [ "$SRC_UNSAMPLED" = "" ]; then
   cat tmp2.sfz | awk '{ \
-    if ( NR != 1 ) { \
+    if ( 2 < NR ) { \
       printf("%s~\n",$0); \
     } \
   }' | tr '~' '\r'
@@ -133,13 +134,21 @@ cat tmp2.sfz | awk '{ \
       SEL_VEL = ""; \
     } \
   } \
+  else if ( NR == 2 ) { \
+    split($0,ARR," "); \
+    for ( i=1 ; i <= length(ARR) ; i++ ) { \
+      split(ARR[i],ELM,","); \
+      ix = int(sprintf("%d",ELM[1])); \
+      NOTE_NAMES[ix] = ELM[2]; \
+    } \
+  } \
   else { \
     p0 = match($0, /[A-Z#][0-9]v[0-9]/); \
     if ( 0 < p0 ) { \
       p0 = match($0, /[ ]lokey=/); \
     } \
   } \
-  if ( NR == 1 ) { \
+  if ( NR <= 2 ) { \
   } \
   else if ( 0 < p0 ) { \
     split($0,KEYS," "); \
@@ -203,7 +212,7 @@ cat tmp2.sfz | awk '{ \
     else { KEY_S=0; KEY_E=0; } \
     if ( KEY_S != 0 ) { \
       for ( i=KEY_S ; i <= KEY_E ; i++ ) { \
-        printf("<group> // key_group=%d\n",i); \
+        printf("<group> // key_group=%d [%s]\n",i,NOTE_NAMES[i]); \
         if ( SEL_VEL == "" ) { print LINES[i]; } \
         else { \
           split(LINES[i],ARR,"\n"); \
