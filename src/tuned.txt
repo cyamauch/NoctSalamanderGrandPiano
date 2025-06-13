@@ -1,5 +1,8 @@
-ALL  -2.0
 
+# Accurate tuning results using A4v08 = 440Hz
+ALL  -1.0
+
+# Tuning results for each WAV file
 A0   +10.0
 C1   +10.0
 D#1  +5.0
