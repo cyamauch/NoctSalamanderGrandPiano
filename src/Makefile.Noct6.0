@@ -79,6 +79,7 @@ src48::
 
 noct48:: sfz48 src48 vol_factor.txt
 	mkdir -p $(DESTPCMDIR48)
+	cp -p $(SRCDIR48)/README $(DESTDIR48)/README.orig.txt
 	cp -p $(SRCPCMDIR48)/h*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/p*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/r*.wav $(DESTPCMDIR48)/.
