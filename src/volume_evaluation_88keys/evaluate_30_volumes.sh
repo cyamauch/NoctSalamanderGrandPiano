@@ -18,7 +18,7 @@ for i in $LAYER_LIST ; do
 
   echo "Measuring velocity: ${i}"
 
-  OUTPUT="${DIRNAME}/meanvol-sec${SEC}_v${i}.txt"
+  OUTPUT="${DIRNAME}/meanvol30-sec${SEC}_v${i}.txt"
 
   echo "Output to $OUTPUT"
 
@@ -35,8 +35,8 @@ for i in $LAYER_LIST ; do
       break
     fi
 
-    KEY=`expr $KEY + 1`
-    POS=`expr $POS + 3`
+    KEY=`expr $KEY + 3`
+    POS=`expr $POS + 9`
   done
 
   if [ "$i" = "01" ]; then
@@ -47,7 +47,7 @@ for i in $LAYER_LIST ; do
 
 done
 
-OUTPUT_PLOT="${DIRNAME}/plot_meanvol-sec${SEC}.txt"
+OUTPUT_PLOT="${DIRNAME}/plot_meanvol30-sec${SEC}.txt"
 
 echo "set xlabel 'note-id'" > $OUTPUT_PLOT
 echo "set ylabel 'mean-volumne (${SEC} sec.)'" >> $OUTPUT_PLOT

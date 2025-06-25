@@ -3,7 +3,7 @@
 if [ "$1" = "" ]; then
     echo "[USAGE]"
     echo "$0 sec"
-    echo "$0 1.0"
+    echo "$0 0.5"
     exit
 fi
 
