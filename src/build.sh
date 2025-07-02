@@ -78,12 +78,16 @@ FFMPEG_SP_LOG_FILE="ffmpeg-sp_log.txt"
 
 #### SELECTION of wav creation ####
 
-# ALL   ... create all
-# 1-16  ... create velocity=n WAV files
-# undef ... create none
-LIST_CREATED_LAYER=ALL
-#LIST_CREATED_LAYER="10 16"
-#LIST_CREATED_LAYER="1 2 3"
+if [ "$SELECTED_LAYER" = "" ]; then
+
+  # ALL   ... create all
+  # 1-16  ... create velocity=n WAV files
+  # undef ... create none
+  SELECTED_LAYER=ALL
+  #SELECTED_LAYER="10 16"
+  #SELECTED_LAYER="1 2 3"
+
+fi
 
 if [ "$SELECTED_KEY" = "" ]; then
 
@@ -297,13 +301,13 @@ for i in $LIST ; do
   KEY=`echo $i | awk -F, '{printf("%s\n",$1);}'`
   FREQ=`echo $i | awk -F, '{printf("%s\n",$2);}'`
   N_ID=`echo "$KEY_NID_TXT" | grep "^$KEY" | awk '{print $2;}'`
-  if [ "$LIST_CREATED_LAYER" = "" ]; then
+  if [ "$SELECTED_LAYER" = "" ]; then
     LIST_VEL=""
   else
-    if [ "$LIST_CREATED_LAYER" = "ALL" ]; then
+    if [ "$SELECTED_LAYER" = "ALL" ]; then
       LIST_VEL="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16"
     else
-      LIST_VEL="$LIST_CREATED_LAYER"
+      LIST_VEL="$SELECTED_LAYER"
     fi
   fi
   echo "N_ID: $N_ID   KEY: $KEY    FREQ: $FREQ"
