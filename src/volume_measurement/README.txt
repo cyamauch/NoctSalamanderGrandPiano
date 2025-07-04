@@ -9,6 +9,9 @@ To measure gap between two layers (e.g., v7 and v8),
 - Convert .mid to .wav using your MIDI player
 - Run measure_all_gaps.sh.
 
+To measure the continuity of volume for a single note, use
+make_all_vel_measurement_midi.sh and measure_all_vel.sh.
+
 Script "get_unsampled_volumes.sh" calculates correction values of volumes for
 unsampled notes.  The result will be saved in "unsampled_volumes.txt".
 
