@@ -13,8 +13,8 @@ fi
 TEMPO=$1
 NOTE_ID=$2
 
-VEL_START=25
-VEL_END=122
+VEL_START=1
+VEL_END=126
 
 
 echo "MFile 1 2 240" > tmp.txt

@@ -13,8 +13,8 @@ NOTE_ID=$2
 
 SEC=0.5
 
-VEL_START=25
-VEL_END=122
+VEL_START=1
+VEL_END=126
 
 
 VEL_ALL=`echo $VEL_START $VEL_END | awk '{ for (i=$1 ; i<=$2 ; i++){ printf("%d ",i); } printf("\n"); }'`
