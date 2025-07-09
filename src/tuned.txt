@@ -2,7 +2,13 @@
 # Accurate tuning results using A4v08 = 440Hz
 ALL  -1.0
 
+#
 # Tuning results for each WAV file
+# (See also tuned_sfz.txt)
+#
+#         Tuner: Hiroharu Narikawa
+#         Date: July 8, 2025
+#
 A0  +6
 C1  +10
 D#1 +7

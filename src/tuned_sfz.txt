@@ -1,3 +1,10 @@
+#
+# Tuning results for V6 SFZ files
+# (See also tuned.txt)
+#
+#        Tuner: Hiroharu Narikawa
+#        Date: July 8, 2025
+#
 021_A0  0
 022_A#0 +2
 023_B0  0
