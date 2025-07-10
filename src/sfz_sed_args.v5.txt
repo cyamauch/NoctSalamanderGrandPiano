@@ -1,9 +1,9 @@
 -e s/Salamander~Grand~Piano~V2/Noct-Salamander~Grand~Piano~Project/
 -e s/lovel=1~hivel=26/lovel=1~hivel=26/
--e s/lovel=27~hivel=34/lovel=27~hivel=32/
--e s/lovel=35~hivel=36/lovel=33~hivel=37/
--e s/lovel=37~hivel=43/lovel=38~hivel=42/
--e s/lovel=44~hivel=46/lovel=43~hivel=47/
+-e s/lovel=27~hivel=34/lovel=27~hivel=33/
+-e s/lovel=35~hivel=36/lovel=34~hivel=37/
+-e s/lovel=37~hivel=43/lovel=38~hivel=43/
+-e s/lovel=44~hivel=46/lovel=44~hivel=47/
 -e s/lovel=47~hivel=50/lovel=48~hivel=52/
 -e s/lovel=51~hivel=56/lovel=53~hivel=58/
 -e s/lovel=57~hivel=64/lovel=59~hivel=64/
