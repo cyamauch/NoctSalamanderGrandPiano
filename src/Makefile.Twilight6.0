@@ -71,10 +71,12 @@ src48::
 	cp -p README.txt $(DESTDIR48)/.
 	cp -p rename_wav.sh freq_data.csv freq-sec.txt freq-sec_fnc.png $(DESTDIR48)/src/.
 	cp -p $(MAKEFILE) build.sh mk_special.sh setup_overtone.sh mk_vol_factor.sh $(DESTDIR48)/src/.
-	cp -p pcm_seek_pos.txt freq_piano_data.txt key_n-id.txt $(DESTDIR48)/src/.
+	cp -p pcm_seek_pos.txt freq_piano_data.txt key_n-id.txt key_n-id_all.txt $(DESTDIR48)/src/.
 	cp -p overtone_root.txt $(OVERTONE_CONFIG) $(OVERTONE3_CONFIG) $(BASS_CONFIG) $(DESTDIR48)/src/.
-	cp -p *_factor*.txt assign.txt tuned.txt filter_direct.txt sfz_sed_args.txt $(DESTDIR48)/src/.
-	cp -p sfz_vol_factor_base*.txt mk_sfz.sh prep_sfz.sh sfz_inserted.txt $(DESTDIR48)/src/.
+	cp -p `ls *_factor*.txt | grep -v -e '[.]v5[.]' -e '[.]2025' -e '[-]only[.]'` $(DESTDIR48)/src/.
+	cp -p assign.txt tuned.txt tuned_sfz.txt filter_direct.txt sfz_sed_args.txt $(DESTDIR48)/src/.
+	cp -p `ls sfz_vol_factor_base*.txt | grep -v -e '[.]v5[.]' -e '[.]2025' -e '[-]only[.]'` $(DESTDIR48)/src/.
+	cp -p unsampled_volumes.txt mk_sfz.sh prep_sfz.sh sfz_inserted.txt $(DESTDIR48)/src/.
 	cp -p $(SRCDIR48)/README $(DESTDIR48)/README.orig.txt
 
 noct48:: sfz48 src48 vol_factor.txt

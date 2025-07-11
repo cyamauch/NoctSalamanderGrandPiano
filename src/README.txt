@@ -273,6 +273,16 @@ V5.2f (Feb.4,2025)
 * Updated the SFZ files to enable "repedaling".
   (Thanks to Andrew <https://github.com/esesur>)
 * Moved amp_veltrack to the <global> section of the SFZ files.
+V6.0beta1 (Jul.11,2025)
+* Volume adjustments and tuning for all 88 notes are set in the SFZ file.
+* The results of tuning by tuner Hiroharu Narikawa on July 8, 2025 have been
+  reflected in tuned.txt and tuned_sfz.txt.
+* The volume of all 88 notes in 16 velocity layers was adjusted to match the
+  tuning.
+* Change "velocity to WAV file" assignment:
+  [v2:7 v3:4 v4:6 v5:4 v6:5] => [v2:6 v3:5 v4:5 v5:5 v6:5]
+* The volume gap between velocity layers has been reduced to about 2
+  velocities.  Accordingly, AMP_VELTRACK has been changed to 97.7.
 
 
 *** Licence:
