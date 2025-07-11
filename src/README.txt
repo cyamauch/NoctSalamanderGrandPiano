@@ -282,7 +282,7 @@ V6.0beta1 (Jul.11,2025)
 * Change "velocity to WAV file" assignment:
   [v2:7 v3:4 v4:6 v5:4 v6:5] => [v2:6 v3:5 v4:5 v5:5 v6:5]
 * The volume gap between velocity layers has been reduced to about 2
-  velocities.  Accordingly, AMP_VELTRACK has been changed to 97.7.
+  velocities.  Accordingly, AMP_VELTRACK has been changed to 97.0.
 
 
 *** Licence:
