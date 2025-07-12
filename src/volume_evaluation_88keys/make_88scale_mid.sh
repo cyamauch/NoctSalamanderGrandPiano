@@ -1,9 +1,11 @@
 #!/bin/sh	
 
-if [ "$1" = "" ]; then
+if [ "$2" = "" ]; then
   echo "[USAGE]"
-  echo "$0 tempo"
-  echo "$0 240000"
+  echo "$0 tempo version"
+  echo "$0 240000 3"
+  echo "$0 240000 5"
+  echo "$0 240000 6"
   echo "Note: 240000 must be set as arg #1"
   echo "Note: Use *-SalamanderGrandPiano_vol-eval-only.sfz for this test!"
   exit
@@ -13,12 +15,13 @@ TEMPO=$1
 
 KEY_ID=`cat ../key_n-id_all.txt | awk '{printf("%s,%s\n",$1,$2);}'`
 
-#V3-V4.0
-#LIST_VEL="22 30 35 40 45 48 53 60 68 76 84 92 100 108 116 124"
-
-#V4.1-6
-LIST_VEL="22 30 35 40 45 50 55 61 68 76 84 92 100 108 116 124"
-
+if [ "$2" = "3" ]; then
+  #V3-V4.0
+  LIST_VEL="22 30 35 40 45 48 53 60 68 76 84 92 100 108 116 124"
+else
+  #V4.1-6
+  LIST_VEL="22 30 35 40 45 50 55 61 68 76 84 92 100 108 116 124"
+fi
 
 V=1
 
