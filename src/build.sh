@@ -260,6 +260,19 @@ fi
 
 
 
+#### Support of two SRC_DIR ####
+
+SRC_DIR_0="`echo $SRC_DIR | awk -F: '{print $1;}'`"
+if [ "$SRC_DIR_0" != "" ]; then
+  SRC_DIR_INFO_0='[DIR_0]'
+fi
+
+SRC_DIR_1="`echo $SRC_DIR | awk -F: '{print $2;}'`"
+if [ "$SRC_DIR_1" != "" ]; then
+  SRC_DIR_INFO_1='[DIR_1]'
+fi
+
+
 #### Read frequency for each key ####
 
 if [ "$SELECTED_KEY" = "" ]; then
@@ -444,13 +457,18 @@ for i in $LIST ; do
     ORIG_NAME=${KEY}v${j}
     ASSIGN_THIS=`echo $j $ASSIGN_THIS_ALL | awk '{ split($0,ARR," "); print ARR[1 + ARR[1]]; }'`
     J_IN="${USED_KEY}v${ASSIGN_THIS}.wav"
-    IN_FILE="${SRC_DIR}/$J_IN"
+    IN_FILE="${SRC_DIR_0}/$J_IN"
+    IN_DIR_INFO="$SRC_DIR_INFO_0"
+    if [ ! -f "$IN_FILE" ]; then
+      IN_FILE="${SRC_DIR_1}/$J_IN"
+      IN_DIR_INFO="$SRC_DIR_INFO_1"
+    fi
     if [ -f "$IN_FILE" ]; then
       OUT_FILENAME=`echo ${ORIG_NAME}.wav | sed $ARG_OUTFILE_SED`
       OUT_FILE=${DEST_DIR}/${OUT_FILENAME}
       VOL_THIS=`echo $j $VOL_OFFSET $VOL_THIS_ALL | awk '{ split($0,ARR," "); printf("%g\n",ARR[2]+ARR[2 + ARR[1]]); }'`
       SEEK_THIS=`echo $j $SEEK_THIS_ALL | awk '{ split($0,ARR," "); printf("%s\n",ARR[1 + ARR[1]]); }'`
-      echo "  Found ${J_IN}, Vol=${VOL_THIS}, Seek=${SEEK_THIS} Output to $OUT_FILE"
+      echo "  Found ${IN_DIR_INFO}/${J_IN}, Vol=${VOL_THIS}, Seek=${SEEK_THIS} Output to $OUT_FILE"
       #
       GAIN1_ROOT_THIS_VEL=`echo $j $GAIN1_ROOT_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
       GAIN2_ROOT_THIS_VEL=`echo $j $GAIN2_ROOT_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
