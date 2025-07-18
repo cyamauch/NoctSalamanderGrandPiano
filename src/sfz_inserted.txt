@@ -43,7 +43,7 @@ pan_oncc10=100
 pan_curvecc10=1
 ampeg_release_oncc72=2
 // "repedaling" ability (suggested by Andrew <https://github.com/esesur>)
-ampeg_dynamic=1
+ampeg_dynamic=0
 ampeg_releasecc64=100
 
 <master>

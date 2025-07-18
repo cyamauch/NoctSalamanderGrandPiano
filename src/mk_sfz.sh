@@ -249,7 +249,23 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
   }' > tmp_out.sfz
   #cat tmp_out.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}.sfz
   #echo output: ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
-  cat tmp_out.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
+
+  if [ "$FLAG_TEST" = "+" ]; then
+    PCM_DIR=`basename ${DEST_DIR}`
+    mkdir -p ${DEST_DIR}/../sfz_daw
+    mkdir -p ${DEST_DIR}/../sfz_live
+    cat tmp_out.sfz | sed -e "s/sample=${PCM_DIR}/sample=.."'\\'"${PCM_DIR}/" > tmp_out_daw.sfz
+    cat tmp_out_daw.sfz | sed -e 's/ampeg_dynamic=0/ampeg_dynamic=1/' -e 's/lovel=1 hivel=/lovel=2 hivel=/' > tmp_out_live.sfz
+    cat tmp_out_daw.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../sfz_daw/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
+    cat tmp_out_live.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../sfz_live/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
+  elif [ "$FLAG_TEST" = "-" ]; then
+    PCM_DIR=`basename ${DEST_DIR}`
+    mkdir -p ${DEST_DIR}/../sfz_int_daw
+    cat tmp_out.sfz | sed -e "s/sample=${PCM_DIR}/sample=.."'\\'"${PCM_DIR}/" > tmp_out_daw.sfz
+    cat tmp_out_daw.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../sfz_int_daw/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
+  else
+    cat tmp_out.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
+  fi
 
   # Creating SFZ without Noise.
   #cat tmp_out.sfz | awk '{ \
