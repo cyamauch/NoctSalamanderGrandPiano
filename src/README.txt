@@ -2,10 +2,33 @@
 -------------------------------------------------------------------------------
 
     Noct-Salamander Project
+    https://www.ir.isas.jaxa.jp/~cyamauch/NoctSalamanderGrandPiano/
 
     Free SFZ 48kHz/24bit Accurate Grand Piano Soundbanks
 
 -------------------------------------------------------------------------------
+
+
+*** How to use
+
+Select SFZ files in two types:
+
+- SFZ in sfz_daw directory
+
+  A set of SFZ files for general use.
+  The "repedaling" ability is disabled. (i.e., ampeg_dynamic=0)  The player 
+  software outputs the sound with velocity=1.  Suitable for use with DAWs.
+
+- SFZ in sfz_live directory
+
+  These are SFZ files for those who want realistic piano behavior.
+  The "repedaling" ability is enabled. (i.e., ampeg_dynamic=1)  At velocity=1,
+  there is no sound, as if the hammer is not hitting the string.
+  At velocity=2 or higher, the player software outputs the sound.  Suitable 
+  for live piano performance.
+
+Multiple SFZ files in above directories with different bass/treble balance are
+included.  Please try the one with "Recommended" in the file name first.
 
 
 *** Technical info
