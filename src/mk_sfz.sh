@@ -255,7 +255,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
     mkdir -p ${DEST_DIR}/../sfz_daw
     mkdir -p ${DEST_DIR}/../sfz_live
     cat tmp_out.sfz | sed -e "s/sample=${PCM_DIR}/sample=.."'\\'"${PCM_DIR}/" > tmp_out_daw.sfz
-    cat tmp_out_daw.sfz | sed -e 's/ampeg_dynamic=0/ampeg_dynamic=1/' -e 's/lovel=1 hivel=/lovel=2 hivel=/' > tmp_out_live.sfz
+    cat tmp_out_daw.sfz | sed -e 's/ampeg_dynamic=0/ampeg_dynamic=1/' -e 's/[ ]lovel=1[ ]/ lovel=2 /' > tmp_out_live.sfz
     cat tmp_out_daw.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../sfz_daw/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
     cat tmp_out_live.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../sfz_live/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
   elif [ "$FLAG_TEST" = "-" ]; then

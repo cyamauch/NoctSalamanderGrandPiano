@@ -49,7 +49,20 @@ cat sfz_inserted.txt $SRC_SFZ | tr '\r' '~' | sed -e 's/[ ]*[~]$//' $ARG_OUTFILE
       print; \
       printf("%s",ins_parts[6]); \
     } \
-    else if ( 0 < match($0,/C4v[0-9]/) ) { \
+    else if ( 0 < match($0,/harm[SV][3]*[A-Z][#]*[0-9][.]wav/) ) { \
+      split($0,ARR," "); \
+      for ( i=1 ; i <= length(ARR) ; i++ ) { \
+        printf("%s ",ARR[i]); \
+        if ( 0 < match(ARR[i], /hikey=[0-9]/) ) { \
+          printf("lovel=1 "); \
+        } \
+      } \
+      if ( 0 < match($0,/lokey=59[ ]hikey=61/) ) { \
+        printf("pitch_keycenter=60"); \
+      } \
+      printf("\n"); \
+    } \
+    else if ( 0 < match($0,/lokey=59[ ]hikey=61/) ) { \
       print $0 " pitch_keycenter=60"; \
     } \
     else { \
