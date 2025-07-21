@@ -1,3 +1,18 @@
+#
+# How to use:
+#
+# To build all SFZ and WAV files:
+# make -f Makefile.Twilight6.0 noct48
+#
+# To build all SFZ and selected WAV file(s):
+# make -f Makefile.Twilight6.0 noct48 SELECTED_KEY="A4 C8" SELECTED_LAYER="8 10"
+#
+# To build SFZ files:
+# make -f Makefile.Twilight6.0 sfz48
+#
+# To build selected WAV file(s):
+# make -f Makefile.Twilight6.0 wav48only SELECTED_KEY="A4 C8" SELECTED_LAYER="8 10"
+#
 
 #
 # Set your ffmpeg.exe.  Native Windows binary is OK.
@@ -30,6 +45,7 @@ DESTDIR_BASENAME = TwilightSalamanderGrandPianoV6.0
 
 SRCDIR48 =  ../SalamanderGrandPianoV3_48khz24bit
 SRCPCMDIR48 =  $(SRCDIR48)/48khz24bit
+SRCPCMPATH48 =  $(SRCPCMDIR48)
 DESTDIR48 = ../$(DESTDIR_BASENAME)_48khz24bit
 DESTPCMDIR48 = $(DESTDIR48)/48khz24bit
 
@@ -85,7 +101,11 @@ noct48:: sfz48 src48 vol_factor.txt
 	cp -p $(SRCPCMDIR48)/h*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/p*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/r*.wav $(DESTPCMDIR48)/.
-	VERSION5=0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48) 0.4
+	VERSION5=0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMPATH48) $(DESTPCMDIR48) 0.4
+
+wav48only::
+	mkdir -p $(DESTPCMDIR48)
+	VERSION5=0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMPATH48) $(DESTPCMDIR48) 0.4
 
 sfz44::
 	mkdir -p $(DESTPCMDIR44)
@@ -118,7 +138,7 @@ clean44::
 #
 test48:: vol_factor.txt
 	mkdir -p $(DESTPCMDIR48TEST)
-	VERSION5=0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-ac 1 -c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48TEST)
+	VERSION5=0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-ac 1 -c:a pcm_s24le" sh build.sh make $(SRCPCMPATH48) $(DESTPCMDIR48TEST)
 
 test44:: vol_factor.txt
 	mkdir -p $(DESTPCMDIR44TEST)

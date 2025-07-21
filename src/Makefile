@@ -13,9 +13,9 @@ MAKEFILE = Makefile
 #
 # Select an overtone settings
 #
-OVERTONE_CONFIG = overtone_config.txt
-OVERTONE3_CONFIG = overtone3_config.txt
-BASS_CONFIG = bass_config.txt
+OVERTONE_CONFIG = overtone_config.noct5.0.txt
+OVERTONE3_CONFIG = overtone3_config.noct5.0.txt
+BASS_CONFIG = bass_config.noct5.0.txt
 
 #
 # $(DEST_SFZ_BASENAME).sfz will be created
@@ -30,6 +30,7 @@ DESTDIR_BASENAME = NoctSalamanderGrandPianoV0.0
 
 SRCDIR48 =  ../SalamanderGrandPianoV3_48khz24bit
 SRCPCMDIR48 =  $(SRCDIR48)/48khz24bit
+SRCPCMPATH48 =  $(SRCPCMDIR48)
 DESTDIR48 = ../$(DESTDIR_BASENAME)_48khz24bit
 DESTPCMDIR48 = $(DESTDIR48)/48khz24bit
 
@@ -51,13 +52,14 @@ vol_factor.txt::
 
 sfz48::
 	mkdir -p $(DESTPCMDIR48)
-	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.5db.txt _bass1.5db
-	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.0db.txt _bass1.0db
-	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_flat.txt _flat
-	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.0db.txt _treble1.0db
-	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.5db.txt _treble1.5db
-	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.0db.txt _treble2.0db Recommended
-	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.5db.txt _treble2.5db
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz + $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.5db.txt _bass1.5db
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz + $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_bass1.0db.txt _bass1.0db
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz + $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_flat.txt _flat
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz + $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble0.5db.txt _treble0.5db
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz + $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.0db.txt _treble1.0db
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz + $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble1.5db.txt _treble1.5db
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz + $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.0db.txt _treble2.0db Recommended
+	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz + $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.5db.txt _treble2.5db
 
 sfz48test::
 	mkdir -p $(DESTPCMDIR48)
@@ -84,7 +86,11 @@ noct48:: sfz48 src48 vol_factor.txt
 	cp -p $(SRCPCMDIR48)/h*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/p*.wav $(DESTPCMDIR48)/.
 	cp -p $(SRCPCMDIR48)/r*.wav $(DESTPCMDIR48)/.
-	VERSION5=0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48) 1.0
+	VERSION5=0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMPATH48) $(DESTPCMDIR48) 1.0
+
+wav48only::
+	mkdir -p $(DESTPCMDIR48)
+	VERSION5=0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMPATH48) $(DESTPCMDIR48) 1.0
 
 sfz44::
 	mkdir -p $(DESTPCMDIR44)
@@ -117,7 +123,7 @@ clean44::
 #
 test48:: vol_factor.txt
 	mkdir -p $(DESTPCMDIR48TEST)
-	VERSION5=0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-ac 1 -c:a pcm_s24le" sh build.sh make $(SRCPCMDIR48) $(DESTPCMDIR48TEST)
+	VERSION5=0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-ac 1 -c:a pcm_s24le" sh build.sh make $(SRCPCMPATH48) $(DESTPCMDIR48TEST)
 
 test44:: vol_factor.txt
 	mkdir -p $(DESTPCMDIR44TEST)
