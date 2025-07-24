@@ -67,7 +67,7 @@ sfz48test::
 	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz test $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_vol-eval-only.txt _vol-eval-only
 	VERSION5=0 sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz v08 $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_vol-eval-only.txt _tune-test-only
 
-src48::
+src48:: vol_factor.txt
 	mkdir -p $(DESTDIR48)/src
 	cp -p README.txt $(DESTDIR48)/.
 	cp -p rename_wav.sh freq_data.csv freq-sec.txt freq-sec_fnc.png $(DESTDIR48)/src/.
@@ -80,7 +80,7 @@ src48::
 	cp -p unsampled_volumes.txt mk_sfz.sh prep_sfz.sh sfz_inserted.txt $(DESTDIR48)/src/.
 	cp -p $(SRCDIR48)/README $(DESTDIR48)/README.orig.txt
 
-noct48:: sfz48 src48 vol_factor.txt
+noct48:: sfz48 src48
 	mkdir -p $(DESTPCMDIR48)
 	cp -p $(SRCDIR48)/README $(DESTDIR48)/README.orig.txt
 	cp -p $(SRCPCMDIR48)/h*.wav $(DESTPCMDIR48)/.

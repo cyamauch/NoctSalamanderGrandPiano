@@ -1,8 +1,8 @@
 
 -------------------------------------------------------------------------------
 
-    Noct-Salamander Project
-    https://www.ir.isas.jaxa.jp/~cyamauch/NoctSalamanderGrandPiano/
+    Accurate-Salamander Project
+    https://www.ir.isas.jaxa.jp/~cyamauch/AccurateSalamander/
 
     Free SFZ 48kHz/24bit Accurate Grand Piano Soundbanks
 
@@ -306,7 +306,7 @@ V6.0beta1 (Jul.12,2025)
   [v2:7 v3:4 v4:6 v5:4 v6:5] => [v2:6 v3:5 v4:5 v5:5 v6:5]
 * The volume gap between velocity layers has been reduced to about 2
   velocities.  Accordingly, AMP_VELTRACK has been changed to 97.0.
-V6.0RC1 (Jul.18,2025)
+V6.0 (Jul.23,2025)
 * Two types (for daw and live) of SFZ files are supplied.
 * Changed "velocity to WAV file" assignment:
   [v8...v16:6,8,8,8,8,8,8,8,7] => [v8...v16:6,7,8,8,8,8,8,8,8]

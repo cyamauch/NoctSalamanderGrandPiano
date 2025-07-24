@@ -1,12 +1,12 @@
 #!/bin/sh
 
-###############################################################
-#                                                             #
-#     Main script for Noct-Salamander Grand Piano Project.    #
-#                                                             #
-#                          (C) 2023-2025 Chisato Yamauchi     #
-#                                                             #
-###############################################################
+#######################################################
+#                                                     #
+#     Main script for Accurate-Salamander Project.    #
+#                                                     #
+#                  (C) 2023-2025 Chisato Yamauchi     #
+#                                                     #
+#######################################################
 
 #### This script can be used under Cygwin Terminal. ####
 
