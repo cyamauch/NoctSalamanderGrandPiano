@@ -18,6 +18,7 @@ echo "setup_overtone: using [$OVERTONE_CONFIG] [$OVERTONE3_CONFIG] [$BASS_CONFIG
 
 
 ######## function to merge two param set ########
+######## (for vol_factor_effective.txt)  ########
 #
 # arg:    input_file
 # stdout: output
@@ -80,11 +81,15 @@ func_output_overtone1 ()
   cat $1 | awk '{ \
     if ( 0 < match($1, /^[0-1][0-9][0-9]_[A-Z]/) ) { \
       if ( $2 != "0" ) { \
-        printf("%s",$1); \
+        split($2,ARR_GAIN1,","); \
+        if ( length(ARR_GAIN1) == 1 ) { \
+          ARR_GAIN1[2] = "-"; \
+        } \
+        printf("%s %s",$1,ARR_GAIN1[2]); \
         split($0,ARR," "); \
         idx=1; \
         for ( i=1 ; i <= 16 ; i++ ) { \
-          printf(" %.3f",$2 * ARR[4+idx]); \
+          printf(" %.3f",ARR_GAIN1[1] * ARR[4+idx]); \
           if ( 4 + i < length(ARR) ) idx++; \
         } \
         printf("\n"); \
@@ -103,7 +108,11 @@ func_output_overtone2 ()
   cat $1 | awk '{ \
     if ( 0 < match($1, /^[0-1][0-9][0-9]_[A-Z]/) ) { \
       if ( $3 != "0" ) { \
-        printf("%s",$1); \
+        split($3,ARR_GAIN2,","); \
+        if ( length(ARR_GAIN2) == 1 ) { \
+          ARR_GAIN2[2] = "-"; \
+        } \
+        printf("%s %s",$1,ARR_GAIN2[2]); \
         split($0,ARR," "); \
         idx=1; \
         for ( i=1 ; i <= 16 ; i++ ) { \

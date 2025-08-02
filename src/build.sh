@@ -290,24 +290,6 @@ VOL_OFFSET=`echo "$VOL_FACTOR_TXT" | grep "^OFFSET" | awk '{printf("%s\n",$2);}'
 echo "VOL_OFFSET=[$VOL_OFFSET]"
 
 
-#### Effective ratio of filters ####
-
-##  EFF_RATIO_0_SRC=`echo "$GAIN0_FACTOR_TXT" | awk '{ if ( $1 == "EFF_RATIO" ){ printf("%s\n",$2); } }'`
-##  if [ "$EFF_RATIO_0_SRC" = "" ]; then
-##    EFF_RATIO_0_SRC="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0"
-##  fi
-##  EFF_RATIO_0=`echo "$EFF_RATIO_0_SRC" | awk '{ \
-##    split($0,ARR,","); \
-##    for ( i=1 ; i<=length(ARR) ; i++ ) { \
-##      if ( i != 1 ) { \
-##        printf(","); \
-##      } \
-##      printf("%.2f",ARR[i] * '$GAIN0_MAIN_FACTOR'); \
-##    } \
-##    printf("\n"); \
-##  }'`
-
-
 #### Main loop ####
 
 for i in $LIST ; do
@@ -390,9 +372,6 @@ for i in $LIST ; do
   GAIN01_THIS=`echo $FREQ $GAIN0_THIS $GAIN1_THIS | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
   GAIN23_THIS=`echo $FREQ $GAIN2_THIS $GAIN3_THIS | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }'`
   #
-  EFF_RATIO_01=`echo $FREQ NONE NONE | awk '{ if ( $1 < '$FREQ_ZERO_1' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
-  EFF_RATIO_23=`echo $FREQ NONE NONE | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
-  #
   #
   VOL_THIS_ALL=`echo "$VOL_FACTOR_TXT" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
   SEEK_THIS_ALL=`echo "$PCM_SEEK_POS" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
@@ -451,7 +430,6 @@ for i in $LIST ; do
   #
   echo "GAIN_ROOT_1: $GAIN1_ROOT_THIS    GAIN_ROOT_2: $GAIN2_ROOT_THIS"
   echo "GAIN_01: $GAIN01_THIS    GAIN_23: $GAIN23_THIS   TUNE: ${TUNE_BY_SCALE} + ((${TUNE_BY_CENT_ALL}) + (${TUNE_BY_CENT}))/100"
-  echo "EFF_RATIO_01: $EFF_RATIO_01"
   #
   for j in $LIST_VEL ; do
     ORIG_NAME=${KEY}v${j}
@@ -470,42 +448,57 @@ for i in $LIST ; do
       SEEK_THIS=`echo $j $SEEK_THIS_ALL | awk '{ split($0,ARR," "); printf("%s\n",ARR[1 + ARR[1]]); }'`
       echo "  Found ${IN_DIR_INFO}/${J_IN}, Vol=${VOL_THIS}, Seek=${SEEK_THIS} Output to $OUT_FILE"
       #
-      GAIN1_ROOT_THIS_VEL=`echo $j $GAIN1_ROOT_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
-      GAIN2_ROOT_THIS_VEL=`echo $j $GAIN2_ROOT_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
+      FILTER1_ROOT_THIS_VEL=`echo $j $GAIN1_ROOT_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%s\n",ARR[2]); }'`
+      GAIN1_ROOT_THIS_VEL=`echo $j $GAIN1_ROOT_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[2 + ARR[1]]); }'`
       #
-      if [ "$EFF_RATIO_01" = "NONE" ]; then
-        GAIN01_THIS_VEL=`echo $j $GAIN01_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
-      else
-        GAIN01_THIS_VEL=`echo $j $GAIN01_THIS $EFF_RATIO_01 | awk '{ split($0,ARR," "); printf("%g\n",ARR[2] * ARR[2 + ARR[1]]); }'`
-      fi
-      if [ "$EFF_RATIO_23" = "NONE" ]; then
-        GAIN23_THIS_VEL=`echo $j $GAIN23_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[1 + ARR[1]]); }'`
-      else
-        GAIN23_THIS_VEL=`echo $j $GAIN23_THIS $EFF_RATIO_23 | awk '{ split($0,ARR," "); printf("%g\n",ARR[2] * ARR[2 + ARR[1]]); }'`
-      fi
+      FILTER2_ROOT_THIS_VEL=`echo $j $GAIN2_ROOT_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%s\n",ARR[2]); }'`
+      GAIN2_ROOT_THIS_VEL=`echo $j $GAIN2_ROOT_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[2 + ARR[1]]); }'`
+      #
+      FILTER01_THIS_VEL=`echo $j $GAIN01_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%s\n",ARR[2]); }'`
+      GAIN01_THIS_VEL=`echo $j $GAIN01_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[2 + ARR[1]]); }'`
+      #
+      FILTER23_THIS_VEL=`echo $j $GAIN23_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%s\n",ARR[2]); }'`
+      GAIN23_THIS_VEL=`echo $j $GAIN23_THIS | tr ',' ' ' | awk '{ split($0,ARR," "); printf("%g\n",ARR[2 + ARR[1]]); }'`
+      #
       #echo "########## $j GAIN01_THIS:[$GAIN01_THIS] ... SET:[$GAIN01_THIS_VEL] ###########"
       #echo "########## $j GAIN23_THIS:[$GAIN23_THIS] ... SET:[$GAIN23_THIS_VEL] ###########"
       #
       if [ "$GAIN1_ROOT_THIS_VEL" = "0" ]; then
         ARG_EQ_ROOT_1=""
       else
-        ARG_EQ_ROOT_1="equalizer=f=${FREQ_EQ_ROOT_1}:t=h:w=${FREQ_W_ROOT_1}:g=${GAIN1_ROOT_THIS_VEL}:r=f32,"
+        if [ "$FILTER1_ROOT_THIS_VEL" = "-" ]; then
+          ARG_EQ_ROOT_1="equalizer=f=${FREQ_EQ_ROOT_1}:t=h:w=${FREQ_W_ROOT_1}:g=${GAIN1_ROOT_THIS_VEL}:r=f32,"
+        else
+          ARG_EQ_ROOT_1="${FILTER1_ROOT_THIS_VEL}:g=${GAIN1_ROOT_THIS_VEL}:r=f32,"
+        fi
       fi
       if [ "$GAIN2_ROOT_THIS_VEL" = "0" ]; then
         ARG_EQ_ROOT_2=""
       else
-        ARG_EQ_ROOT_2="equalizer=f=${FREQ_EQ_ROOT_2}:t=h:w=${FREQ_W_ROOT_2}:g=${GAIN2_ROOT_THIS_VEL}:r=f32,"
+        if [ "$FILTER2_ROOT_THIS_VEL" = "-" ]; then
+          ARG_EQ_ROOT_2="equalizer=f=${FREQ_EQ_ROOT_2}:t=h:w=${FREQ_W_ROOT_2}:g=${GAIN2_ROOT_THIS_VEL}:r=f32,"
+        else
+          ARG_EQ_ROOT_2="${FILTER2_ROOT_THIS_VEL}:g=${GAIN2_ROOT_THIS_VEL}:r=f32,"
+        fi
       fi
       #
       if [ "$GAIN01_THIS_VEL" = "0" ]; then
         ARG_EQ_01=""
       else
-        ARG_EQ_01="equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=${GAIN01_THIS_VEL}:r=f32,"
+        if [ "$FILTER01_THIS_VEL" = "-" ]; then
+          ARG_EQ_01="equalizer=f=${FREQ_EQ_01}:t=h:w=${FREQ_W_01}:g=${GAIN01_THIS_VEL}:r=f32,"
+        else
+          ARG_EQ_01="${FILTER01_THIS_VEL}:g=${GAIN01_THIS_VEL}:r=f32,"
+        fi
       fi
       if [ "$GAIN23_THIS_VEL" = "0" ]; then
         ARG_EQ_23=""
       else
-        ARG_EQ_23="equalizer=f=${FREQ_EQ_23}:t=h:w=${FREQ_W_23}:g=${GAIN23_THIS_VEL}:r=f32,"
+        if [ "$FILTER23_THIS_VEL" = "-" ]; then
+          ARG_EQ_23="equalizer=f=${FREQ_EQ_23}:t=h:w=${FREQ_W_23}:g=${GAIN23_THIS_VEL}:r=f32,"
+        else
+          ARG_EQ_23="${FILTER23_THIS_VEL}:g=${GAIN23_THIS_VEL}:r=f32,"
+        fi
       fi
       #
       FILTER_DIRECT_ARG=""
