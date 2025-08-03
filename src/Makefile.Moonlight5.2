@@ -13,6 +13,7 @@ MAKEFILE = Makefile.Moonlight5.2
 #
 # Select an overtone settings
 #
+OVERTONE_ROOT_CONFIG = overtone_root.5.0.txt
 OVERTONE_CONFIG = overtone_config.moonlight5.0.txt
 OVERTONE3_CONFIG = overtone3_config.moonlight5.0.txt
 BASS_CONFIG = bass_config.moonlight5.0.txt
@@ -61,18 +62,18 @@ sfz48::
 	sh mk_sfz.sh - $(SRCDIR48)/SalamanderGrandPianoV3.sfz - $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_treble2.5db.txt _treble2.5db
 	sh mk_sfz.sh sfz_sed_args_test-only.txt $(SRCDIR48)/SalamanderGrandPianoV3.sfz test $(DESTPCMDIR48) $(DEST_SFZ_BASENAME) sfz_vol_factor_base_test-only.txt _test-only
 
-src48::
+src48:: vol_factor.txt
 	mkdir -p $(DESTDIR48)/src
 	cp -p README.txt $(DESTDIR48)/.
 	cp -p rename_wav.sh freq_data.csv freq-sec.txt freq-sec_fnc.png $(DESTDIR48)/src/.
 	cp -p $(MAKEFILE) build.sh mk_special.sh setup_overtone.sh mk_vol_factor.sh $(DESTDIR48)/src/.
 	cp -p pcm_seek_pos.txt freq_piano_data.txt key_n-id.txt $(DESTDIR48)/src/.
-	cp -p overtone_root.txt $(OVERTONE_CONFIG) $(OVERTONE3_CONFIG) $(BASS_CONFIG) $(DESTDIR48)/src/.
+	cp -p $(OVERTONE_ROOT_CONFIG) $(OVERTONE_CONFIG) $(OVERTONE3_CONFIG) $(BASS_CONFIG) $(DESTDIR48)/src/.
 	cp -p *_factor*.txt assign.txt tuned.txt filter_direct.txt sfz_sed_args.txt $(DESTDIR48)/src/.
 	cp -p sfz_vol_factor_base*.txt mk_sfz.sh prep_sfz.sh sfz_inserted.txt $(DESTDIR48)/src/.
 	cp -p $(SRCDIR48)/README $(DESTDIR48)/README.orig.txt
 
-noct48:: sfz48 src48 vol_factor.txt
+noct48:: sfz48 src48
 	mkdir -p $(DESTPCMDIR48)
 	cp -p $(SRCDIR48)/README $(DESTDIR48)/README.orig.txt
 	cp -p $(SRCPCMDIR48)/h*.wav $(DESTPCMDIR48)/.
@@ -91,7 +92,7 @@ noct44:: sfz44
 	cp -p rename_wav.sh freq_data.csv freq-sec.txt freq-sec_fnc.png $(DESTDIR44)/src/.
 	cp -p $(MAKEFILE) build.sh mk_special.sh setup_overtone.sh mk_vol_factor.sh $(DESTDIR44)/src/.
 	cp -p pcm_seek_pos.txt freq_piano_data.txt key_n-id.txt $(DESTDIR44)/src/.
-	cp -p overtone_root.txt $(OVERTONE_CONFIG) $(OVERTONE3_CONFIG) $(BASS_CONFIG) $(DESTDIR44)/src/.
+	cp -p $(OVERTONE_ROOT_CONFIG) $(OVERTONE_CONFIG) $(OVERTONE3_CONFIG) $(BASS_CONFIG) $(DESTDIR44)/src/.
 	cp -p *_factor*.txt assign.txt tuned.txt filter_direct.txt sfz_sed_args.txt $(DESTDIR44)/src/.
 	cp -p sfz_vol_factor_base*.txt mk_sfz.sh prep_sfz.sh sfz_inserted.txt $(DESTDIR44)/src/.
 	cp -p $(SRCDIR44)/README $(DESTDIR44)/README.orig.txt

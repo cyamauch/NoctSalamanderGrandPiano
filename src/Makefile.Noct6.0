@@ -31,6 +31,7 @@ MAKEFILE = Makefile.Noct6.0
 #
 # Select an overtone settings
 #
+OVERTONE_ROOT_CONFIG = overtone_root.5.0.txt
 OVERTONE_CONFIG = overtone_config.noct5.0.txt
 OVERTONE3_CONFIG = overtone3_config.noct5.0.txt
 BASS_CONFIG = bass_config.noct5.0.txt
@@ -65,7 +66,7 @@ DESTPCMDIR44TEST = $(DESTDIR44TEST)/44.1khz16bit
 
 vol_factor.txt::
 	echo "$(FFMPEG)" > ffmpeg_path.txt
-	sh setup_overtone.sh $(OVERTONE_CONFIG) $(OVERTONE3_CONFIG) $(BASS_CONFIG)
+	sh setup_overtone.sh $(OVERTONE_ROOT_CONFIG) $(OVERTONE_CONFIG) $(OVERTONE3_CONFIG) $(BASS_CONFIG)
 	sh mk_vol_factor.sh  > vol_factor.txt
 
 sfz48::
@@ -91,7 +92,7 @@ src48:: vol_factor.txt
 	cp -p rename_wav.sh freq_data.csv freq-sec.txt freq-sec_fnc.png $(DESTDIR48)/src/.
 	cp -p $(MAKEFILE) build.sh mk_special.sh setup_overtone.sh mk_vol_factor.sh $(DESTDIR48)/src/.
 	cp -p pcm_seek_pos.txt freq_piano_data.txt key_n-id.txt key_n-id_all.txt $(DESTDIR48)/src/.
-	cp -p overtone_root.txt $(OVERTONE_CONFIG) $(OVERTONE3_CONFIG) $(BASS_CONFIG) $(DESTDIR48)/src/.
+	cp -p $(OVERTONE_ROOT_CONFIG) $(OVERTONE_CONFIG) $(OVERTONE3_CONFIG) $(BASS_CONFIG) $(DESTDIR48)/src/.
 	cp -p `ls *_factor*.txt | grep -v -e '[.]v5[.]' -e '[.]2025' -e '[-]only[.]'` $(DESTDIR48)/src/.
 	cp -p assign.txt tuned.txt tuned_sfz.txt filter_direct.txt sfz_sed_args.txt $(DESTDIR48)/src/.
 	cp -p `ls sfz_vol_factor_base*.txt | grep -v -e '[.]v5[.]' -e '[.]2025' -e '[-]only[.]'` $(DESTDIR48)/src/.
@@ -121,7 +122,7 @@ noct44:: sfz44
 	cp -p rename_wav.sh freq_data.csv freq-sec.txt freq-sec_fnc.png $(DESTDIR44)/src/.
 	cp -p $(MAKEFILE) build.sh mk_special.sh setup_overtone.sh mk_vol_factor.sh $(DESTDIR44)/src/.
 	cp -p pcm_seek_pos.txt freq_piano_data.txt key_n-id.txt $(DESTDIR44)/src/.
-	cp -p overtone_root.txt $(OVERTONE_CONFIG) $(OVERTONE3_CONFIG) $(BASS_CONFIG) $(DESTDIR44)/src/.
+	cp -p $(OVERTONE_ROOT_CONFIG) $(OVERTONE_CONFIG) $(OVERTONE3_CONFIG) $(BASS_CONFIG) $(DESTDIR44)/src/.
 	cp -p *_factor*.txt assign.txt tuned.txt filter_direct.txt sfz_sed_args.txt $(DESTDIR44)/src/.
 	cp -p sfz_vol_factor_base*.txt mk_sfz.sh prep_sfz.sh sfz_inserted.txt $(DESTDIR44)/src/.
 	cp -p $(SRCDIR44)/README $(DESTDIR44)/README.orig.txt

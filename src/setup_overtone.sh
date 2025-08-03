@@ -5,16 +5,17 @@
 #                    gain3_factor.txt and vol_factor_effective.txt.
 #
 
-if [ "$3" = "" ]; then
+if [ "$4" = "" ]; then
   echo "[USAGE]"
-  echo "$0 OVERTONE_CONFIG OVERTONE3_CONFIG BASS_CONFIG"
+  echo "$0 OVERTONE_ROOT_CONFIG OVERTONE_CONFIG OVERTONE3_CONFIG BASS_CONFIG"
 fi
 
-OVERTONE_CONFIG=$1
-OVERTONE3_CONFIG=$2
-BASS_CONFIG=$3
+OVERTONE_ROOT_CONFIG=$1
+OVERTONE_CONFIG=$2
+OVERTONE3_CONFIG=$3
+BASS_CONFIG=$4
 
-echo "setup_overtone: using [$OVERTONE_CONFIG] [$OVERTONE3_CONFIG] [$BASS_CONFIG]"
+echo "setup_overtone: using [$OVERTONE_ROOT_CONFIG] [$OVERTONE_CONFIG] [$OVERTONE3_CONFIG] [$BASS_CONFIG]"
 
 
 ######## function to merge two param set ########
@@ -136,7 +137,7 @@ echo "# GAIN(db) of filter1(frequency*12)"                   >> $OUTFILE
 echo "#            for 200Hz <= frequency"                   >> $OUTFILE
 echo "#"                                                     >> $OUTFILE
 
-func_output_overtone1 overtone_root.txt >> $OUTFILE
+func_output_overtone1 $OVERTONE_ROOT_CONFIG >> $OUTFILE
 
 
 ######## OVERTONE 2 ROOT ########
@@ -149,7 +150,7 @@ echo "# GAIN(db) for filter2(frequency*26)"                  >> $OUTFILE
 echo "#              for frequency < 500Hz"                  >> $OUTFILE
 echo "#"                                                     >> $OUTFILE
 
-func_output_overtone2 overtone_root.txt >> $OUTFILE
+func_output_overtone2 $OVERTONE_ROOT_CONFIG >> $OUTFILE
 
 
 ######## GAIN0 ########
@@ -210,7 +211,7 @@ OUTFILE_TMP=_tmp_.txt
 OUTFILE=vol_factor_effective.txt
 
 # merge 3 param set
-cat overtone_root.txt $OVERTONE_CONFIG $OVERTONE3_CONFIG $BASS_CONFIG | awk '{ \
+cat $OVERTONE_ROOT_CONFIG $OVERTONE_CONFIG $OVERTONE3_CONFIG $BASS_CONFIG | awk '{ \
   p0 = match($1, /^[0-1][0-9][0-9]_[A-Z]/); \
   if ( 0 < p0 ) { \
     if ( $2 != "0" || $3 != "0" ) { \
