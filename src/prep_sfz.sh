@@ -1,4 +1,4 @@
-#!/bin/sh4
+#!/bin/sh
 
 ###########################
 #### Preprocessing SFZ ####
