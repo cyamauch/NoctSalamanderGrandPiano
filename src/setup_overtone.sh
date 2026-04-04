@@ -5,21 +5,19 @@
 #                    gain3_factor.txt and vol_factor_effective.txt.
 #
 
-if [ "$4" = "" ]; then
+if [ "$3" = "" ]; then
   echo "[USAGE]"
-  echo "$0 OVERTONE_ROOT_CONFIG OVERTONE_CONFIG OVERTONE3_CONFIG BASS_CONFIG"
+  echo "$0 OVERTONE_CONFIG OVERTONE3_CONFIG BASS_CONFIG"
 fi
 
-OVERTONE_ROOT_CONFIG=$1
-OVERTONE_CONFIG=$2
-OVERTONE3_CONFIG=$3
-BASS_CONFIG=$4
+OVERTONE_CONFIG=$1
+OVERTONE3_CONFIG=$2
+BASS_CONFIG=$3
 
-echo "setup_overtone: using [$OVERTONE_ROOT_CONFIG] [$OVERTONE_CONFIG] [$OVERTONE3_CONFIG] [$BASS_CONFIG]"
+echo "setup_overtone: using [$OVERTONE_CONFIG] [$OVERTONE3_CONFIG] [$BASS_CONFIG]"
 
 
 ######## function to merge two param set ########
-######## (for vol_factor_effective.txt)  ########
 #
 # arg:    input_file
 # stdout: output
@@ -82,15 +80,11 @@ func_output_overtone1 ()
   cat $1 | awk '{ \
     if ( 0 < match($1, /^[0-1][0-9][0-9]_[A-Z]/) ) { \
       if ( $2 != "0" ) { \
-        split($2,ARR_GAIN1,","); \
-        if ( length(ARR_GAIN1) == 1 ) { \
-          ARR_GAIN1[2] = "-"; \
-        } \
-        printf("%s %s",$1,ARR_GAIN1[2]); \
+        printf("%s",$1); \
         split($0,ARR," "); \
         idx=1; \
         for ( i=1 ; i <= 16 ; i++ ) { \
-          printf(" %.3f",ARR_GAIN1[1] * ARR[4+idx]); \
+          printf(" %.3f",$2 * ARR[4+idx]); \
           if ( 4 + i < length(ARR) ) idx++; \
         } \
         printf("\n"); \
@@ -109,11 +103,7 @@ func_output_overtone2 ()
   cat $1 | awk '{ \
     if ( 0 < match($1, /^[0-1][0-9][0-9]_[A-Z]/) ) { \
       if ( $3 != "0" ) { \
-        split($3,ARR_GAIN2,","); \
-        if ( length(ARR_GAIN2) == 1 ) { \
-          ARR_GAIN2[2] = "-"; \
-        } \
-        printf("%s %s",$1,ARR_GAIN2[2]); \
+        printf("%s",$1); \
         split($0,ARR," "); \
         idx=1; \
         for ( i=1 ; i <= 16 ; i++ ) { \
@@ -137,7 +127,7 @@ echo "# GAIN(db) of filter1(frequency*12)"                   >> $OUTFILE
 echo "#            for 200Hz <= frequency"                   >> $OUTFILE
 echo "#"                                                     >> $OUTFILE
 
-func_output_overtone1 $OVERTONE_ROOT_CONFIG >> $OUTFILE
+func_output_overtone1 overtone_root.txt >> $OUTFILE
 
 
 ######## OVERTONE 2 ROOT ########
@@ -150,7 +140,7 @@ echo "# GAIN(db) for filter2(frequency*26)"                  >> $OUTFILE
 echo "#              for frequency < 500Hz"                  >> $OUTFILE
 echo "#"                                                     >> $OUTFILE
 
-func_output_overtone2 $OVERTONE_ROOT_CONFIG >> $OUTFILE
+func_output_overtone2 overtone_root.txt >> $OUTFILE
 
 
 ######## GAIN0 ########
@@ -211,7 +201,7 @@ OUTFILE_TMP=_tmp_.txt
 OUTFILE=vol_factor_effective.txt
 
 # merge 3 param set
-cat $OVERTONE_ROOT_CONFIG $OVERTONE_CONFIG $OVERTONE3_CONFIG $BASS_CONFIG | awk '{ \
+cat overtone_root.txt $OVERTONE_CONFIG $OVERTONE3_CONFIG $BASS_CONFIG | awk '{ \
   p0 = match($1, /^[0-1][0-9][0-9]_[A-Z]/); \
   if ( 0 < p0 ) { \
     if ( $2 != "0" || $3 != "0" ) { \

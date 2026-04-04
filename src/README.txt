@@ -11,21 +11,32 @@
 
 *** How to use
 
-Select SFZ files in two types:
+Choose from three different SFZ file types to suit your needs:
 
 - SFZ in sfz_daw directory
 
   A set of SFZ files for general use.
-  The "repedaling" ability is disabled. (i.e., ampeg_dynamic=0)  The player 
-  software outputs the sound with velocity=1.  Suitable for use with DAWs.
+  "Damper Pedal Resonance" is available, but "Half Pedaling" is unavailable.
+  The player software outputs the sound with velocity=1.
+  Suitable for use with DAWs.
 
 - SFZ in sfz_live directory
 
   These are SFZ files for those who want realistic piano behavior.
-  The "repedaling" ability is enabled. (i.e., ampeg_dynamic=1)  At velocity=1,
-  there is no sound, as if the hammer is not hitting the string.
+  Both "Damper Pedal Resonance" and "Half Pedaling" are available.
+  At velocity=1, there is no sound, as if the hammer is not hitting the string.
   At velocity=2 or higher, the player software outputs the sound.  Suitable 
   for live piano performance.
+  Half pedaling is available with sforzando and Sfizz.  SFZ files use ARIA 
+  extensions, so there may be limited software that works properly.
+
+- SFZ in sfz_minimum directory
+
+  Use this if you want to minimize PC resource consumption or if you want to 
+  use player software that does not support SFZ v2.
+  Settings for "Hammer Noise," "Pedal Noise," "Sampled Release," and 
+  "Pedal Resonance" are all omitted.
+  "Half pedaling" can be used by enabling the commented-out section.
 
 Multiple SFZ files in above directories with different bass/treble balance are
 included.  Please try the one with "Recommended" in the file name first.
@@ -310,6 +321,13 @@ V6.0 (Jul.23,2025)
 * Two types (for daw and live) of SFZ files are supplied.
 * Changed "velocity to WAV file" assignment:
   [v8...v16:6,8,8,8,8,8,8,8,7] => [v8...v16:6,7,8,8,8,8,8,8,8]
+V6.1 (Nov.14,2025)
+* Updated the SFZ files to enable "Damper Pedal Resonance" and "Half Pedaling".
+  (Thanks to Peter <https://github.com/peastman>)
+* Appended "sfz_minimum" for PCs with limited resources.
+V6.1a (Dec.9,2025)
+* Volume of "Damper Pedal Resonance" is controllable by CC23.
+  (Thanks to Timelessberry <https://timelessberry.com/>)
 
 
 *** Licence:

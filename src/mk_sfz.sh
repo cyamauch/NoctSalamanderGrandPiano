@@ -198,7 +198,17 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
         if ( p_amp < 1 ) { \
           p_amp = match($0, /amp_veltrack=82/); \
         } \
-        p_rel = match($0, /ampeg_release=[0-9]/); \
+        if ( FLG_1ST_AMPEG_RELEASE == "" ) { \
+          p_rel = match($0, /ampeg_release=[0-9]/); \
+          if ( 0 < p_rel ) { \
+            FLG_1ST_AMPEG_RELEASE = 1; \
+          } \
+        } \
+        else { \
+          if ( $1 == "<master>" ) { \
+            p_rel = match($0, /ampeg_release=[0-9]/); \
+          } \
+        } \
         p_kyg = match($0, /key_group=[0-9]/); \
       } \
       OUTPUT_LINE = $0; \
@@ -246,24 +256,189 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
         print OUTPUT_LINE; \
       } \
     } \
-  }' > tmp_out.sfz
+  }' > tmp_out_0.sfz
+  # replace  key=xxx -> lokey=xxx hikey=xxx
+  cat tmp_out_0.sfz | sed -e 's/\([ ]\)\(key=\)\([0-9][0-9]*[ ]\)/\1lokey=\3hikey=\3/' > tmp_out.sfz
   #cat tmp_out.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}.sfz
   #echo output: ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
 
-  if [ "$FLAG_TEST" = "+" ]; then
+  if [ "$FLAG_TEST" != "" ]; then
+    FLAG_SFZ_TYPE=`echo $FLAG_TEST | awk -F, '{print $1;}'`
+    FLAG_SFZ_OPT=`echo $FLAG_TEST | awk -F, '{print $2;}'`
+  else
+    FLAG_SFZ_TYPE=""
+    FLAG_SFZ_OPT=""
+  fi
+
+  if [ "$FLAG_SFZ_TYPE" = "+" ]; then
+    # SFZ in daw/live
     PCM_DIR=`basename ${DEST_DIR}`
+    mkdir -p ${DEST_DIR}/../sfz_minimum
     mkdir -p ${DEST_DIR}/../sfz_daw
     mkdir -p ${DEST_DIR}/../sfz_live
-    cat tmp_out.sfz | sed -e "s/sample=${PCM_DIR}/sample=.."'\\'"${PCM_DIR}/" > tmp_out_daw.sfz
-    cat tmp_out_daw.sfz | sed -e 's/ampeg_dynamic=0/ampeg_dynamic=1/' -e 's/[ ]lovel=1[ ]/ lovel=2 /' > tmp_out_live.sfz
-    cat tmp_out_daw.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../sfz_daw/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
+    cat tmp_out.sfz | sed -e "s/sample=${PCM_DIR}/sample=.."'\\'"${PCM_DIR}/" > tmp_out_in_dir.sfz
+    cat tmp_out_in_dir.sfz | awk '{ if ( $0 == "//Sampled release" ) { flg=1; } if ( flg !=1 ) { print; } }' > tmp_out_minimum.sfz
+    # setup "damper pedal resonance"
+    if [ "$FLAG_SFZ_OPT" = "" ]; then
+      RESONANCE_VOL_DB=0
+    else
+      RESONANCE_VOL_DB="$FLAG_SFZ_OPT"
+    fi
+    #
+    cat tmp_out_in_dir.sfz | awk '{ \
+      if ( $1 == "<group>" && substr($2,1,5) == "tune=" && substr($4,1,10) == "key_group=" ) { \
+        tune = substr($2,6); \
+        key_group = int(substr($4,11)); \
+      } \
+      if ( 0 < key_group && $1 == "<region>" && 0 < match($2, /v01[.]wav/) ) { \
+        SRC_0[key_group] = sprintf("<region> %s %s tune=%s",$2,$3,tune); \
+        SRC_1[key_group] = $8; \
+        VOL[key_group] = substr($3,8); \
+      } \
+      if ( $0 == "//Sampled release" ) { \
+        printf("//======================\n"); \
+        printf("\n"); \
+        printf("// Pseudo Pedal Resonance (suggested by Peter <https://github.com/peastman>)\n"); \
+        printf("// Note: In the following description, a %cdetune%c effect (a typical effect used in synthesizers)\n",34,34); \
+        printf("//       is implemented using a piano%cs %ctuning curve%c to create pseudo-resonance.\n",39,34,34); \
+        printf("\n"); \
+        printf("<master> ampeg_attack=0.05 locc23=1\n"); \
+        printf("volume_oncc23=-12\n"); \
+        printf("volume_curvecc23=2  // 1 to 0 (Linear); see https://sfzformat.com/headers/curve/\n"); \
+        printf("//+ampeg_release_curvecc64=12\n"); \
+        printf("\n"); \
+        if ( 0 ) { \
+          printf("<group> group=200 group_volume=-6 locc64=22\n"); \
+          printf("\n"); \
+          for ( i=33 ; i <= 88 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i],i-12,i-12,SRC_1[i]); \
+          } \
+          printf("\n"); \
+          printf("<group> group=201 group_volume=-11 locc64=26\n"); \
+          for ( i=40 ; i <= 88 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i],i-19,i-19,SRC_1[i]); \
+          } \
+        } \
+        if ( 1 ) { \
+          KEY_OFFSET=3; \
+          printf("<group> group=201 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-6.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("\n"); \
+          for ( i=21+KEY_OFFSET ; i <= 52 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+          for ( i=21 ; i <= 52 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i+KEY_OFFSET],i,i,SRC_1[i+KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+          KEY_OFFSET=6; \
+          printf("<group> group=202 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-6.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("\n"); \
+          for ( i=53 ; i <= 61 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+          for ( i=53 ; i <= 61 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i+KEY_OFFSET],i,i,SRC_1[i+KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+          KEY_OFFSET=9; \
+          printf("<group> group=203 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-6.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("\n"); \
+          for ( i=62 ; i <= 70 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+          for ( i=62 ; i <= 70 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i+KEY_OFFSET],i,i,SRC_1[i+KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+          KEY_OFFSET=6; \
+          printf("<group> group=204 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-9.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("\n"); \
+          for ( i=71 ; i <= 77 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+          for ( i=71 ; i <= 77 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i+KEY_OFFSET],i,i,SRC_1[i+KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+          KEY_OFFSET=3; \
+          printf("<group> group=205 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-12.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("\n"); \
+          for ( i=78 ; i <= 81 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+          for ( i=78 ; i <= 81 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i+KEY_OFFSET],i,i,SRC_1[i+KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+          KEY_OFFSET=3; \
+          printf("<group> group=206 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-15.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("\n"); \
+          for ( i=82 ; i <= 85 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+          for ( i=82 ; i <= 85 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i+KEY_OFFSET],i,i,SRC_1[i+KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+          KEY_OFFSET=3; \
+          printf("<group> group=207 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-18.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("\n"); \
+          for ( i=86 ; i <= 89 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+          for ( i=86 ; i <= 89 ; i++ ) { \
+            printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i+KEY_OFFSET],i,i,SRC_1[i+KEY_OFFSET]); \
+          } \
+          printf("\n"); \
+        } \
+        printf("\n"); \
+        printf("//======================\n"); \
+        printf("\n"); \
+      } \
+      print; \
+    }' > tmp_out_daw.sfz
+    cat tmp_out_daw.sfz | sed -e 's/[ ]lovel=1[ ]/ lovel=2 /' -e 's/ampeg_dynamic=0/ampeg_dynamic=1/' -e 's/^[/][/][+&]//' > tmp_out_live.sfz
+    # final for minimum/
+    cat tmp_out_minimum.sfz | awk '{ \
+      if ( substr($0,1,3) == "//+" ) { \
+        line = "// " substr($0,4); \
+      } \
+      else { \
+        line = $0; \
+      } \
+      if ( substr($0,1,3) != "//&" ) { \
+        printf("%s~\n",line); \
+      } \
+    }' | tr '~' '\r' > ${DEST_DIR}/../sfz_minimum/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
+    # final for daw/
+    cat tmp_out_daw.sfz | awk '{ \
+      if ( substr($0,1,3) == "//+" ) { \
+        line = "// " substr($0,4); \
+      } \
+      else if ( substr($0,1,3) == "//&" ) { \
+        line = substr($0,4); \
+      } \
+      else { \
+        line = $0; \
+      } \
+      printf("%s~\n",line); \
+    }' | tr '~' '\r' > ${DEST_DIR}/../sfz_daw/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
+    # final for live/
     cat tmp_out_live.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../sfz_live/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
-  elif [ "$FLAG_TEST" = "-" ]; then
+  elif [ "$FLAG_SFZ_TYPE" = "-" ]; then
     PCM_DIR=`basename ${DEST_DIR}`
     mkdir -p ${DEST_DIR}/../sfz_int_daw
     cat tmp_out.sfz | sed -e "s/sample=${PCM_DIR}/sample=.."'\\'"${PCM_DIR}/" > tmp_out_daw.sfz
     cat tmp_out_daw.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../sfz_int_daw/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
   else
+    # SFZ for testing
     cat tmp_out.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
   fi
 

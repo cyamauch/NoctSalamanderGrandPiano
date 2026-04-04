@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh4
 
 ###########################
 #### Preprocessing SFZ ####
@@ -72,12 +72,30 @@ cat sfz_inserted.txt $SRC_SFZ | tr '\r' '~' | sed -e 's/[ ]*[~]$//' $ARG_OUTFILE
 }' > tmp0.sfz
 
 #
+# Mark [L][S] release resonances
+#
+cat tmp0.sfz | awk '{ \
+  if ( NR == 1 ) { \
+    cnt = 0; \
+  } \
+  if ( $1 == "<group>" && $2 == "trigger=release" ) { \
+    cnt++; \
+  } \
+  if ( 1 <= cnt && cnt <= 6 ) { \
+    if ( $1 == "<region>" || $1 == "<group>" ) { \
+      printf("//&"); \
+    } \
+  } \
+  print; \
+}' > tmp1.sfz
+
+#
 # to be TRUE Grand piano: i.e. F6 with half damper and F#6-C8 without damper.
 #
-cat tmp0.sfz | grep 'F#6v' | sed -e 's/lokey/key/' -e 's/hikey=91[ ]//' > tmp1.sfz
-echo ${FLAG_TEST} > tmp2.sfz
-cat key_n-id_all.txt | awk '{printf("%s,%s ",$2,$1);} END {printf("\n");}' >> tmp2.sfz
-cat tmp1.sfz tmp0.sfz | awk '{ \
+cat tmp1.sfz | grep 'F#6v' | sed -e 's/lokey/key/' -e 's/hikey=91[ ]//' > tmp2.sfz
+echo ${FLAG_TEST} > tmp3.sfz
+cat key_n-id_all.txt | awk '{printf("%s,%s ",$2,$1);} END {printf("\n");}' >> tmp3.sfz
+cat tmp2.sfz tmp1.sfz | awk '{ \
   if ( FLG == "" ) { \
     if ( substr($0,1,2) == "//" ) { FLG=1; print; } \
     else { \
@@ -116,13 +134,13 @@ cat tmp1.sfz tmp0.sfz | awk '{ \
       } \
     } \
   } \
-}' >> tmp2.sfz
+}' >> tmp3.sfz
 
 #
 # for Version 5
 #
 if [ "$SRC_UNSAMPLED" = "" ]; then
-  cat tmp2.sfz | awk '{ \
+  cat tmp3.sfz | awk '{ \
     if ( 2 < NR ) { \
       printf("%s~\n",$0); \
     } \
@@ -137,8 +155,9 @@ fi
 # - "tune=xx" is written in <group> section.
 # - If a test flag is specified, the minimum necessary code will be output.
 #
-cat tmp2.sfz | awk '{ \
+cat tmp3.sfz | awk '{ \
   if ( NR == 1 ) { \
+    LINE_CNT_GLOBAL=0; \
     FLAG_TEST=$1; \
     if ( substr($1,1,1) == "v" ) { \
       SEL_VEL = $1; \
@@ -162,6 +181,16 @@ cat tmp2.sfz | awk '{ \
     } \
   } \
   if ( NR <= 2 ) { \
+  } \
+  else if ( $1 == "ampeg_release=1.0" && FLG_1ST_AMPEG_RELEASE == "" ) { \
+    FLG_1ST_AMPEG_RELEASE = 1; \
+  } \
+  else if ( FLG_1ST_AMPEG_RELEASE == 1 && FLG_1ST_MASTER == "" ) { \
+    LINE_CNT_GLOBAL ++; \
+    ARR_GLOBAL[LINE_CNT_GLOBAL] = $0; \
+    if ( $1 == "<master>" ) { \
+      FLG_1ST_MASTER = 1; \
+    } \
   } \
   else if ( 0 < p0 ) { \
     split($0,KEYS," "); \
@@ -206,22 +235,33 @@ cat tmp2.sfz | awk '{ \
     i=89; \
     LINES[i] = LINES[i] sprintf("%s\n",$0); \
   } \
-  else if ( $0 == "<master>" && FLG_1ST_MASTER_DEL == "" ) { \
-    FLG_1ST_MASTER_DEL = 1; \
-  } \
   else if ( NR == NR_LAST_HIKEY88 + 1 && substr($0,1,4) == "//==" ) { \
   } \
   else if ( $1 == "<group>" && substr($2,1,14) == "ampeg_release=" ) { \
     split($0,ARR," "); \
-    printf("<master>"); \
-    for ( i=2 ; i <= length(ARR) ; i++ ) { \
-      printf(" %s",ARR[i]); \
+    if ( FLG_1ST_MASTER == 1 ) { \
+      for ( i=2 ; i < length(ARR) ; i++ ) { \
+        printf("%s ",ARR[i]); \
+      } \
+      printf("%s",ARR[i]); \
+      printf("\n"); \
+      for ( i=1 ; i < LINE_CNT_GLOBAL ; i++ ) { \
+        printf("%s\n",ARR_GLOBAL[i]); \
+      } \
+      printf("%s",ARR_GLOBAL[i]); \
+      FLG_1ST_MASTER = 2; \
+    } \
+    else { \
+      printf("<master>"); \
+      for ( i=2 ; i <= length(ARR) ; i++ ) { \
+        printf(" %s",ARR[i]); \
+      } \
     } \
   } \
   else { \
     if ( $0 == "//F6 with half damper" ) { KEY_S=21; KEY_E=88; } \
     else if ( $0 == "//Notes without dampers" ) { KEY_S=89; KEY_E=89; } \
-    else if ( $0 == "//Release string resonances" ) { KEY_S=90; KEY_E=108; } \
+    else if ( $0 == "//Sampled release" ) { KEY_S=90; KEY_E=108; } \
     else { KEY_S=0; KEY_E=0; } \
     if ( KEY_S != 0 ) { \
       for ( i=KEY_S ; i <= KEY_E ; i++ ) { \
@@ -239,7 +279,7 @@ cat tmp2.sfz | awk '{ \
         } \
       } \
       printf("\n"); \
-      if ( KEY_E == 108 && 0 < match(FLAG_TEST, /[a-zA-Z]/) ) { \
+      if ( KEY_E == 108 && 0 < match(FLAG_TEST, /^[a-zA-Z]/) ) { \
         exit; \
       } \
       print $0; \
@@ -248,14 +288,14 @@ cat tmp2.sfz | awk '{ \
       print; \
     } \
   } \
-}' > tmp3.sfz
+}' > tmp4.sfz
 
 cat $SRC_UNSAMPLED | sed -e 's/[ ][ ]*/ /g' -e 's/[ ]/,-,/g' | tr ',' ' ' > tmp_unsampled.txt
 
 #
 # Insert volume parameters
 #
-cat tmp_unsampled.txt tmp3.sfz | awk '{ \
+cat tmp_unsampled.txt tmp4.sfz | awk '{ \
   if ( FLG != 1 ) { \
     idx = int($1); \
     if ( idx == 1 ) { split(substr($0,4),VOL1," "); } \
