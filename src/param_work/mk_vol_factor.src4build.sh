@@ -10,6 +10,9 @@ if [ "$1" = "" ]; then
   exit
 fi
 
+
+N_LAYERS=16
+
 VOL_FACTOR_BASE=`cat vol_factor_base.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 VOL_FACTOR_SRC=`cat $1 | tr -d '\r' | sed -e 's/^[ ]*//'`
 VOL_FACTOR_EFFECTIVE=`cat vol_factor_effective.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
@@ -17,11 +20,12 @@ VOL_FACTOR_EFFECTIVE=`cat vol_factor_effective.txt | tr -d '\r' | sed -e 's/^[ ]
 LIST=`echo "$VOL_FACTOR_BASE" | grep '^[ACDF]' | awk '{printf("%s,%s\n",$1,$2);}'`
 OFFSET_SRC=`echo "$VOL_FACTOR_BASE" | grep '^OFFSET_SRC' | awk '{printf("%s\n",$2);}'`
 
-
 echo "#Key Volume(db)"
-echo "#         v1   v2   v3   v4   v5   v6   v7   v8   v9  v10  v11  v12  v13  v14  v15  v16"
+#echo "#         v1   v2   v3   v4   v5   v6   v7   v8   v9  v10  v11  v12  v13  v14  v15  v16  v17"
+echo $N_LAYERS | awk '{ printf("#      "); for (i=1;i<=$1;i++){ printf("  v%02d",i); } printf("\n"); }'
 echo ""
-echo "VEL_ALL  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0"
+#echo "VEL_ALL  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0"
+echo $N_LAYERS | awk '{ printf("VEL_ALL"); for (i=1;i<=$1;i++){ printf("  0.0"); } printf("\n"); }'
 echo ""
 
 
@@ -40,7 +44,7 @@ if [ "$VOL_FACTOR_EFFECTIVE" != "" ]; then
     else { \
       split($0,ARR," "); \
       printf("%s",$1); \
-      for ( i=1 ; i <= 16 ; i++ ) { \
+      for ( i=1 ; i <= '$N_LAYERS' ; i++ ) { \
         printf(" %+.2f",ARR[3+i] + EFF_RATIO[1+i] * ARR[1+1]); \
       } \
       printf("\n"); \
@@ -61,14 +65,15 @@ VEL_LINE=`echo "$VOL_FACTOR_SRC" | grep '^VEL'`
 if [ "$VEL_LINE" != "" ]; then
   echo "$VEL_LINE" > _tmp3_.txt 
 else
-  echo "VEL_ALL  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0" > _tmp3_.txt 
+  #echo "VEL_ALL  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0" > _tmp3_.txt 
+  echo $N_LAYERS | awk '{ printf("VEL_ALL"); for (i=1;i<=$1;i++){ printf("  0.0"); } printf("\n"); }' > _tmp3_.txt
 fi
 
 
 paste _tmp0_.txt _tmp2_.txt | tr '\t' ' ' | awk '{ \
   split($0,ARR," "); \
   printf("%s",$3); \
-  for ( i=1 ; i <= 16 ; i++ ) { \
+  for ( i=1 ; i <= '$N_LAYERS' ; i++ ) { \
     printf(" %+.2f",ARR[3+i] + ARR[1+1]); \
   } \
   printf("\n"); \
@@ -81,7 +86,7 @@ cat _tmp3_.txt | awk '{ \
   else { \
     split($0,ARR," "); \
     printf("%-7s",$1); \
-    for ( i=1 ; i <= 16 ; i++ ) { \
+    for ( i=1 ; i <= '$N_LAYERS' ; i++ ) { \
       printf(" %+.2f",VEL_ALL[1+i] + ARR[1+i]); \
     } \
     printf("\n"); \
