@@ -9,14 +9,13 @@ fi
 
 SEC=$1
 
-DIR=../../AccurateSalamanderGrandPianoV6.0_48khz24bit/48khz24bit/
+DIR=../../AccurateSalamanderGrandPianoV6.2_48khz24bit/48khz24bit/
 
 echo "Note: Directory is $DIR"
 
 PLOT_CMD="plot "
 
 LAYER_LIST="01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16"
-#LAYER_LIST="02  06  08  10  14"
 
 for i in $LAYER_LIST ; do
 
@@ -32,10 +31,10 @@ for i in $LAYER_LIST ; do
   OUTPUT="meanvol-sec${SEC}_v${i}.txt"
   sh measure_volume.sh 0 $SEC $LIST > $OUTPUT
 
-  if [ "$i" = "16" ]; then
-    PLOT_CMD="$PLOT_CMD '${OUTPUT}' with linesp title '$i'"
+  if [ "$i" = "01" ]; then
+    PLOT_CMD="${PLOT_CMD} '${OUTPUT}' with linesp title '$i'"
   else
-    PLOT_CMD="$PLOT_CMD '${OUTPUT}' with linesp title '$i',"
+    PLOT_CMD="${PLOT_CMD}, '${OUTPUT}' with linesp title '$i'"
   fi
 
 done

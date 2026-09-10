@@ -23,6 +23,8 @@ else
   LIST_VEL="22 30 35 40 45 50 55 61 68 76 84 92 100 108 116 124"
 fi
 
+echo LIST_VEL="$LIST_VEL"
+
 V=1
 
 for i in $LIST_VEL ; do

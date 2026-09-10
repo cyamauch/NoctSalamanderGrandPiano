@@ -3,7 +3,14 @@
 if [ "$2" = "" ]; then
   echo "[USAGE]"
   echo "$0 directory note-id"
-  echo "$0 V6_Accurate 69"
+  echo "$0 V6.2_Accurate_sforzando 69"
+  echo ""
+  echo "[NOTE]"
+  echo "Before using this tool:"
+  echo "- To create MIDI file:"
+  echo "  sh make_all_vel_measurement_midi.sh 240000 69"
+  echo "- Convert all-vel-measurement_note69.mid to all-vel-measurement_note69.wav"
+  echo "  using sforzando."
   exit
 fi
 
