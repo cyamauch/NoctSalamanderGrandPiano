@@ -5,6 +5,8 @@
 #                    gain3_factor.txt and vol_factor_effective.txt.
 #
 
+N_LAYERS=16
+
 if [ "$3" = "" ]; then
   echo "[USAGE]"
   echo "$0 OVERTONE_CONFIG OVERTONE3_CONFIG BASS_CONFIG"
@@ -40,7 +42,7 @@ func_merge ()
     if ( p0 == 1 ) { \
       split($0,ARR_0," "); \
       if ( prev_key == $1 ) { \
-        for ( i=1 ; i <= 16 ; i++ ) { \
+        for ( i=1 ; i <= '$N_LAYERS' ; i++ ) { \
           ARR[1+i] = ARR[1+i] + ARR_0[1+i]; \
         } \
         flg = 3; \
@@ -57,7 +59,7 @@ func_merge ()
     if ( flg != 3 ) { \
       if ( 0 < flg ) { \
         printf("%s",ARR[1]); \
-        for ( i=1 ; i <= 16 ; i++ ) { \
+        for ( i=1 ; i <= '$N_LAYERS' ; i++ ) { \
           printf(" %.3f", ARR[1+i]); \
         } \
         printf("\n"); \
@@ -83,7 +85,7 @@ func_output_overtone1 ()
         printf("%s",$1); \
         split($0,ARR," "); \
         idx=1; \
-        for ( i=1 ; i <= 16 ; i++ ) { \
+        for ( i=1 ; i <= '$N_LAYERS' ; i++ ) { \
           printf(" %.3f",$2 * ARR[4+idx]); \
           if ( 4 + i < length(ARR) ) idx++; \
         } \
@@ -106,7 +108,7 @@ func_output_overtone2 ()
         printf("%s",$1); \
         split($0,ARR," "); \
         idx=1; \
-        for ( i=1 ; i <= 16 ; i++ ) { \
+        for ( i=1 ; i <= '$N_LAYERS' ; i++ ) { \
           printf(" %.3f",$3 * ARR[4+idx]); \
           if ( 4 + i < length(ARR) ) idx++; \
         } \
@@ -208,14 +210,18 @@ cat overtone_root.txt $OVERTONE_CONFIG $OVERTONE3_CONFIG $BASS_CONFIG | awk '{ \
       printf("%s",$1); \
       split($0,ARR," "); \
       idx=1; \
-      for ( i=1 ; i <= 16 ; i++ ) { \
+      for ( i=1 ; i <= '$N_LAYERS' ; i++ ) { \
         printf(" %.3f",$4 * ARR[4+idx]); \
         if ( 4 + i < length(ARR) ) idx++; \
       } \
       printf("\n"); \
     } \
     else { \
-      printf("%s 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n",$1); \
+      printf("%s",$1); \
+      for ( i=1 ; i <= '$N_LAYERS' ; i++ ) { \
+        printf(" 0.00"); \
+      } \
+      printf("\n"); \
     } \
   } \
 }' > $OUTFILE_TMP

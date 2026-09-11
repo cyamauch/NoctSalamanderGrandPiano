@@ -328,6 +328,20 @@ V6.1 (Nov.14,2025)
 V6.1a (Dec.9,2025)
 * Volume of "Damper Pedal Resonance" is controllable by CC23.
   (Thanks to Timelessberry <https://timelessberry.com/>)
+V6.2 (Sep.,2026)
+* Volume of the WAV files was normalized.  Accordingly, AMP_VELTRACK has been
+  changed to 98.5.
+* Unified pronunciation latency:
+  0.0[s] for sfz_live/ and 0.015[s] for sfz_{daw/minimum}.
+  (Thanks to Jeff Learman @ SFZ Instruments Organization)
+* Fixed a bug of Hammer Noise when using CC64:
+  "trigger=release" -> "group=100 trigger=release_key"
+* Appended CC24 "Note Attenuation" and volume control of "Sampled Release",
+  "Hammer Noise" and "Pedal Noise" (CC20, CC21 and CC22) for SFZ files
+  in sfz_daw/ and sfz_live/ directories.
+  To enable them, set CCxx=1...127 respectively.  They are disabled (CCxx=0)
+  by default.
+  (Thanks to hashimoi <https://lit.link/hashimoi>)
 
 
 *** Licence:

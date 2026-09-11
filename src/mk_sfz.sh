@@ -11,13 +11,9 @@ if [ "$VERSION5" = "" ]; then
   #VERSION5=0
 fi
 
-if [ "$1" != "-" ]; then
-  SFZ_SED_ARGS_FILE="$1"
-else
-  SFZ_SED_ARGS_FILE="sfz_sed_args.txt"
-fi
-SRC_SFZ="$2"
-FLAG_TEST="$3"
+SRC_SFZ="$1"
+N_LAYERS="$2"
+MODE_AND_PARAMS="$3"
 DEST_DIR="$4"
 DEST_SFZ_BASENAME="$5"
 SFZ_VOL_FACTOR_BASE_FILE="$6"
@@ -34,10 +30,10 @@ fi
 
 if [ "$VERSION5" = "1" ]; then
   # Version 5
-  sh prep_sfz.sh ${SRC_SFZ} ${FLAG_TEST} > prep.sfz
+  sh prep_sfz.sh ${SRC_SFZ} $N_LAYERS ${MODE_AND_PARAMS} > prep.sfz
 else
   # Version 6 : Volume settings will be added for all 88 keys.
-  sh prep_sfz.sh ${SRC_SFZ} ${FLAG_TEST} unsampled_volumes.txt > prep.sfz
+  sh prep_sfz.sh ${SRC_SFZ} $N_LAYERS ${MODE_AND_PARAMS} unsampled_volumes.txt > prep.sfz
 fi
 
 #
@@ -46,7 +42,7 @@ fi
 
 if [ "$DEST_SFZ_BASENAME" != "" ]; then
 
-  SFZ_SED_ARGS=`cat $SFZ_SED_ARGS_FILE | tr -d '\r'`
+  SFZ_BASE_CONFIG=`cat sfz_base_config.txt | tr -d '\r'`
 
   SFZ_VOL_FACTOR_BASE=`cat $SFZ_VOL_FACTOR_BASE_FILE | tr -d '\r' | sed -e 's/^[ ]*//'`
 
@@ -59,7 +55,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
   fi
 
   # Create an 88 note setting by linearly interpolating a 30 note setting (A0,C1,...C8).
-  echo "$SFZ_VOL_FACTOR_BASE" | awk '{ \
+  echo "$SFZ_BASE_CONFIG" "$SFZ_VOL_FACTOR_BASE" | awk '{ \
     if ( NR==1 ) { \
       ix_k=1; ix_v=1; \
     } \
@@ -69,7 +65,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
     else if ( $1 == "AMPEG_RELEASE" ) { \
       PRM_L3 = $2; \
     } \
-    else if ( $1 == "VEL_ALL" ) { \
+    else if ( $1 == "VOL_'$N_LAYERS'" ) { \
       split($0,ARR," "); \
       PRM_L4 = ""; \
       for ( i=2 ; i <= length(ARR) ; i++ ) { \
@@ -131,8 +127,36 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
     } END { printf("\n"); }' >> tmp.sfz
   fi
 
+  SFZ_SED_ARGS=`echo "$SFZ_BASE_CONFIG" | awk '{ \
+    if ( $1 == "VEL_'$N_LAYERS'" ) { \
+      split($0,SPAN," "); \
+      lo = 1; \
+      for ( i=2 ; i <= length(SPAN) ; i++ ) { \
+        if ( i < length(SPAN) ) { \
+           printf("-e s/%%vel_v%02d%%/lovel=%d~hivel=%d/ ",i-1,lo,lo + SPAN[i] - 1); \
+           lo = lo + SPAN[i]; \
+        } \
+        else { \
+          printf("-e s/%%vel_v%02d%%/lovel=%d/ ",i-1,lo); \
+        } \
+      } \
+    } \
+  }'`
+
   # Using '~' is for MinGW shell
-  cat prep.sfz | tr -d '\r' | tr ' ' '~' | sed $SFZ_SED_ARGS | tr '~' ' ' >> tmp.sfz
+  cat prep.sfz | tr -d '\r' | tr ' ' '~' | sed $SFZ_SED_ARGS | tr '~' ' ' | awk '{ \
+    if ( NR == 2 ) { \
+      printf("// Accurate-Salamander Project\n"); \
+      printf("// https://www.ir.isas.jaxa.jp/~cyamauch/AccurateSalamander/\n"); \
+      printf("// Contact: cyamauch [at] ir.isas.jaxa.jp\n"); \
+      printf("// License: CC-by\n"); \
+    } else if ( NR == 3 ) { \
+      printf("//\n"); \
+      printf("// Original SFZ of Salamander Grand Piano V2\n"); \
+    } else { \
+      print; \
+    } \
+  }' >> tmp.sfz
 
   # Main AWK process
   cat tmp.sfz | awk '{ \
@@ -158,7 +182,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
     } \
     else if ( NR==4 ) { \
       if ( $0 == "" ) { \
-        for ( i=1 ; i <= 16 ; i++ ) { VOL_VEL[i] = 0.0; } \
+        for ( i=1 ; i <= '$N_LAYERS' ; i++ ) { VOL_VEL[i] = 0.0; } \
       } \
       else { \
         split($0,VOL_VEL," "); \
@@ -173,6 +197,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
       p0 = match($0, /[0-1][0-9][0-9]_[A-Z]/); \
       p1 = 0; \
       p_amp = 0; \
+      p_pkt = 0; \
       p_rel = 0; \
       p_kyg = 0; \
       if ( 0 < p0 ) { \
@@ -198,6 +223,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
         if ( p_amp < 1 ) { \
           p_amp = match($0, /amp_veltrack=82/); \
         } \
+        p_pkt = match($0, /pitch_keytrack=0/); \
         if ( FLG_1ST_AMPEG_RELEASE == "" ) { \
           p_rel = match($0, /ampeg_release=[0-9]/); \
           if ( 0 < p_rel ) { \
@@ -209,13 +235,13 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
             p_rel = match($0, /ampeg_release=[0-9]/); \
           } \
         } \
-        p_kyg = match($0, /key_group=[0-9]/); \
+        p_kyg = match($0, /[ ]key_group=[0-9]/); \
       } \
       OUTPUT_LINE = $0; \
-      if ( 0 < p0 && 0 < p1 && volume != 0.0 ) { \
-        p_v=match(OUTPUT_LINE, /volume[=][0123456789.+-]*/); \
+      if ( 0 < p0 && 0 < p1 ) { \
+        p_v=match(OUTPUT_LINE, /[ ]volume[=][0123456789.+-]*/); \
         if ( 0 < p_v ) { \
-          vol_org = substr(OUTPUT_LINE,p_v+7,RLENGTH-7); \
+          vol_org = substr(OUTPUT_LINE,p_v+8,RLENGTH-8); \
           vol_str = sprintf("volume=%+.2f",vol_org + volume); \
           sub(/volume=[^ ][^ ]*/,vol_str,OUTPUT_LINE); \
         } \
@@ -227,7 +253,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
       } \
       else if ( 0 < p_kyg ) { \
         split(OUTPUT_LINE,ARR," "); \
-        i = int(substr($0, p_kyg + 10, 3)); \
+        i = int(substr($0, p_kyg + 11, 3)); \
         tune = TUNED_SFZ[i - 20]; \
         for ( i=1 ; i <= length(ARR) ; i++ ) { \
           if ( i == 1 ) { \
@@ -245,7 +271,11 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
         printf("\n"); \
       } \
       else if ( 0 < p_amp ) { \
-        gsub(/amp_veltrack=[0-9][0-9]*/, "amp_veltrack=" AMP_VEL, OUTPUT_LINE); print OUTPUT_LINE; \
+        gsub(/amp_veltrack=[0-9][0-9]*/, "amp_veltrack=" AMP_VEL, OUTPUT_LINE); \
+        if ( 0 < p_pkt ) { \
+          gsub(/trigger=release/, "group=100 trigger=release_key", OUTPUT_LINE); \
+        } \
+        print OUTPUT_LINE; \
       } \
       else if ( 0 < p_rel ) { \
         gsub(/ampeg_release=[0-9][0-9.]*/, "ampeg_release=" AMPEG_RELEASE[ix_rel], OUTPUT_LINE); \
@@ -259,12 +289,12 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
   }' > tmp_out_0.sfz
   # replace  key=xxx -> lokey=xxx hikey=xxx
   cat tmp_out_0.sfz | sed -e 's/\([ ]\)\(key=\)\([0-9][0-9]*[ ]\)/\1lokey=\3hikey=\3/' > tmp_out.sfz
-  #cat tmp_out.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}.sfz
+  #cat tmp_out.sfz | awk '{ printf("%s\r\n",$0); }' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}.sfz
   #echo output: ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
 
-  if [ "$FLAG_TEST" != "" ]; then
-    FLAG_SFZ_TYPE=`echo $FLAG_TEST | awk -F, '{print $1;}'`
-    FLAG_SFZ_OPT=`echo $FLAG_TEST | awk -F, '{print $2;}'`
+  if [ "$MODE_AND_PARAMS" != "" ]; then
+    FLAG_SFZ_TYPE=`echo $MODE_AND_PARAMS | awk -F, '{print $1;}'`
+    FLAG_SFZ_OPT=""
   else
     FLAG_SFZ_TYPE=""
     FLAG_SFZ_OPT=""
@@ -286,9 +316,10 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
     fi
     #
     cat tmp_out_in_dir.sfz | awk '{ \
-      if ( $1 == "<group>" && substr($2,1,5) == "tune=" && substr($4,1,10) == "key_group=" ) { \
+      p0 = match($0, /[ ]key_group=[0-9]/); \
+      if ( $1 == "<group>" && substr($2,1,5) == "tune=" && 0 < p0 ) { \
         tune = substr($2,6); \
-        key_group = int(substr($4,11)); \
+        key_group = int(substr($0,p0+11,3)); \
       } \
       if ( 0 < key_group && $1 == "<region>" && 0 < match($2, /v01[.]wav/) ) { \
         SRC_0[key_group] = sprintf("<region> %s %s tune=%s",$2,$3,tune); \
@@ -404,7 +435,19 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
       } \
       print; \
     }' > tmp_out_daw.sfz
-    cat tmp_out_daw.sfz | sed -e 's/[ ]lovel=1[ ]/ lovel=2 /' -e 's/ampeg_dynamic=0/ampeg_dynamic=1/' -e 's/^[/][/][+&]//' > tmp_out_live.sfz
+    cat tmp_out_daw.sfz | sed -e 's/[ ]lovel=1[ ]/ lovel=2 /' -e 's/ampeg_dynamic=0/ampeg_dynamic=1/' -e 's/^[/][/][+&]//' | awk '{ \
+      line = $0; \
+      if ( $1 == "<group>" ) { \
+        p0 = match($0, /[ ][\/][\/][ ]offset=[0-9]/); \
+        p1 = match($0, /[ ]key_group=[0-9]/); \
+        if ( 0 < p0 && 0 < p1 ) { \
+          off_val = substr($0,p0+11); \
+          gsub(/[-].*/, "", off_val); \
+          gsub(/[ ]offset=[0-9][0-9]*[ ]/, " offset=" off_val " ",line); \
+        } \
+      } \
+      printf("%s\n",line); \
+    }' > tmp_out_live.sfz
     # final for minimum/
     cat tmp_out_minimum.sfz | awk '{ \
       if ( substr($0,1,3) == "//+" ) { \
@@ -414,9 +457,9 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
         line = $0; \
       } \
       if ( substr($0,1,3) != "//&" ) { \
-        printf("%s~\n",line); \
+        printf("%s\r\n",line); \
       } \
-    }' | tr '~' '\r' > ${DEST_DIR}/../sfz_minimum/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
+    }' > ${DEST_DIR}/../sfz_minimum/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
     # final for daw/
     cat tmp_out_daw.sfz | awk '{ \
       if ( substr($0,1,3) == "//+" ) { \
@@ -428,18 +471,18 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
       else { \
         line = $0; \
       } \
-      printf("%s~\n",line); \
-    }' | tr '~' '\r' > ${DEST_DIR}/../sfz_daw/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
+      printf("%s\r\n",line); \
+    }' > ${DEST_DIR}/../sfz_daw/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
     # final for live/
-    cat tmp_out_live.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../sfz_live/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
+    cat tmp_out_live.sfz | awk '{ printf("%s\r\n",$0); }' > ${DEST_DIR}/../sfz_live/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
   elif [ "$FLAG_SFZ_TYPE" = "-" ]; then
     PCM_DIR=`basename ${DEST_DIR}`
     mkdir -p ${DEST_DIR}/../sfz_int_daw
     cat tmp_out.sfz | sed -e "s/sample=${PCM_DIR}/sample=.."'\\'"${PCM_DIR}/" > tmp_out_daw.sfz
-    cat tmp_out_daw.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../sfz_int_daw/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
+    cat tmp_out_daw.sfz | awk '{ printf("%s\r\n",$0); }' > ${DEST_DIR}/../sfz_int_daw/${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
   else
     # SFZ for testing
-    cat tmp_out.sfz | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
+    cat tmp_out.sfz | awk '{ printf("%s\r\n",$0); }' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}${SFZ_RECOMMENDED_SUFFIX}.sfz
   fi
 
   # Creating SFZ without Noise.
@@ -447,7 +490,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
   #  if ( substr($0,1,13) == "//HammerNoise" ) { FLG=1; } \
   #  if ( FLG == 1 ) { FLG=1; } \
   #  else { print; } \
-  #}' | awk '{ printf("%s~\n",$0); }' | tr '~' '\r' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}_withoutNoise${SFZ_RECOMMENDED_SUFFIX}.sfz
+  #}' | awk '{ printf("%s\r\n",$0); }' > ${DEST_DIR}/../${DEST_SFZ_BASENAME}${SFZ_SUFFIX}_withoutNoise${SFZ_RECOMMENDED_SUFFIX}.sfz
 
 fi
 

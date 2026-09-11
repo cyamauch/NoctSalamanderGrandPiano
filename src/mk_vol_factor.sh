@@ -4,6 +4,8 @@
 # sh mk_vol_factor.sh  > vol_factor.txt
 #
 
+N_LAYERS=16
+
 VOL_FACTOR_BASE=`cat vol_factor_base.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 VOL_FACTOR_SRC=`cat vol_factor.src.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 VOL_FACTOR_EFFECTIVE=`cat vol_factor_effective.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
@@ -25,8 +27,8 @@ if [ "$VOL_FACTOR_EFFECTIVE" != "" ]; then
   paste _tmp1_.txt _tmp0_.txt | tr '\t' ' ' | awk '{ \
     printf("%s ",$1); \
     split($0,ARR," "); \
-    for ( i=1 ; i <= 16 ; i++ ) { \
-      printf("%+.2f ",ARR[1+i] + ARR[18+i]); \
+    for ( i=1 ; i <= '$N_LAYERS' ; i++ ) { \
+      printf("%+.2f ",ARR[1+i] + ARR[2+'$N_LAYERS'+i]); \
     } \
     printf("\n"); \
   }' > _tmp2_.txt
@@ -43,14 +45,14 @@ VEL_LINE=`echo "$VOL_FACTOR_SRC" | grep '^VEL'`
 if [ "$VEL_LINE" != "" ]; then
   echo "$VEL_LINE" > _tmp3_.txt 
 else
-  echo "VEL_ALL  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0" > _tmp3_.txt 
+  echo $N_LAYERS | awk '{ printf("VEL_ALL"); for (i=1;i<=$1;i++){ printf("  0.0"); } printf("\n"); }' > _tmp3_.txt
 fi
 
 
 paste _tmp0_.txt _tmp2_.txt | tr '\t' ' ' | awk '{ \
   split($0,ARR," "); \
   printf("%-7s", ARR[3]); \
-  for ( i=1 ; i <= 16 ; i++ ) { \
+  for ( i=1 ; i <= '$N_LAYERS' ; i++ ) { \
     printf(" %+.2f",ARR[3+i] + ARR[2]); \
   } \
   printf("\n"); \
@@ -64,7 +66,7 @@ cat _tmp3_.txt | awk '{ \
   else { \
     split($0,V_ARR," "); \
     printf("%-7s",$1); \
-    for ( i=1 ; i <= 16 ; i++ ) { \
+    for ( i=1 ; i <= '$N_LAYERS' ; i++ ) { \
       printf(" %+.2f",V_ALL_ARR[1+i] + V_ARR[1+i]); \
     } \
     printf("\n"); \

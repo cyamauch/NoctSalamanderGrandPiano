@@ -9,8 +9,9 @@ if [ "$1" = "" ]; then
   echo "$0 src_sfz src_unsampled"
 fi
 SRC_SFZ="$1"
-FLAG_TEST="$2"
-SRC_UNSAMPLED="$3"
+N_LAYERS="$2"
+MODE_AND_PARAMS="$3"
+SRC_UNSAMPLED="$4"
 
 KEY_NID_TXT=`cat key_n-id.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 ARG_OUTFILE_SED_0=`echo "$KEY_NID_TXT" | awk '{printf("-e s/%sv/%s_%sv/ \n",$1,$2,$1);}'`
@@ -20,7 +21,7 @@ ARG_OUTFILE_SED=`echo "$ARG_OUTFILE_SED_0" "$ARG_OUTFILE_SED_1"`
 #
 # Replace WAV filenames: A0v1.wav => 021_A0v01.wav
 #
-cat sfz_inserted.txt $SRC_SFZ | tr '\r' '~' | sed -e 's/[ ]*[~]$//' $ARG_OUTFILE_SED | awk '{ \
+cat sfz_inserted.txt $SRC_SFZ | tr -d '\r' | sed -e 's/[ ][ ]*$//' $ARG_OUTFILE_SED | awk '{ \
   if ( FLG == "" ) { \
     if ( CNT == "" ) { CNT=1; } \
     if ( $0 == "%" ) { CNT=CNT+1; } \
@@ -93,7 +94,7 @@ cat tmp0.sfz | awk '{ \
 # to be TRUE Grand piano: i.e. F6 with half damper and F#6-C8 without damper.
 #
 cat tmp1.sfz | grep 'F#6v' | sed -e 's/lokey/key/' -e 's/hikey=91[ ]//' > tmp2.sfz
-echo ${FLAG_TEST} > tmp3.sfz
+echo ${MODE_AND_PARAMS} | tr ',' ' ' > tmp3.sfz
 cat key_n-id_all.txt | awk '{printf("%s,%s ",$2,$1);} END {printf("\n");}' >> tmp3.sfz
 cat tmp2.sfz tmp1.sfz | awk '{ \
   if ( FLG == "" ) { \
@@ -142,28 +143,70 @@ cat tmp2.sfz tmp1.sfz | awk '{ \
 if [ "$SRC_UNSAMPLED" = "" ]; then
   cat tmp3.sfz | awk '{ \
     if ( 2 < NR ) { \
-      printf("%s~\n",$0); \
+      printf("%s\r\n",$0); \
     } \
-  }' | tr '~' '\r'
+  }'
   exit 0
 fi
 
 #
 # for Version 6
+#
+
+# Append Velocity 17-
+
+cat tmp3.sfz | awk '{ \
+  if ( 2 < NR ) { \
+    LINE = $0; \
+    p0 = match($0, /v[0-1][0-9][.]wav/); \
+    VEL = substr($0, p0, 3); \
+    if ( 0 < p0 ) { \
+      gsub(/[ ]lovel=[0-9][0-9]*[ ]/, " %vel_" VEL "% ", LINE); \
+      gsub(/[ ]hivel=[0-9][0-9]*[ ]/, " ", LINE); \
+    } \
+    printf("%s\n",LINE); \
+    if ( VEL == "v16" ) { \
+      for ( i=17 ; i <= '$N_LAYERS' ; i++ ) { \
+        s = LINE; \
+        v_str = sprintf("v%d",i); \
+        gsub(/v16/, v_str, s); \
+        printf("%s\n",s); \
+      } \
+    } \
+  } \
+  else { \
+    print; \
+  } \
+}' > tmp4.sfz
+
 # - Expand WAV file assignment: lokey,hikey => key.
 # - 88 <group> sections are used for each note.
 # - "tune=xx" is written in <group> section.
 # - If a test flag is specified, the minimum necessary code will be output.
-#
-cat tmp3.sfz | awk '{ \
+
+COL_IDX=`expr $N_LAYERS + 3`
+LIST_TRANSPOSE=`cat assign.txt | grep -v '^[ ]*#' | sort -n | awk '{ if(NR==1){flag=0;} if ($1!=""){ if(flag!=0){printf(",");} v=$'$COL_IDX'; if(v==""){v=0;} printf("%d:%s",int(substr($1,1,3)),v); flag=1; } }END{printf("\n");}'`
+#echo $LIST_TRANSPOSE > _.txt
+
+cat tmp4.sfz | awk '{ \
   if ( NR == 1 ) { \
     LINE_CNT_GLOBAL=0; \
-    FLAG_TEST=$1; \
+    LINE_CNT_1ST_MASTER_PRMS=0; \
+    MODE_STR=$1; \
+    OFFSET_SEC=0; \
+    if ( $2 != "" ) { \
+      OFFSET_SEC=$2; \
+    } \
     if ( substr($1,1,1) == "v" ) { \
       SEL_VEL = $1; \
     } \
     else { \
       SEL_VEL = ""; \
+    } \
+    split("'$LIST_TRANSPOSE'",ARR_TMP_LT,","); \
+    for ( i=1 ; i <= length(ARR_TMP_LT) ; i++ ) { \
+      split(ARR_TMP_LT[i],ARR_TMP,":"); \
+      ARR_TRANSPOSE[ARR_TMP[1]] = ARR_TMP[2]; \
     } \
   } \
   else if ( NR == 2 ) { \
@@ -211,6 +254,9 @@ cat tmp3.sfz | awk '{ \
       } \
     } \
     for ( i=lokey ; i <= hikey ; i++ ) { \
+      if ( p3 == 1 ) { \
+        ARR_KEYCENTER[i] = keycenter; \
+      } \
       if ( i != 89 ) { \
         for ( j=1 ; j <= length(KEYS) ; j++ ) { \
           if ( 1 < j ) { \
@@ -234,6 +280,7 @@ cat tmp3.sfz | awk '{ \
   else if ( 0 < match($0, /[ ]key=89/) ) { \
     i=89; \
     LINES[i] = LINES[i] sprintf("%s\n",$0); \
+    ARR_KEYCENTER[i] = 90; \
   } \
   else if ( NR == NR_LAST_HIKEY88 + 1 && substr($0,1,4) == "//==" ) { \
   } \
@@ -250,13 +297,23 @@ cat tmp3.sfz | awk '{ \
       } \
       printf("%s",ARR_GLOBAL[i]); \
       FLG_1ST_MASTER = 2; \
+      for ( i=1 ; i <= LINE_CNT_1ST_MASTER_PRMS ; i++ ) { \
+        printf("\n%s",ARR_LINE_CNT_1ST_MASTER[i]); \
+      } \
     } \
     else { \
       printf("<master>"); \
       for ( i=2 ; i <= length(ARR) ; i++ ) { \
         printf(" %s",ARR[i]); \
       } \
+      for ( i=1 ; i <= LINE_CNT_1ST_MASTER_PRMS ; i++ ) { \
+        printf("\n%s",ARR_LINE_CNT_1ST_MASTER[i]); \
+      } \
     } \
+  } \
+  else if ( FLG_1ST_MASTER == 1 ) { \
+    LINE_CNT_1ST_MASTER_PRMS++; \
+    ARR_LINE_CNT_1ST_MASTER[LINE_CNT_1ST_MASTER_PRMS] = $0; \
   } \
   else { \
     if ( $0 == "//F6 with half damper" ) { KEY_S=21; KEY_E=88; } \
@@ -265,21 +322,28 @@ cat tmp3.sfz | awk '{ \
     else { KEY_S=0; KEY_E=0; } \
     if ( KEY_S != 0 ) { \
       for ( i=KEY_S ; i <= KEY_E ; i++ ) { \
-        printf("<group> // key_group=%d [%s]\n",i,NOTE_NAMES[i]); \
+        keycen = ARR_KEYCENTER[i]; \
+        trans0 = ARR_TRANSPOSE[keycen]; \
+        trans1 = ARR_TRANSPOSE[keycen] + (i - keycen); \
+        fs0 = 48000.0 * 2.0^(trans0/12.0); \
+        fs1 = 48000.0 * 2.0^(trans1/12.0); \
+        offset0 = OFFSET_SEC * fs0; \
+        offset1 = (OFFSET_SEC - 0.001) * fs1; \
+        printf("<group> offset=%.0f // offset=%.0f-%.0f // key_group=%d [%s]\n",offset0-offset1,offset0,offset1,i,NOTE_NAMES[i]); \
         if ( SEL_VEL == "" ) { print LINES[i]; } \
         else { \
           split(LINES[i],ARR,"\n"); \
           for ( j=1 ; j <= length(ARR) ; j++ ) { \
             p_vxx = match(ARR[j], /v[0-9][0-9][.]wav/); \
             if ( 0 < p_vxx && substr(ARR[j],p_vxx,3) == SEL_VEL ) { \
-              gsub(/[ ]lovel=[0-9]*[ ]hivel=[0-9]*[ ]/, " lovel=1 ",ARR[j]); \
+              gsub(/[ ][%]vel_v[0-9]*[%][ ]/, " lovel=1 ",ARR[j]); \
               printf("%s\n\n",ARR[j]); \
             } \
           } \
         } \
       } \
       printf("\n"); \
-      if ( KEY_E == 108 && 0 < match(FLAG_TEST, /^[a-zA-Z]/) ) { \
+      if ( KEY_E == 108 && 0 < match(MODE_STR, /^[a-zA-Z]/) ) { \
         exit; \
       } \
       print $0; \
@@ -288,14 +352,17 @@ cat tmp3.sfz | awk '{ \
       print; \
     } \
   } \
-}' > tmp4.sfz
+}' > tmp5.sfz
 
 cat $SRC_UNSAMPLED | sed -e 's/[ ][ ]*/ /g' -e 's/[ ]/,-,/g' | tr ',' ' ' > tmp_unsampled.txt
 
 #
 # Insert volume parameters
 #
-cat tmp_unsampled.txt tmp4.sfz | awk '{ \
+cat tmp_unsampled.txt tmp5.sfz | awk '{ \
+  if ( match($1, /^[0-9][0-9]$/) < 1 ) { \
+    FLG = 1; \
+  } \
   if ( FLG != 1 ) { \
     idx = int($1); \
     if ( idx == 1 ) { split(substr($0,4),VOL1," "); } \
@@ -315,7 +382,23 @@ cat tmp_unsampled.txt tmp4.sfz | awk '{ \
     else if ( idx == 15 ) { split(substr($0,4),VOL15," "); } \
     else if ( idx == 16 ) { \
       split(substr($0,4),VOL16," "); \
-      FLG = 1; \
+      if ( idx == '$N_LAYERS' ) { FLG = 1; } \
+    } \
+    else if ( idx == 17 ) { \
+      split(substr($0,4),VOL17," "); \
+      if ( idx == '$N_LAYERS' ) { FLG = 1; } \
+    } \
+    else if ( idx == 18 ) { \
+      split(substr($0,4),VOL18," "); \
+      if ( idx == '$N_LAYERS' ) { FLG = 1; } \
+    } \
+    else if ( idx == 19 ) { \
+      split(substr($0,4),VOL19," "); \
+      if ( idx == '$N_LAYERS' ) { FLG = 1; } \
+    } \
+    else if ( idx == 20 ) { \
+      split(substr($0,4),VOL20," "); \
+      if ( idx == '$N_LAYERS' ) { FLG = 1; } \
     } \
   } \
   else { \
@@ -350,6 +433,10 @@ cat tmp_unsampled.txt tmp4.sfz | awk '{ \
         else if ( v == 14 ) { vol = VOL14[actual_n]; } \
         else if ( v == 15 ) { vol = VOL15[actual_n]; } \
         else if ( v == 16 ) { vol = VOL16[actual_n]; } \
+        else if ( v == 17 ) { vol = VOL17[actual_n]; } \
+        else if ( v == 18 ) { vol = VOL18[actual_n]; } \
+        else if ( v == 19 ) { vol = VOL19[actual_n]; } \
+        else if ( v == 20 ) { vol = VOL20[actual_n]; } \
         if ( vol != "-" ) { \
           vol_str = sprintf("%+.2f",vol); \
           if ( substr(vol_str,2) == "0.00" ) { \
@@ -384,5 +471,5 @@ cat tmp_unsampled.txt tmp4.sfz | awk '{ \
       print; \
     } \
   } \
-}' | awk '{ printf("%s~\n",$0); }' | tr '~' '\r'
+}' | awk '{ printf("%s\r\n",$0); }'
 

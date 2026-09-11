@@ -72,6 +72,9 @@ fi
 
 ####
 
+
+N_LAYERS=16
+
 FFMPEG_LOG_FILE="ffmpeg_log.txt"
 FFMPEG_SP_LOG_FILE="ffmpeg-sp_log.txt"
 
@@ -215,7 +218,7 @@ echo DEST_DIR: $DEST_DIR
 
 KEY_NID_TXT=`cat key_n-id.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 VOL_FACTOR_TXT=`cat vol_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
-PCM_SEEK_POS=`cat pcm_seek_pos.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
+PCM_SEEK_POS_SAMPLES=`cat pcm_seek_pos_samples.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 ASSIGN_TXT=`cat assign.txt | tr -d '\r' | sed -e 's/^[ ]*//'`
 GAIN1_ROOT_FACTOR_TXT=`cat gain1_root_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
 GAIN2_ROOT_FACTOR_TXT=`cat gain2_root_factor.txt | tr -d '\r' | sed -e 's/^[ ]*//' -e 's/[ ]*$//' -e 's/^[#].*//' -e 's/[ ][ ]*/,/g' -e 's/[,]/ /'`
@@ -318,7 +321,8 @@ for i in $LIST ; do
     LIST_VEL=""
   else
     if [ "$SELECTED_LAYER" = "ALL" ]; then
-      LIST_VEL="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16"
+      #LIST_VEL="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16"
+      LIST_VEL=`echo $N_LAYERS | awk '{ for (i=1;i<=$1;i++){ printf("%d ",i); } printf("\n"); }'`
     else
       LIST_VEL="$SELECTED_LAYER"
     fi
@@ -395,19 +399,22 @@ for i in $LIST ; do
   #
   #
   VOL_THIS_ALL=`echo "$VOL_FACTOR_TXT" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
-  SEEK_THIS_ALL=`echo "$PCM_SEEK_POS" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
+  SEEK_THIS_ALL=`echo "$PCM_SEEK_POS_SAMPLES" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
   ASSIGN_THIS_ALL=`echo "$ASSIGN_TXT" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
   #
   if [ "$VOL_THIS_ALL" = "" ]; then
-    VOL_THIS_ALL="0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0"
+    #VOL_THIS_ALL="0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0"
+    VOL_THIS_ALL=`echo $N_LAYERS | awk '{ for (i=1;i<=$1;i++){ printf("0.0  "); } printf("\n"); }'`
   fi
   if [ "$SEEK_THIS_ALL" = "" ]; then
-    SEEK_THIS_ALL="0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000"
+    #SEEK_THIS_ALL="0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000"
+    SEEK_THIS_ALL=`echo $N_LAYERS | awk '{ for (i=1;i<=$1;i++){ printf("0.000 "); } printf("\n"); }'`
   fi
   USED_KEY="$KEY"
   TUNE_BY_SCALE=""
   if [ "$ASSIGN_THIS_ALL" = "" ]; then
-    ASSIGN_THIS_ALL="1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16"
+    #ASSIGN_THIS_ALL="1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16"
+    ASSIGN_THIS_ALL=`echo $N_LAYERS | awk '{ for (i=1;i<=$1;i++){ printf("%d ",i); } printf("\n"); }'`
   else
     USED_KEY=`echo $ASSIGN_THIS_ALL | awk '{print $17}'`
     if [ "$USED_KEY" = "" ]; then
@@ -524,7 +531,8 @@ for i in $LIST ; do
       fi
       #
       rm -f tmp1.wav tmp2.wav "$OUT_FILE"
-      ARGS="-ss ${SEEK_THIS} -af ${FILTER_ASETRATE}${FILTER_DIRECT_KEY}${FILTER_DIRECT_ARG}${ARG_EQ_ROOT_1}${ARG_EQ_ROOT_2}${ARG_EQ_01}${ARG_EQ_23}volume=${VOL_THIS}dB -c:a pcm_f32le"
+      SEEK_OPT=`echo ${SEEK_THIS} | awk '{ if (0 <= $1) { printf("atrim=start_sample=%d,\n",$1); } else { printf("adelay=%dS:all=1,\n",(-1)*$1); } }'`
+      ARGS="-af ${SEEK_OPT}${FILTER_ASETRATE}${FILTER_DIRECT_KEY}${FILTER_DIRECT_ARG}${ARG_EQ_ROOT_1}${ARG_EQ_ROOT_2}${ARG_EQ_01}${ARG_EQ_23}volume=${VOL_THIS}dB -c:a pcm_f32le"
       ###LOG###
       echo FFMPEG -i "$IN_FILE" $ARGS tmp1.wav >> $FFMPEG_LOG_FILE
       #########

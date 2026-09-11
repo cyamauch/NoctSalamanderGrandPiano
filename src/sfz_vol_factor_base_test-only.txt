@@ -1,6 +1,5 @@
 #key
 
-AMP_VELTRACK 80
 AMPEG_RELEASE 1.0,1.0,1.0
 
 021_A0   0.0
