@@ -93,7 +93,7 @@ pan_curvecc10=1
 //+v127=1
 
 
-<master> ampeg_release_oncc72=2
+<master> ampeg_release_oncc72=2 ampeg_release_shape=-20.0 off_shape=-20.0
 //&hicc24=126
 //&volume_oncc24=-48
 //&volume_curvecc24=0  // 0 to 1 (Linear); see https://sfzformat.com/headers/curve/
