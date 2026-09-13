@@ -548,4 +548,20 @@ for i in $LIST ; do
   done
 done
 
+#### Correct volume of sampled release ####
+
+LIST=`cat harm_vol.txt | tr -d '\r' | awk '{printf("%s,%s\n",$1,$2);}'`
+
+for i in $LIST ; do
+  FILE=`echo $i | awk -F, '{printf("%s\n",$1);}'`
+  CORR_VOL=`echo $i | awk -F, '{printf("%s\n",$2);}'`
+  #
+  IN_FILE=${SRC_DIR}/$FILE
+  OUT_FILE=${DEST_DIR}/$FILE
+  #
+  echo "Correct $FILE -> $OUT_FILE"
+  rm -f "$OUT_FILE"
+  echo FFMPEG -i $IN_FILE -af volume=${CORR_VOL}dB $FFMPEG_OPT "$FILE" >> $FFMPEG_LOG_FILE
+  "$FFMPEG" -i $IN_FILE -af volume=${CORR_VOL}dB $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
+done
 
