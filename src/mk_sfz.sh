@@ -283,14 +283,15 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
         printf("\n"); \
       } \
       else if ( 0 < p_amp ) { \
-        gsub(/amp_veltrack=[0-9][0-9]*/, "amp_veltrack=" AMP_VEL, OUTPUT_LINE); \
         if ( 0 < p_pkt ) { \
           gsub(/trigger=release/, "group=201 trigger=release_key", OUTPUT_LINE); \
         } else if ( 0 < p_rtd ) { \
           gsub(/trigger=release/, "group=" count_group100 " trigger=release", OUTPUT_LINE); \
           count_group100 = count_group100 + 1; \
           gsub(/volume=[-]4 /, "", OUTPUT_LINE); \
+          gsub(/amp_veltrack=[0-9][0-9]*[ ]/, "", OUTPUT_LINE); \
         } \
+        gsub(/amp_veltrack=[0-9][0-9]*/, "amp_veltrack=" AMP_VEL, OUTPUT_LINE); \
         print OUTPUT_LINE; \
       } \
       else if ( 0 < p_rel ) { \
