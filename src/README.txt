@@ -341,7 +341,11 @@ V6.2 (Sep.,2026)
   in sfz_daw/ and sfz_live/ directories.
   To enable them, set CCxx=1...127 respectively.  They are disabled (CCxx=0)
   by default.
-  (Thanks to hashimoi <https://lit.link/hashimoi>)
+  (Thanks to Hashimoi <https://lit.link/hashimoi>)
+* Remastered the WAV files for the "Sampled Release" (harm*.wav); removed
+  almost all noise and normalized the volume levels.
+* Updated the "Sampled Release" settings within the SFZ files to reproduce
+  more realistic release behavior.
 
 
 *** Licence:

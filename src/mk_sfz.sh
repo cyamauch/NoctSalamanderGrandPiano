@@ -163,6 +163,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
     if ( NR==1 ) { \
       VERSION=$1; \
       ix_rel=1; \
+      count_group100 = 101; \
     } \
     else if ( NR==2 ) { \
       if ( $1 == "" ) { \
@@ -200,6 +201,10 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
       p_pkt = 0; \
       p_rel = 0; \
       p_kyg = 0; \
+      p_rtd = 0; \
+      p_harml = 0; \
+      p_harms = 0; \
+      p_harmv = 0; \
       if ( 0 < p0 ) { \
         p1 = match($0, /v[0-9][0-9][.]wav/); \
         if ( 0 < p1 ) { \
@@ -223,7 +228,14 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
         if ( p_amp < 1 ) { \
           p_amp = match($0, /amp_veltrack=82/); \
         } \
+        if ( p_amp < 1 ) { \
+          p_amp = match($0, /amp_veltrack=9[0456]/); \
+        } \
         p_pkt = match($0, /pitch_keytrack=0/); \
+        p_rtd = match($0, /rt_decay=[0-9]/); \
+        p_harml = match($0, /harmL[^.]*[.]wav/); \
+        p_harms = match($0, /harmS[^.]*[.]wav/); \
+        p_harmv = match($0, /harmV[^.]*[.]wav/); \
         if ( FLG_1ST_AMPEG_RELEASE == "" ) { \
           p_rel = match($0, /ampeg_release=[0-9]/); \
           if ( 0 < p_rel ) { \
@@ -273,7 +285,11 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
       else if ( 0 < p_amp ) { \
         gsub(/amp_veltrack=[0-9][0-9]*/, "amp_veltrack=" AMP_VEL, OUTPUT_LINE); \
         if ( 0 < p_pkt ) { \
-          gsub(/trigger=release/, "group=100 trigger=release_key", OUTPUT_LINE); \
+          gsub(/trigger=release/, "group=201 trigger=release_key", OUTPUT_LINE); \
+        } else if ( 0 < p_rtd ) { \
+          gsub(/trigger=release/, "group=" count_group100 " trigger=release", OUTPUT_LINE); \
+          count_group100 = count_group100 + 1; \
+          gsub(/volume=[-]4 /, "", OUTPUT_LINE); \
         } \
         print OUTPUT_LINE; \
       } \
@@ -281,6 +297,18 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
         gsub(/ampeg_release=[0-9][0-9.]*/, "ampeg_release=" AMPEG_RELEASE[ix_rel], OUTPUT_LINE); \
         print OUTPUT_LINE; \
         ix_rel++; \
+      } \
+      else if ( 0 < p_harml ) { \
+        gsub(/lovel=45/, "lovel=45", OUTPUT_LINE); \
+        print OUTPUT_LINE; \
+      } \
+      else if ( 0 < p_harms ) { \
+        gsub(/lovel=1 hivel=44/, "lovel=31 hivel=44", OUTPUT_LINE); \
+        print OUTPUT_LINE; \
+      } \
+      else if ( 0 < p_harmv ) { \
+        gsub(/lovel=1/, "lovel=1 hivel=30", OUTPUT_LINE); \
+        print OUTPUT_LINE; \
       } \
       else { \
         print OUTPUT_LINE; \
@@ -339,20 +367,20 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
         printf("//+ampeg_release_curvecc64=12\n"); \
         printf("\n"); \
         if ( 0 ) { \
-          printf("<group> group=200 group_volume=-6 locc64=22\n"); \
+          printf("<group> group=300 group_volume=-6 locc64=22\n"); \
           printf("\n"); \
           for ( i=33 ; i <= 88 ; i++ ) { \
             printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i],i-12,i-12,SRC_1[i]); \
           } \
           printf("\n"); \
-          printf("<group> group=201 group_volume=-11 locc64=26\n"); \
+          printf("<group> group=301 group_volume=-11 locc64=26\n"); \
           for ( i=40 ; i <= 88 ; i++ ) { \
             printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i],i-19,i-19,SRC_1[i]); \
           } \
         } \
         if ( 1 ) { \
           KEY_OFFSET=3; \
-          printf("<group> group=201 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-6.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("<group> group=301 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-6.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
           printf("\n"); \
           for ( i=21+KEY_OFFSET ; i <= 52 ; i++ ) { \
             printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
@@ -363,7 +391,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
           } \
           printf("\n"); \
           KEY_OFFSET=6; \
-          printf("<group> group=202 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-6.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("<group> group=302 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-6.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
           printf("\n"); \
           for ( i=53 ; i <= 61 ; i++ ) { \
             printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
@@ -374,7 +402,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
           } \
           printf("\n"); \
           KEY_OFFSET=9; \
-          printf("<group> group=203 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-6.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("<group> group=303 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-6.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
           printf("\n"); \
           for ( i=62 ; i <= 70 ; i++ ) { \
             printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
@@ -385,7 +413,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
           } \
           printf("\n"); \
           KEY_OFFSET=6; \
-          printf("<group> group=204 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-9.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("<group> group=304 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-9.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
           printf("\n"); \
           for ( i=71 ; i <= 77 ; i++ ) { \
             printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
@@ -396,7 +424,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
           } \
           printf("\n"); \
           KEY_OFFSET=3; \
-          printf("<group> group=205 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-12.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("<group> group=305 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-12.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
           printf("\n"); \
           for ( i=78 ; i <= 81 ; i++ ) { \
             printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
@@ -407,7 +435,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
           } \
           printf("\n"); \
           KEY_OFFSET=3; \
-          printf("<group> group=206 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-15.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("<group> group=306 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-15.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
           printf("\n"); \
           for ( i=82 ; i <= 85 ; i++ ) { \
             printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
@@ -418,7 +446,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
           } \
           printf("\n"); \
           KEY_OFFSET=3; \
-          printf("<group> group=207 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-18.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          printf("<group> group=307 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-18.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
           printf("\n"); \
           for ( i=86 ; i <= 89 ; i++ ) { \
             printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \

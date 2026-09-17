@@ -9,7 +9,8 @@ fi
 
 SEC=$1
 
-DIR=../../SalamanderGrandPianoV3_48khz24bit/48khz24bit/
+#DIR=../../SalamanderGrandPianoV3_48khz24bit/48khz24bit/
+DIR=../harm_corr/
 RESULT=harm_vol.txt
 
 echo "Note: Directory is $DIR"
@@ -20,11 +21,16 @@ PLOT_CMD="plot "
 LAYER_LIST="harmL harmS harmV3"
 
 # y = - A * x - (B + B_SPAN * n)
-COEFF_A=0.55
+COEFF_A=0.65
 COEFF_B=40.0
 COEFF_B_SPAN=8.5
 
-VOL_GAIN=12.0
+#
+# NOTE: This is used in build.sh
+#
+VOL_GAIN=0.0
+
+echo "NOTE: VOL_GAIN = $VOL_GAIN is used for 'Sampled Release' in build.sh"
 
 rm -f $RESULT
 
@@ -56,7 +62,7 @@ for i in $LAYER_LIST ; do
   paste list_${i}.txt $OUTPUT | tr '\t' ' ' | awk '{ \
     S=$1 ; \
     gsub(/^.*[\/]/, "", S); \
-    printf("%s %g\n", S, ( -'$COEFF_A' * (NR-1) - ('$COEFF_B' + '$COEFF_B_SPAN' * '$COUNT') ) - ($2) + '$VOL_GAIN'); \
+    printf("%s %g\n", S, ( -'$COEFF_A' * (NR-1) - ('$COEFF_B' + '$COEFF_B_SPAN' * 0) ) - ($2) + '$VOL_GAIN'); \
   }' >> $RESULT
 
   if [ "$i" = "harmV3" ]; then

@@ -550,16 +550,21 @@ done
 
 #### Correct volume of sampled release ####
 
+SRC_DIR_HARM=./harm_corr
+
+echo "sh mk_harm.sh $FFMPEG $SRC_DIR $SRC_DIR_HARM"
+sh mk_harm.sh "$FFMPEG" "$SRC_DIR" "$SRC_DIR_HARM"
+
 LIST=`cat harm_vol.txt | tr -d '\r' | awk '{printf("%s,%s\n",$1,$2);}'`
 
 for i in $LIST ; do
   FILE=`echo $i | awk -F, '{printf("%s\n",$1);}'`
   CORR_VOL=`echo $i | awk -F, '{printf("%s\n",$2);}'`
   #
-  IN_FILE=${SRC_DIR}/$FILE
+  IN_FILE=${SRC_DIR_HARM}/$FILE
   OUT_FILE=${DEST_DIR}/$FILE
   #
-  echo "Correct $FILE -> $OUT_FILE"
+  echo "Adjust Volume: $FILE -> $OUT_FILE"
   rm -f "$OUT_FILE"
   echo FFMPEG -i $IN_FILE -af volume=${CORR_VOL}dB $FFMPEG_OPT "$FILE" >> $FFMPEG_LOG_FILE
   "$FFMPEG" -i $IN_FILE -af volume=${CORR_VOL}dB $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
