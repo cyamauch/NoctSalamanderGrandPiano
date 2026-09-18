@@ -548,6 +548,7 @@ for i in $LIST ; do
   done
 done
 
+
 #### Correct volume of sampled release ####
 
 SRC_DIR_HARM=./harm_corr
@@ -569,4 +570,11 @@ for i in $LIST ; do
   echo FFMPEG -i $IN_FILE -af volume=${CORR_VOL}dB $FFMPEG_OPT "$FILE" >> $FFMPEG_LOG_FILE
   "$FFMPEG" -i $IN_FILE -af volume=${CORR_VOL}dB $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
 done
+
+
+#### Adjust seek pos of rel*.wav ####
+
+echo "FFMPEG_OPT='$FFMPEG_OPT' sh mk_rel.sh $FFMPEG $SRC_DIR $DEST_DIR"
+FFMPEG_OPT="$FFMPEG_OPT" sh mk_rel.sh "$FFMPEG" "$SRC_DIR" "$DEST_DIR"
+
 

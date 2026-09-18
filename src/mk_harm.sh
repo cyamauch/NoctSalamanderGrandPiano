@@ -33,11 +33,11 @@ if [ ! -x "$FFMPEG" ]; then
   exit 127
 fi
 
-if [ -f "$2" ]; then
+if [ -d "$2" ]; then
   SRC_DIR="$2"
 fi
 
-if [ -f "$3" ]; then
+if [ -d "$3" ]; then
   DEST_DIR="$3"
 fi
 
@@ -45,7 +45,10 @@ fi
 # Copy ALL
 #
 
-mkdir -p $DEST_DIR
+if [ ! -d $DEST_DIR ]; then
+  mkdir -p $DEST_DIR
+fi
+
 cp -p $SRC_DIR/harmL*.wav $DEST_DIR/.
 cp -p $SRC_DIR/harmS*.wav $DEST_DIR/.
 cp -p $SRC_DIR/harmV3*.wav $DEST_DIR/.

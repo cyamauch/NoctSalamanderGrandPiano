@@ -95,7 +95,8 @@ src48:: vol_factor.txt
 	cp -p `ls *_factor*.txt | grep -v -e '[.]v5[.]' -e '[.]2025' -e '[-]only[.]'` $(DESTDIR48)/src/.
 	cp -p assign.txt tuned.txt tuned_sfz.txt filter_direct.txt sfz_base_config.txt $(DESTDIR48)/src/.
 	cp -p `ls sfz_vol_factor_base*.txt | grep -v -e '[.]v5[.]' -e '[.]2025' -e '[-]only[.]'` $(DESTDIR48)/src/.
-	cp -p unsampled_volumes.txt harm_vol.txt mk_harm.sh mk_sfz.sh prep_sfz.sh sfz_inserted.txt $(DESTDIR48)/src/.
+	cp -p unsampled_volumes.txt mk_sfz.sh prep_sfz.sh sfz_inserted.txt $(DESTDIR48)/src/.
+	cp -p harm_vol.txt mk_harm.sh rel_seek_pos.txt mk_rel.sh $(DESTDIR48)/src/.
 	cp -p $(SRCDIR48)/README $(DESTDIR48)/README.orig.txt
 
 noct48:: sfz48 src48

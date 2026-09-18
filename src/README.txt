@@ -346,6 +346,7 @@ V6.2 (Sep.,2026)
   almost all noise and normalized the volume levels.
 * Updated the "Sampled Release" settings within the SFZ files to reproduce
   more realistic release behavior.
+* Unified pronunciation latency of Hammer Noise (rel*.wav).
 
 
 *** Licence:
