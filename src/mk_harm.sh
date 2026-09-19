@@ -225,17 +225,6 @@ if [ "$USE_HARML" = "1" ]; then
 
   "$FFMPEG" -i $IN_FILE -af volume=-${COEFF_B_SPAN}dB,equalizer=f=4000:t=h:w=4000:g=-30:r=f32 -c:a pcm_f32le $OUT_FILE 2> /dev/null
 
-else
-
-  IN_FILE="$SRC_DIR/harmSD#3.wav"
-
-  echo "Correct: $IN_FILE -> $OUT_FILE"
-
-  rm -f $OUT_FILE
-
-  #"$FFMPEG" -i $IN_FILE -af afade=t=out:st=0.070:d=0.001:silence=0.55:curve=tri,afade=t=in:st=0.095:d=0.001:silence=0.55:curve=tri -c:a pcm_f32le $OUT_FILE 2> /dev/null
-  "$FFMPEG" -i $IN_FILE -af afade=t=out:st=0.055:d=0.001:silence=0.55:curve=tri,afade=t=in:st=0.095:d=0.001:silence=0.55:curve=tri -c:a pcm_f32le $OUT_FILE 2> /dev/null
-
 fi
 
 
@@ -257,21 +246,11 @@ if [ "$USE_HARML" = "1" ]; then
 
   "$FFMPEG" -i $IN_FILE -af volume=-${COEFF_B_SPAN}dB,equalizer=f=4000:t=h:w=4000:g=-36:r=f32 -c:a pcm_f32le $OUT_FILE 2> /dev/null
 
-else
-
-  IN_FILE="$SRC_DIR/harmSF#3.wav"
-
-  echo "Correct: $IN_FILE -> $OUT_FILE"
-
-  rm -f $OUT_FILE
-
-  "$FFMPEG" -i $IN_FILE -af afade=t=out:st=0.042:d=0.001:silence=0.55:curve=tri,afade=t=in:st=0.135:d=0.001:silence=0.55:curve=tri -c:a pcm_f32le $OUT_FILE 2> /dev/null
-
 fi
 
 
 #
-# harmSA3 ... Mechanical noise present at the 0.36-second -> Removed that section.
+# harmSA3 ... Mechanical noise present at the 0.36-second
 #
 
 OUT_FILE="$DEST_DIR/harmSA3.wav"
@@ -287,22 +266,6 @@ if [ "$USE_HARML" = "1" ]; then
   rm -f $OUT_FILE
 
   "$FFMPEG" -i $IN_FILE -af volume=-${COEFF_B_SPAN}dB,equalizer=f=4000:t=h:w=4000:g=-42:r=f32 -c:a pcm_f32le $OUT_FILE 2> /dev/null
-
-else
-
-  IN_FILE="$SRC_DIR/harmSA3.wav"
-
-  echo "Correct: $IN_FILE -> $OUT_FILE"
-
-  rm -f _tmp_sub_0.wav _tmp_sub_1.wav _tmp_sub_2.wav $OUT_FILE
-
-  #"$FFMPEG" -i $IN_FILE -af afade=t=out:st=0.065:d=0.001:silence=0.5:curve=tri,afade=t=in:st=0.105:d=0.001:silence=0.5:curve=tri -c:a pcm_f32le _tmp_sub_0.wav 2> /dev/null
-  "$FFMPEG" -i $IN_FILE -af afade=t=out:st=0.050:d=0.001:silence=0.55:curve=tri,afade=t=in:st=0.105:d=0.001:silence=0.55:curve=tri -c:a pcm_f32le _tmp_sub_0.wav 2> /dev/null
-
-  "$FFMPEG" -i _tmp_sub_0.wav -af afade=t=out:st=0.354:d=0.001:silence=0.0:curve=tri -ss 0.00 -t 0.355 -c:a pcm_f32le _tmp_sub_1.wav 2> /dev/null
-  "$FFMPEG" -i _tmp_sub_0.wav -af afade=t=in:st=0.500:d=0.001:silence=0.0:curve=tri  -ss 0.500 -c:a pcm_f32le _tmp_sub_2.wav 2> /dev/null
-
-  "$FFMPEG" -i _tmp_sub_1.wav -i _tmp_sub_2.wav -filter_complex concat=n=2:v=0:a=1 -c:a pcm_f32le $OUT_FILE 2> /dev/null
 
 fi
 

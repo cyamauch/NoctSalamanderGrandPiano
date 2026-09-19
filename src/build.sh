@@ -578,3 +578,18 @@ echo "FFMPEG_OPT='$FFMPEG_OPT' sh mk_rel.sh $FFMPEG $SRC_DIR $DEST_DIR"
 FFMPEG_OPT="$FFMPEG_OPT" sh mk_rel.sh "$FFMPEG" "$SRC_DIR" "$DEST_DIR"
 
 
+#### Correct pedal noise ####
+
+FILE=pedalU2.wav
+IN_FILE=${SRC_DIR}/$FILE
+OUT_FILE=${DEST_DIR}/$FILE
+
+echo "Correct: $FILE -> $OUT_FILE"
+
+rm -f _tmp_sub_0.wav _tmp_sub_1.wav "$OUT_FILE"
+
+"$FFMPEG" -i $IN_FILE -af afade=t=out:st=0.363:d=0.001:silence=0.25:curve=tri -ss 0.00 -t 0.423 -c:a pcm_f32le _tmp_sub_0.wav 2> /dev/null
+"$FFMPEG" -i $IN_FILE -af afade=t=in:st=0.423:d=0.001:silence=0.25:curve=tri -ss 0.423 -c:a pcm_f32le _tmp_sub_1.wav 2> /dev/null
+"$FFMPEG" -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex concat=n=2:v=0:a=1 $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
+
+
