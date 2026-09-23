@@ -347,6 +347,8 @@ V6.2 (Sep.,2026)
 * Updated the "Sampled Release" settings within the SFZ files to reproduce
   more realistic release behavior.
 * Unified pronunciation latency of Hammer Noise (rel*.wav).
+* Removed the loud noise (footsteps) in the C4v15 sample.
+  (Thanks to Kuu <https://x.com/kuu_tele>)
 
 
 *** Licence:

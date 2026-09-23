@@ -436,6 +436,24 @@ elif [ "$KEY" = "C4" ]; then
 
   F_F=`echo $VEL $F_FACTOR_EFF $F_FACTOR | awk '{ split($0,ARR," "); print ARR[2] * ARR[2 + ARR[1]]; }'`
 
+  BASENAME="`echo $IN_FILE | sed -e 's/^.*[/]//'`"
+  if [ "$BASENAME" = "C4v15.wav" ]; then
+    # Remove the loud noise (footsteps) occurring after the 4-second mark in the v15 sample.
+    # t = around 4.20275 s
+    # v15 end point:   699 + 1 + 201032 samples
+    # v16 start point: 631     + 201033 samples
+    echo "  mk_special.sh: $BASENAME: Using v16 samples from the 4-second mark onwards."
+    DIRNAME="`echo $IN_FILE | sed -e 's/[/][^/][^/]*$//'`"
+    ALT_FILE="$DIRNAME/C4v16.wav"
+    rm -f _tmp_sub_0.wav _tmp_sub_1.wav _tmp_sub_2.wav
+    "$FFMPEG" -i $IN_FILE -af atrim=end_sample=201733 -c:a pcm_f32le _tmp_sub_0.wav
+    # Omitting the volume adjustment process allows for smaller differences in the waveforms.
+    #"$FFMPEG" -i $ALT_FILE -af volume=-0.45dB,atrim=start_sample=201664 -c:a pcm_f32le _tmp_sub_1.wav
+    "$FFMPEG" -i $ALT_FILE -af atrim=start_sample=201664 -c:a pcm_f32le _tmp_sub_1.wav
+    "$FFMPEG" -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex concat=n=2:v=0:a=1 -c:a pcm_f32le _tmp_sub_2.wav
+    IN_FILE=_tmp_sub_2.wav
+  fi
+
   rm -f $OUT_FILE
 
   EQ_STR=`echo $F_F | awk '{ printf("equalizer=f=2630:t=h:w=70:g=%g:r=f32,equalizer=f=3200:t=h:w=70:g=%g:r=f32,equalizer=f=3482:t=h:w=70:g=%g:r=f32,equalizer=f=3767:t=h:w=70:g=%g:r=f32,equalizer=f=4044:t=h:w=80:g=%g:r=f32,equalizer=f=4338:t=h:w=80:g=%g:r=f32\n",-5.0*$1,-7.0*$1,-13.0*$1,-6.0*$1,-18.0*$1,-10.0*$1); }'`
