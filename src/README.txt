@@ -336,6 +336,7 @@ V6.2 (Sep.,2026)
   (Thanks to Jeff Learman @ SFZ Instruments Organization)
 * Fixed a bug of Hammer Noise when using CC64:
   "trigger=release" -> "group=100 trigger=release_key"
+  (Thanks to Hashimoi <https://lit.link/hashimoi>)
 * Appended CC24 "Note Attenuation" and volume control of "Sampled Release",
   "Hammer Noise" and "Pedal Noise" (CC20, CC21 and CC22) for SFZ files
   in sfz_daw/ and sfz_live/ directories.
