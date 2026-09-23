@@ -551,46 +551,78 @@ done
 
 #### Correct volume of sampled release ####
 
-SRC_DIR_HARM=./harm_corr
+FLAG_DO=""
+if [ "$SELECTED_KEY" = "" ]; then
+  FLAG_DO=1
+else
+  FLAG_DO=`echo "$SELECTED_KEY" | awk '{ split($0,ARR," "); for ( i=1 ; i <= length(ARR) ; i++ ) { if(ARR[i]=="harm"){printf("1\n");} } }'`
+fi
 
-echo "sh mk_harm.sh $FFMPEG $SRC_DIR $SRC_DIR_HARM"
-sh mk_harm.sh "$FFMPEG" "$SRC_DIR" "$SRC_DIR_HARM"
+if [ "$FLAG_DO" = "1" ]; then
 
-LIST=`cat harm_vol.txt | tr -d '\r' | awk '{printf("%s,%s\n",$1,$2);}'`
+  SRC_DIR_HARM=./harm_corr
 
-for i in $LIST ; do
-  FILE=`echo $i | awk -F, '{printf("%s\n",$1);}'`
-  CORR_VOL=`echo $i | awk -F, '{printf("%s\n",$2);}'`
-  #
-  IN_FILE=${SRC_DIR_HARM}/$FILE
-  OUT_FILE=${DEST_DIR}/$FILE
-  #
-  echo "Adjust Volume: $FILE -> $OUT_FILE"
-  rm -f "$OUT_FILE"
-  echo FFMPEG -i $IN_FILE -af volume=${CORR_VOL}dB $FFMPEG_OPT "$FILE" >> $FFMPEG_LOG_FILE
-  "$FFMPEG" -i $IN_FILE -af volume=${CORR_VOL}dB $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
-done
+  echo "sh mk_harm.sh $FFMPEG $SRC_DIR $SRC_DIR_HARM"
+  sh mk_harm.sh "$FFMPEG" "$SRC_DIR" "$SRC_DIR_HARM"
+
+  LIST=`cat harm_vol.txt | tr -d '\r' | awk '{printf("%s,%s\n",$1,$2);}'`
+
+  for i in $LIST ; do
+    FILE=`echo $i | awk -F, '{printf("%s\n",$1);}'`
+    CORR_VOL=`echo $i | awk -F, '{printf("%s\n",$2);}'`
+    #
+    IN_FILE=${SRC_DIR_HARM}/$FILE
+    OUT_FILE=${DEST_DIR}/$FILE
+    #
+    echo "Adjust Volume: $FILE -> $OUT_FILE"
+    rm -f "$OUT_FILE"
+    echo FFMPEG -i $IN_FILE -af volume=${CORR_VOL}dB $FFMPEG_OPT "$FILE" >> $FFMPEG_LOG_FILE
+    "$FFMPEG" -i $IN_FILE -af volume=${CORR_VOL}dB $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
+  done
+
+fi
 
 
 #### Adjust seek pos of rel*.wav ####
 
-echo "FFMPEG_OPT='$FFMPEG_OPT' sh mk_rel.sh $FFMPEG $SRC_DIR $DEST_DIR"
-FFMPEG_OPT="$FFMPEG_OPT" sh mk_rel.sh "$FFMPEG" "$SRC_DIR" "$DEST_DIR"
+FLAG_DO=""
+if [ "$SELECTED_KEY" = "" ]; then
+  FLAG_DO=1
+else
+  FLAG_DO=`echo "$SELECTED_KEY" | awk '{ split($0,ARR," "); for ( i=1 ; i <= length(ARR) ; i++ ) { if(ARR[i]=="rel"){printf("1\n");} } }'`
+fi
+
+if [ "$FLAG_DO" = "1" ]; then
+
+  echo "FFMPEG_OPT='$FFMPEG_OPT' sh mk_rel.sh $FFMPEG $SRC_DIR $DEST_DIR"
+  FFMPEG_OPT="$FFMPEG_OPT" sh mk_rel.sh "$FFMPEG" "$SRC_DIR" "$DEST_DIR"
+
+fi
 
 
 #### Correct pedal noise ####
 
-FILE=pedalU2.wav
-IN_FILE=${SRC_DIR}/$FILE
-OUT_FILE=${DEST_DIR}/$FILE
+FLAG_DO=""
+if [ "$SELECTED_KEY" = "" ]; then
+  FLAG_DO=1
+else
+  FLAG_DO=`echo "$SELECTED_KEY" | awk '{ split($0,ARR," "); for ( i=1 ; i <= length(ARR) ; i++ ) { if(ARR[i]=="pedal"){printf("1\n");} } }'`
+fi
 
-echo "Correct: $FILE -> $OUT_FILE"
+if [ "$FLAG_DO" = "1" ]; then
 
-rm -f _tmp_0.wav _tmp_1.wav "$OUT_FILE"
+  FILE=pedalU2.wav
+  IN_FILE=${SRC_DIR}/$FILE
+  OUT_FILE=${DEST_DIR}/$FILE
 
-#"$FFMPEG" -i $IN_FILE -af afade=t=out:st=0.363:d=0.001:silence=0.25:curve=tri -ss 0.00 -t 0.423 -c:a pcm_f32le _tmp_0.wav 2> /dev/null
-"$FFMPEG" -i $IN_FILE -af afade=t=out:st=0.221:d=0.050:silence=0.25:curve=tri -ss 0.00 -t 0.423 -c:a pcm_f32le _tmp_0.wav 2> /dev/null
-"$FFMPEG" -i $IN_FILE -af afade=t=in:st=0.423:d=0.100:silence=0.25:curve=tri -ss 0.423 -c:a pcm_f32le _tmp_1.wav 2> /dev/null
-"$FFMPEG" -i _tmp_0.wav -i _tmp_1.wav -filter_complex concat=n=2:v=0:a=1 $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
+  echo "Correct: $FILE -> $OUT_FILE"
 
+  rm -f _tmp_0.wav _tmp_1.wav "$OUT_FILE"
+
+  #"$FFMPEG" -i $IN_FILE -af afade=t=out:st=0.363:d=0.001:silence=0.25:curve=tri -ss 0.00 -t 0.423 -c:a pcm_f32le _tmp_0.wav 2> /dev/null
+  "$FFMPEG" -i $IN_FILE -af afade=t=out:st=0.221:d=0.050:silence=0.25:curve=tri -ss 0.00 -t 0.423 -c:a pcm_f32le _tmp_0.wav 2> /dev/null
+  "$FFMPEG" -i $IN_FILE -af afade=t=in:st=0.423:d=0.100:silence=0.25:curve=tri -ss 0.423 -c:a pcm_f32le _tmp_1.wav 2> /dev/null
+  "$FFMPEG" -i _tmp_0.wav -i _tmp_1.wav -filter_complex concat=n=2:v=0:a=1 $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
+
+fi
 
