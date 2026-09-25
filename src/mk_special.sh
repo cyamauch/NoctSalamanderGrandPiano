@@ -447,9 +447,8 @@ elif [ "$KEY" = "C4" ]; then
     ALT_FILE="$DIRNAME/C4v16.wav"
     rm -f _tmp_sub_0.wav _tmp_sub_1.wav _tmp_sub_2.wav
     "$FFMPEG" -i $IN_FILE -af atrim=end_sample=201733 -c:a pcm_f32le _tmp_sub_0.wav
-    # Omitting the volume adjustment process allows for smaller differences in the waveforms.
-    #"$FFMPEG" -i $ALT_FILE -af volume=-0.45dB,atrim=start_sample=201664 -c:a pcm_f32le _tmp_sub_1.wav
-    "$FFMPEG" -i $ALT_FILE -af atrim=start_sample=201664 -c:a pcm_f32le _tmp_sub_1.wav
+    # Note: The v15 has higher velocity and greater volume than the v16.
+    "$FFMPEG" -i $ALT_FILE -af volume=+0.332dB,atrim=start_sample=201664 -c:a pcm_f32le _tmp_sub_1.wav
     "$FFMPEG" -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex concat=n=2:v=0:a=1 -c:a pcm_f32le _tmp_sub_2.wav
     IN_FILE=_tmp_sub_2.wav
   fi

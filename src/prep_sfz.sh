@@ -307,7 +307,10 @@ cat tmp4.sfz | awk '{ \
         printf(" %s",ARR[i]); \
       } \
       for ( i=1 ; i <= LINE_CNT_1ST_MASTER_PRMS ; i++ ) { \
-        printf("\n%s",ARR_LINE_CNT_1ST_MASTER[i]); \
+        L_STR=ARR_LINE_CNT_1ST_MASTER[i]; \
+        if ( match(L_STR, /^ampeg_release_shape=/) <= 0 && match(L_STR, /^off_shape=/) <= 0 ) { \
+          printf("\n%s",L_STR); \
+        } \
       } \
     } \
   } \

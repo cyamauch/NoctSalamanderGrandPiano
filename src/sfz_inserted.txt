@@ -93,7 +93,9 @@ pan_curvecc10=1
 //+v127=1
 
 
-<master> ampeg_release_oncc72=2 ampeg_release_shape=-20.0 off_shape=-20.0
+<master> ampeg_release_oncc72=2
+ampeg_release_shape=-20.0
+off_shape=-20.0
 //&hicc24=126
 //&volume_oncc24=-48
 //&volume_curvecc24=0  // 0 to 1 (Linear); see https://sfzformat.com/headers/curve/
@@ -114,6 +116,7 @@ volume_curvecc20=2  // 1 to 0 (Linear); see https://sfzformat.com/headers/curve/
 //HammerNoise
 
 <master> locc21=1
+//amp_veltrack=82
 volume_oncc21=-12
 volume_curvecc21=2  // 1 to 0 (Linear); see https://sfzformat.com/headers/curve/
 
