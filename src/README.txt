@@ -331,11 +331,12 @@ V6.1a (Dec.9,2025)
 V6.2 (Sep.,2026)
 * Volume of the WAV files was normalized.  Accordingly, AMP_VELTRACK has been
   changed to 98.5.
+* Appended CC99: The amp_veltrack value can be adjusted between 98.5 and 48.5.
 * Unified pronunciation latency:
   0.0[s] for sfz_live/ and 0.015[s] for sfz_{daw/minimum}.
   (Thanks to Jeff Learman @ SFZ Instruments Organization)
 * Fixed a bug of Hammer Noise when using CC64:
-  "trigger=release" -> "group=100 trigger=release_key"
+  "trigger=release" -> "group=xxx trigger=release_key"
   (Thanks to Hashimoi <https://lit.link/hashimoi>)
 * Appended CC24 "Note Attenuation" and volume control of "Sampled Release",
   "Hammer Noise" and "Pedal Noise" (CC20, CC21 and CC22) for SFZ files

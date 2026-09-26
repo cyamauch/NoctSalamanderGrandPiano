@@ -20,8 +20,8 @@
 //&//       ignored).
 //&//
 <control>
-//        Vol          Pan
-          set_cc7=100  set_cc10=64
+//        Vol          Pan           Veltrack
+          set_cc7=100  set_cc10=64   set_cc99=0
 //&//        Sampled rel  Hammer noise  Pedal noise  Pedal res   Note att    Release len
 //&          set_cc20=0   set_cc21=0    set_cc22=0   set_cc23=0  set_cc24=0  set_cc72=0
 label_cc7=Vol
@@ -33,6 +33,7 @@ label_cc10=Pan
 //&label_cc24=Note Attenuation
 label_cc64=Sus Pedal
 label_cc72=Release Length
+label_cc99=Veltrack
 
 // Info: To change the release time, change the off_time and ampeg_release in
 //       the <global> section.  These should basically be the same value.
@@ -41,6 +42,8 @@ label_cc72=Release Length
 
 <global>
 amp_veltrack=73
+amp_veltrack_oncc99=-50
+amp_veltrack_curvecc99=0  // 0 to 1 (Linear); see https://sfzformat.com/headers/curve/
 note_polyphony=1
 ampeg_release=1.0
 off_time=1.0
