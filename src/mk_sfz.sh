@@ -236,6 +236,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
         p_harml = match($0, /harmL[^.]*[.]wav/); \
         p_harms = match($0, /harmS[^.]*[.]wav/); \
         p_harmv = match($0, /harmV[^.]*[.]wav/); \
+        p_oncc64 = match($0, /on_locc64=[0-9]/); \
         if ( FLG_1ST_AMPEG_RELEASE == "" ) { \
           p_rel = match($0, /ampeg_release=[0-9]/); \
           if ( 0 < p_rel ) { \
@@ -310,6 +311,11 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
       } \
       else if ( 0 < p_harmv ) { \
         gsub(/lovel=1/, "lovel=1 hivel=30", OUTPUT_LINE); \
+        print OUTPUT_LINE; \
+      } \
+      else if ( 0 < p_oncc64 ) { \
+        gsub(/on_locc64=126[ ]/, "on_locc64=127 ", OUTPUT_LINE); \
+        gsub(/on_hicc64=1[ ]/, "on_hicc64=0 off_by=1 ", OUTPUT_LINE); \
         print OUTPUT_LINE; \
       } \
       else { \
