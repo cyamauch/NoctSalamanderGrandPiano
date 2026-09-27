@@ -24,6 +24,9 @@ Choose from three different SFZ file types to suit your needs:
 
   These are SFZ files for those who want realistic piano behavior.
   Both "Damper Pedal Resonance" and "Half Pedaling" are available.
+  The half pedaling range spans CC64 values from 23 to 63, and the reproduction
+  of release and resonance characteristics is based on the YAMAHA Disklavier 
+  grand piano.
   At velocity=1, there is no sound, as if the hammer is not hitting the string.
   At velocity=2 or higher, the player software outputs the sound.  Suitable 
   for live piano performance.
@@ -40,6 +43,11 @@ Choose from three different SFZ file types to suit your needs:
 
 Multiple SFZ files in above directories with different bass/treble balance are
 included.  Please try the one with "Recommended" in the file name first.
+
+To enable "Sampled Release", "Hammer Noise", and "Pedal Noise", set 
+CC20=1...127, CC21=1...127, and CC22=1...127 respectively.  They are disalbed 
+by default.  We recommend disabling them for software that does not fully 
+support SFZ v2. 
 
 
 *** Technical info
@@ -350,6 +358,9 @@ V6.2 (Sep.,2026)
   more realistic release behavior.
 * Unified pronunciation latency of Hammer Noise (rel*.wav).
 * Removed the loud noise (footsteps) in the C4v15 sample.
+  (Thanks to Kuu <https://x.com/kuu_tele>)
+* Fixed a bug (SFZ code) that prevents Sfizz from playing sounds that include
+  pedal resonance.
   (Thanks to Kuu <https://x.com/kuu_tele>)
 
 

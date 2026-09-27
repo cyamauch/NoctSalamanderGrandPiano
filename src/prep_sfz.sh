@@ -225,7 +225,7 @@ cat tmp4.sfz | awk '{ \
   } \
   if ( NR <= 2 ) { \
   } \
-  else if ( $1 == "ampeg_release=1.0" && FLG_1ST_AMPEG_RELEASE == "" ) { \
+  else if ( 0 < match($1, /ampeg_release=[0-9]/) && FLG_1ST_AMPEG_RELEASE == "" ) { \
     FLG_1ST_AMPEG_RELEASE = 1; \
   } \
   else if ( FLG_1ST_AMPEG_RELEASE == 1 && FLG_1ST_MASTER == "" ) { \
@@ -308,7 +308,7 @@ cat tmp4.sfz | awk '{ \
       } \
       for ( i=1 ; i <= LINE_CNT_1ST_MASTER_PRMS ; i++ ) { \
         L_STR=ARR_LINE_CNT_1ST_MASTER[i]; \
-        if ( match(L_STR, /^ampeg_release_shape=/) <= 0 && match(L_STR, /^off_shape=/) <= 0 ) { \
+        if ( match(L_STR, /ampeg_release_shape=/) <= 0 && match(L_STR, /off_shape=/) <= 0 ) { \
           printf("\n%s",L_STR); \
         } \
       } \
