@@ -38,7 +38,8 @@ label_cc99=Veltrack
 // Info: To change the release time, change the off_time and ampeg_release in
 //       the <global> section.  These should basically be the same value.
 
-//Notes
+// Note: "ampeg_release_shape" seems to behave differently depending on the
+//       player/sampler software.
 
 <global>
 amp_veltrack=73
@@ -69,10 +70,6 @@ pan_curvecc10=1
 //+ampeg_dynamic=1
 //+ampeg_releasecc64=100
 //+
-// Note: ampeg_release_shape seems to behave differently depending on the 
-//       player/sampler software.
-// //ampeg_release_shape=-6
-//+
 // The curve with curve_index=11 is applied for half pedaling (note).
 //+ampeg_release_curvecc64=11
 //+
@@ -95,10 +92,9 @@ pan_curvecc10=1
 //+v064=1
 //+v127=1
 
+//Notes
 
 <master> ampeg_release_oncc72=2
-ampeg_release_shape=-20.0
-off_shape=-20.0
 //&hicc24=126
 //&volume_oncc24=-48
 //&volume_curvecc24=0  // 0 to 1 (Linear); see https://sfzformat.com/headers/curve/
@@ -111,6 +107,7 @@ off_shape=-20.0
 //Sampled release
 
 <master> hicc64=0 locc20=1
+//+hicc64=32           // Half pedaling: Release of note changes at CC64=33
 volume_oncc20=-12
 volume_curvecc20=2  // 1 to 0 (Linear); see https://sfzformat.com/headers/curve/
 
