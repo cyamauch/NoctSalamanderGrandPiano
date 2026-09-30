@@ -5,8 +5,43 @@
     https://www.ir.isas.jaxa.jp/~cyamauch/AccurateSalamander/
 
     Free SFZ 48kHz/24bit Accurate Grand Piano Soundbanks
+    comprising 16 note layers, 3 release layers, and mechanical noise samples
 
 -------------------------------------------------------------------------------
+
+The Accurate-Salamander Project is remastering existing sampled sound source 
+sets to produce new SFZ grand piano soundbanks of instrument maker-level 
+quality, using a physics-based approach.  The "homogeneity" and "continuity" of
+volume, overtone, envelope, and delay, which are directly related to ease of 
+control, which is important for performers who handle delicate expressions, 
+are thoroughly pursued. 
+
+Version 6.2 resolves almost all problems found in the WAV and SFZ files of the 
+original Salamander Grand.  It also features significantly enhanced MIDI 
+control changes, allowing for full utilization of the recorded WAV samples
+---including release and noise samples. 
+
+The project offers the following four soundbanks:
+
+- Soundbank#0: Accurate-Salamander Grand Piano
+
+  Homogeneity and continuity were thoroughly pursued without changing the tone 
+  of the original Salamander Grand as much as possible.  The bright YAMAHA C5 
+  tone is accurately reproduced. 
+
+- Soundbank#1: Twilight-Salamander Grand Piano
+
+  The low velocity side of soundbank#0 was adjusted softly.
+
+- Soundbank#2: Moonlight-Salamander Grand Piano
+
+  This provides softer sound than soundbank#1.
+  Inherits the sound of soundbank#0 in high velocity. 
+
+- Soundbank#3: Noct-Salamander Grand Piano
+
+  This is the most gentle soundbank and is suitable for relaxation music and 
+  accompaniment.
 
 
 *** How to use
@@ -17,19 +52,19 @@ Choose from three different SFZ file types to suit your needs:
 
   A set of SFZ files for general use.
   "Damper Pedal Resonance" is available, but "Half Pedaling" is unavailable.
-  The player software outputs the sound with velocity=1.
+  The player software outputs the sound with velocity=1.  The note-on latency 
+  is 0.015s.
   Suitable for use with DAWs.
 
 - SFZ in sfz_live directory
 
   These are SFZ files for those who want realistic piano behavior.
   Both "Damper Pedal Resonance" and "Half Pedaling" are available.
-  The half pedaling range spans CC64 values from 23 to 63, and the reproduction
-  of release and resonance characteristics is based on the YAMAHA Disklavier 
-  grand piano.
+  The reproduction of release and resonance characteristics of "Half Pedaling" 
+  is based on the YAMAHA Disklavier grand piano.
   At velocity=1, there is no sound, as if the hammer is not hitting the string.
-  At velocity=2 or higher, the player software outputs the sound.  Suitable 
-  for live piano performance.
+  At velocity=2 or higher, the player software outputs the sound.  The note-on 
+  latency is 0.0s.  Suitable for live piano performance.
   Half pedaling is available with sforzando and Sfizz.  SFZ files use ARIA 
   extensions, so there may be limited software that works properly.
 
@@ -37,17 +72,60 @@ Choose from three different SFZ file types to suit your needs:
 
   Use this if you want to minimize PC resource consumption or if you want to 
   use player software that does not support SFZ v2.
-  Settings for "Hammer Noise," "Pedal Noise," "Sampled Release," and 
-  "Pedal Resonance" are all omitted.
+  The note-on latency is 0.015s.  Settings for "Hammer Noise," "Pedal Noise," 
+  "Sampled Release," and "Pedal Resonance" are all omitted.
   "Half pedaling" can be used by enabling the commented-out section.
 
 Multiple SFZ files in above directories with different bass/treble balance are
 included.  Please try the one with "Recommended" in the file name first.
 
-To enable "Sampled Release", "Hammer Noise", and "Pedal Noise", set 
-CC20=1...127, CC21=1...127, and CC22=1...127 respectively.  They are disalbed 
-by default.  We recommend disabling them for software that does not fully 
-support SFZ v2. 
+For the SFZ files located in sfz_daw/ and sfz_live/, the following MIDI control
+changes are available: 
+
+ - CC20 "Sampled Release"
+   Default: Off (v=0)
+   Range: Off, -12 ... -0dB
+
+ - CC21 "Hammer Noise"
+   Default: Off (v=0)
+   Range: Off, -12 ... -0dB
+
+ - CC22 "Pedal Noise"
+   Default: Off (v=0)
+   Range: Off, -12 ... -0dB
+
+ - CC23 "Pedal Resonance"
+   Default: Off (v=0)
+   Range: Off, -12 ... -0dB
+
+ - CC24 "Note Attenuation"
+   Default: Off (v=0)
+   Range: -0 ... -48dB
+
+For software that does not fully support SFZ v2, the use of CC20-CC23 often 
+causes problems with damper pedal (CC64) processing; therefore, it is 
+recommended not to use these control changes (i.e., keep them set to 0). 
+
+The following is available for all SFZ files.  The "Half" behavior for the 
+"Sus Pedal" is effective only for SFZ files within sfz_live.
+
+ - CC64 "Sus Pedal"
+   Range: Off (v=0...22), Half (v=23...63), On (v=64...127)
+
+ - CC72 "Release Length"
+   Default: 0.5s (v=0)
+   Range: 0.5s ... 2.5s
+
+ - CC99 "Veltrack"
+   Default: 98.5 (v=0)
+   Range: 98.5 ... 48.5
+
+Recommended values for "Pedal Resonance" (CC23) are provided below:
+
+ - Accurate-Salamander: CC23=127 (-0dB)
+ - Twilight-Salamander: CC23=95 (-3dB)
+ - Moonlight-Salamander: CC23=75 (-5dB)
+ - Noct-Salamander: CC23=53 (-7dB)
 
 
 *** Technical info
@@ -336,7 +414,7 @@ V6.1 (Nov.14,2025)
 V6.1a (Dec.9,2025)
 * Volume of "Damper Pedal Resonance" is controllable by CC23.
   (Thanks to Timelessberry <https://timelessberry.com/>)
-V6.2 (Sep.,2026)
+V6.2 (Sep.29,2026)
 * Volume of the WAV files was normalized.  Accordingly, AMP_VELTRACK has been
   changed to 98.5.
 * Appended CC99: The amp_veltrack value can be adjusted between 98.5 and 48.5.
