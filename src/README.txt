@@ -48,7 +48,7 @@ The project offers the following four soundbanks:
 
 Choose from three different SFZ file types to suit your needs:
 
-- SFZ in sfz_daw directory
+- SFZ in sfz_daw/ directory
 
   A set of SFZ files for general use.
   "Damper Pedal Resonance" is available, but "Half Pedaling" is unavailable.
@@ -56,7 +56,7 @@ Choose from three different SFZ file types to suit your needs:
   is 0.015s.
   Suitable for use with DAWs.
 
-- SFZ in sfz_live directory
+- SFZ in sfz_live/ directory
 
   These are SFZ files for those who want realistic piano behavior.
   Both "Damper Pedal Resonance" and "Half Pedaling" are available.
@@ -68,7 +68,7 @@ Choose from three different SFZ file types to suit your needs:
   Half pedaling is available with sforzando and Sfizz.  SFZ files use ARIA 
   extensions, so there may be limited software that works properly.
 
-- SFZ in sfz_minimum directory
+- SFZ in sfz_minimum/ directory
 
   Use this if you want to minimize PC resource consumption or if you want to 
   use player software that does not support SFZ v2.
@@ -107,7 +107,7 @@ causes problems with damper pedal (CC64) processing; therefore, it is
 recommended not to use these control changes (i.e., keep them set to 0). 
 
 The following is available for all SFZ files.  The "Half" behavior for the 
-"Sus Pedal" is effective only for SFZ files within sfz_live.
+"Sus Pedal" is effective only for SFZ files within sfz_live/.
 
  - CC64 "Sus Pedal"
    Range: Off (v=0...22), Half (v=23...63), On (v=64...127)

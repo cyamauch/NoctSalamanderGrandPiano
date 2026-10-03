@@ -6,8 +6,8 @@
 //&// "Pedal Resonance", set CC20=1...127, CC21=1...127, CC22=1...127, and
 //&// CC23=1...127 respectively.
 //&
-//&// To change the release length, set CC20=0 and CC72 to 1 or higher.
-//&// CC72=127 will extend the release time by 2 seconds.
+//&// To change the release length, set CC72 to 1 or higher.  CC72=127 will 
+//&// extend the release time by 2 seconds.
 //&
 //&// Warning: Software that is not yet fully SFZ v2 compatible often fails to
 //&//          process CC64 correctly when Sampled_release/Hammer_noise is 
@@ -35,8 +35,8 @@ label_cc64=Sus Pedal
 label_cc72=Release Length
 label_cc99=Veltrack
 
-// Info: To change the release time, change the off_time and ampeg_release in
-//       the <global> section.  These should basically be the same value.
+// Info: "ampeg_release" and "off_time" in the <global> section determine the 
+//       base release time.  These should basically be the same value.
 
 // Note: "ampeg_release_shape" seems to behave differently depending on the
 //       player/sampler software.
