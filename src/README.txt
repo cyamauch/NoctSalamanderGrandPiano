@@ -16,6 +16,18 @@ volume, overtone, envelope, and delay, which are directly related to ease of
 control, which is important for performers who handle delicate expressions, 
 are thoroughly pursued. 
 
+The Salamander Grand (the widely used SFZ soundbank) with its high recording 
+quality was used as the original source set.  We meticulously remastered 638 
+of the 641 constituent files (comprising 16 note layers, 3 release layers, and 
+mechanical noise samples), excluding only the pedal noise.  We spend a great 
+deal of time setting up and adjusting the processing system in order to achieve
+perfect quality (at the limit level of specifications).  In addition to minimal
+filtering to preserve the original tone, spot noise that may have been caused 
+by the recording was removed, vibratory noise from sources other than the 
+hammers and strings was eliminated, and extensive restoration was performed to
+adjust the tone caused by the condition of the piano used for sampling 
+(deteriorated hammers, lack of tuning, etc.) and to correct fatal problems. 
+
 Version 6.2 resolves almost all problems found in the WAV and SFZ files of the 
 original Salamander Grand.  It also features significantly enhanced MIDI 
 control changes, allowing for full utilization of the recorded WAV samples
