@@ -59,7 +59,7 @@ pan_curvecc10=1
 // The settings here are only valid when certain conditions are met.
 //   1. Using specific player/sampler software such as Sforzand, Sfizz, etc.
 //   2. The Sus Pedal outputs continuous values from 0 to 127.
-//      (e.g., YAMAHA Disklavier, etc.)
+//      (e.g., YAMAHA Disklavier, Clavinova, P-525, CP88, YC88, etc.)
 // 1. + 2. : "Half pedaling" is supported.
 // 1. only : "Repedaling" is supported.
 
@@ -74,7 +74,7 @@ pan_curvecc10=1
 //+ampeg_release_curvecc64=11
 //+
 // The subtle behavior of half pedaling is set by the following line:
-// (These parameters were adjusted using YAMAHA EA1 Disklavier)
+// (These parameters were calibrated using YAMAHA EA1 Disklavier grand piano)
 //+<curve> curve_index=11  // for note
 //+v000=0
 //+v032=0
