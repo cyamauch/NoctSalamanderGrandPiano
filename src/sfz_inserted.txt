@@ -110,6 +110,7 @@ pan_curvecc10=1
 //+hicc64=32           // Half pedaling: Release of note changes at CC64=33
 volume_oncc20=-12
 volume_curvecc20=2  // 1 to 0 (Linear); see https://sfzformat.com/headers/curve/
+volume=-21.0
 
 %
 

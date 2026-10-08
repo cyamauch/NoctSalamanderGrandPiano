@@ -327,6 +327,8 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
       else if ( 0 < p_oncc64 ) { \
         gsub(/on_locc64=126[ ]/, "on_locc64=127 ", OUTPUT_LINE); \
         gsub(/on_hicc64=1[ ]/, "on_hicc64=0 off_by=1 ", OUTPUT_LINE); \
+        gsub(/off_by=2[ ]volume=[-]*[0-9][0-9]/, "off_by=2 volume=-39.0", OUTPUT_LINE); \
+        gsub(/off_by=1[ ]volume=[-]*[0-9][0-9]/, "off_by=1 volume=-45.0", OUTPUT_LINE); \
         print OUTPUT_LINE; \
       } \
       else { \

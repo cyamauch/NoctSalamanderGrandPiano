@@ -551,6 +551,8 @@ done
 
 #### Correct volume of sampled release ####
 
+MASTER_VOLUME=21.0
+
 FLAG_DO=""
 if [ "$SELECTED_KEY" = "" ]; then
   FLAG_DO=1
@@ -569,7 +571,7 @@ if [ "$FLAG_DO" = "1" ]; then
 
   for i in $LIST ; do
     FILE=`echo $i | awk -F, '{printf("%s\n",$1);}'`
-    CORR_VOL=`echo $i | awk -F, '{printf("%s\n",$2);}'`
+    CORR_VOL=`echo ${i},$MASTER_VOLUME | awk -F, '{printf("%g\n",$2+$3);}'`
     #
     IN_FILE=${SRC_DIR_HARM}/$FILE
     OUT_FILE=${DEST_DIR}/$FILE
@@ -611,18 +613,55 @@ fi
 
 if [ "$FLAG_DO" = "1" ]; then
 
+  MASTER_VOLUME=19.0
+
+  FILE=pedalD1.wav
+  IN_FILE=${SRC_DIR}/$FILE
+  OUT_FILE=${DEST_DIR}/$FILE
+
+  echo "Output: $FILE -> $OUT_FILE"
+
+  rm -f "$OUT_FILE"
+
+  "$FFMPEG" -i $IN_FILE -af volume=${MASTER_VOLUME}dB $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
+
+  FILE=pedalD2.wav
+  IN_FILE=${SRC_DIR}/$FILE
+  OUT_FILE=${DEST_DIR}/$FILE
+
+  echo "Output: $FILE -> $OUT_FILE"
+
+  rm -f "$OUT_FILE"
+
+  "$FFMPEG" -i $IN_FILE -af volume=${MASTER_VOLUME}dB $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
+
+
+  MASTER_VOLUME=26.0
+
+  FILE=pedalU1.wav
+  IN_FILE=${SRC_DIR}/$FILE
+  OUT_FILE=${DEST_DIR}/$FILE
+
+  echo "Output: $FILE -> $OUT_FILE"
+
+  rm -f "$OUT_FILE"
+
+  "$FFMPEG" -i $IN_FILE -af volume=${MASTER_VOLUME}dB $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
+
   FILE=pedalU2.wav
   IN_FILE=${SRC_DIR}/$FILE
   OUT_FILE=${DEST_DIR}/$FILE
 
   echo "Correct: $FILE -> $OUT_FILE"
 
-  rm -f _tmp_0.wav _tmp_1.wav "$OUT_FILE"
+  rm -f _tmp_0.wav _tmp_1.wav _tmp_2.wav "$OUT_FILE"
 
   #"$FFMPEG" -i $IN_FILE -af afade=t=out:st=0.363:d=0.001:silence=0.25:curve=tri -ss 0.00 -t 0.423 -c:a pcm_f32le _tmp_0.wav 2> /dev/null
   "$FFMPEG" -i $IN_FILE -af afade=t=out:st=0.221:d=0.050:silence=0.25:curve=tri -ss 0.00 -t 0.423 -c:a pcm_f32le _tmp_0.wav 2> /dev/null
   "$FFMPEG" -i $IN_FILE -af afade=t=in:st=0.423:d=0.100:silence=0.25:curve=tri -ss 0.423 -c:a pcm_f32le _tmp_1.wav 2> /dev/null
-  "$FFMPEG" -i _tmp_0.wav -i _tmp_1.wav -filter_complex concat=n=2:v=0:a=1 $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
+  "$FFMPEG" -i _tmp_0.wav -i _tmp_1.wav -filter_complex concat=n=2:v=0:a=1 -c:a pcm_f32le _tmp_2.wav 2> /dev/null
+  "$FFMPEG" -i _tmp_2.wav -af volume=${MASTER_VOLUME}dB $FFMPEG_OPT "$OUT_FILE" 2> /dev/null
+
 
 fi
 
