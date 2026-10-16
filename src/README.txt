@@ -452,6 +452,10 @@ V6.2 (Sep.29,2026)
 * Fixed a bug (SFZ code) that prevents Sfizz from playing sounds that include
   pedal resonance.
   (Thanks to Kuu <https://x.com/kuu_tele>)
+V6.2a (Oct.14,2026)
+* Adjusted pronunciation latency with greater precision.
+* Volume amplification of harm*.wav and pedal*.wav for converting them into 
+  16-bit WAV/FLAC files.
 
 
 *** Licence:

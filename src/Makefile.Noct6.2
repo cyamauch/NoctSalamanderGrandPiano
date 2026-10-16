@@ -44,7 +44,7 @@ DEST_SFZ_BASENAME = Noct-SalamanderGrandPiano
 #
 # Basename of destination directory
 #
-DESTDIR_BASENAME = NoctSalamanderGrandPianoV6.2
+DESTDIR_BASENAME = NoctSalamanderGrandPianoV6.2a
 
 
 SRCDIR48 =  ../SalamanderGrandPianoV3_48khz24bit
@@ -52,6 +52,7 @@ SRCPCMDIR48 =  $(SRCDIR48)/48khz24bit
 SRCPCMPATH48 =  $(SRCPCMDIR48)
 DESTDIR48 = ../$(DESTDIR_BASENAME)_48khz24bit
 DESTPCMDIR48 = $(DESTDIR48)/48khz24bit
+DESTDIR48FLAC = ../$(DESTDIR_BASENAME)_48khz24bit_flac
 
 DESTDIR48TEST = ../NoctSalamanderGrandPiano_Test
 DESTPCMDIR48TEST = $(DESTDIR48TEST)/48khz24bit
@@ -97,7 +98,7 @@ src48:: vol_factor.txt
 	cp -p assign.txt tuned.txt tuned_sfz.txt filter_direct.txt sfz_base_config.txt $(DESTDIR48)/src/.
 	cp -p `ls sfz_vol_factor_base*.txt | grep -v -e '[.]v5[.]' -e '[.]2025' -e '[-]only[.]'` $(DESTDIR48)/src/.
 	cp -p unsampled_volumes.txt mk_sfz.sh prep_sfz.sh sfz_inserted.txt $(DESTDIR48)/src/.
-	cp -p harm_vol.txt mk_harm.sh rel_seek_pos.txt mk_rel.sh $(DESTDIR48)/src/.
+	cp -p harm_vol.txt mk_harm.sh rel_seek_pos.txt mk_rel.sh cnv_flac.sh $(DESTDIR48)/src/.
 	cp -p $(SRCDIR48)/README $(DESTDIR48)/README.orig.txt
 
 noct48:: sfz48 src48
@@ -111,6 +112,9 @@ noct48:: sfz48 src48
 wav48only::
 	mkdir -p $(DESTPCMDIR48)
 	VERSION5=0 FS_SRC=48000 FFMPEG="$(FFMPEG)" FFMPEG_OPT="-c:a pcm_s24le" sh build.sh make $(SRCPCMPATH48) $(DESTPCMDIR48) 1.0
+
+flac48::
+	FFMPEG="$(FFMPEG)" sh cnv_flac.sh $(DESTDIR48) $(DESTDIR48FLAC)
 
 sfz44::
 	mkdir -p $(DESTPCMDIR44)
