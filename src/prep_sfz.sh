@@ -184,8 +184,7 @@ cat tmp3.sfz | awk '{ \
 # - "tune=xx" is written in <group> section.
 # - If a test flag is specified, the minimum necessary code will be output.
 
-COL_IDX=`expr $N_LAYERS + 3`
-LIST_TRANSPOSE=`cat assign.txt | grep -v '^[ ]*#' | sort -n | awk '{ if(NR==1){flag=0;} if ($1!=""){ if(flag!=0){printf(",");} v=$'$COL_IDX'; if(v==""){v=0;} printf("%d:%s",int(substr($1,1,3)),v); flag=1; } }END{printf("\n");}'`
+LIST_TRANSPOSE=`cat assign.txt | grep -v '^[ ]*#' | sort -n | awk '{ if(NR==1){flag=0;} if ($1!=""){ if(flag!=0){printf(",");} split($1,arr_v,","); v=arr_v[3]; if(v==""){v=0;} printf("%d:%s",int(substr($1,1,3)),v); flag=1; } }END{printf("\n");}'`
 #echo $LIST_TRANSPOSE > _.txt
 
 cat tmp4.sfz | awk '{ \

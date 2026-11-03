@@ -398,30 +398,34 @@ for i in $LIST ; do
   EFF_RATIO_23=`echo $FREQ NONE NONE | awk '{ if ( $1 < '$FREQ_ZERO_3' ) { printf("%s\n",$2); } else { printf("%s\n",$3); } }' | tr ',' ' '`
   #
   #
-  VOL_THIS_ALL=`echo "$VOL_FACTOR_TXT" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
-  SEEK_THIS_ALL=`echo "$PCM_SEEK_POS_SAMPLES" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
-  ASSIGN_THIS_ALL=`echo "$ASSIGN_TXT" | grep "^$N_ID" | sed -e 's/^[^ ][^ ]*[ ][ ]*//'`
+  VOL_THIS_ALL=`echo "$VOL_FACTOR_TXT" | grep "^$N_ID" | \
+    awk '{ split($0,ARR," "); idx=2; for(i=1;i<='$N_LAYERS';i++){ printf("%s ",ARR[idx]); if (idx<length(ARR)){idx++;} } printf("\n"); }'`
+  SEEK_THIS_ALL=`echo "$PCM_SEEK_POS_SAMPLES" | grep "^$N_ID" | \
+    awk '{ split($0,ARR," "); idx=2; for(i=1;i<='$N_LAYERS';i++){ printf("%s ",ARR[idx]); if (idx<length(ARR)){idx++;} } printf("\n"); }'`
+  ASSIGN_THIS_ALL=`echo "$ASSIGN_TXT" | grep "^$N_ID" | \
+    awk '{ split($0,ARR," "); idx=2; for(i=1;i<='$N_LAYERS';i++){ printf("%s ",ARR[idx]); if (idx<length(ARR)){idx++;} } printf("\n"); }'`
+  ASSIGN_COL1=`echo "$ASSIGN_TXT" | grep "^$N_ID" | sed -e 's/[ ].*//'`
+  ASSIGN_COL1_2=`echo "$ASSIGN_COL1" | awk -F, '{ print $2; }'`
+  ASSIGN_COL1_3=`echo "$ASSIGN_COL1" | awk -F, '{ print $3; }'`
   #
   if [ "$VOL_THIS_ALL" = "" ]; then
     #VOL_THIS_ALL="0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0"
     VOL_THIS_ALL=`echo $N_LAYERS | awk '{ for (i=1;i<=$1;i++){ printf("0.0  "); } printf("\n"); }'`
   fi
   if [ "$SEEK_THIS_ALL" = "" ]; then
-    #SEEK_THIS_ALL="0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000"
-    SEEK_THIS_ALL=`echo $N_LAYERS | awk '{ for (i=1;i<=$1;i++){ printf("0.000 "); } printf("\n"); }'`
+    #SEEK_THIS_ALL="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+    SEEK_THIS_ALL=`echo $N_LAYERS | awk '{ for (i=1;i<=$1;i++){ printf("0 "); } printf("\n"); }'`
   fi
-  USED_KEY="$KEY"
-  TUNE_BY_SCALE=""
+  if [ "$ASSIGN_COL1_2" = "" ]; then
+    USED_KEY="$KEY"
+    TUNE_BY_SCALE=0
+  else
+    USED_KEY="$ASSIGN_COL1_2"
+    TUNE_BY_SCALE="$ASSIGN_COL1_3"
+  fi
   if [ "$ASSIGN_THIS_ALL" = "" ]; then
     #ASSIGN_THIS_ALL="1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16"
     ASSIGN_THIS_ALL=`echo $N_LAYERS | awk '{ for (i=1;i<=$1;i++){ printf("%d ",i); } printf("\n"); }'`
-  else
-    USED_KEY=`echo $ASSIGN_THIS_ALL | awk '{print $17}'`
-    if [ "$USED_KEY" = "" ]; then
-      USED_KEY="$KEY"
-    else
-      TUNE_BY_SCALE=`echo $ASSIGN_THIS_ALL | awk '{print $18}'`
-    fi
   fi
   if [ "$TUNE_BY_SCALE" = "" ] ; then
     TUNE_BY_SCALE=0
