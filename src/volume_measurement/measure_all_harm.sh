@@ -10,29 +10,15 @@ fi
 SEC=$1
 
 #DIR=../../SalamanderGrandPianoV3_48khz24bit/48khz24bit/
-DIR=../harm_corr/
-RESULT=harm_vol.txt
+#DIR=../harm_corr/
+#DIR=../../AccurateSalamanderGrandPianoV6.2a_48khz24bit/48khz24bit
+DIR=../../AccurateSalamanderGrandPianoV6.2c_48khz24bit/48khz24bit
 
 echo "Note: Directory is $DIR"
-echo "      Output is $RESULT"
 
 PLOT_CMD="plot "
 
 LAYER_LIST="harmL harmS harmV3"
-
-# y = - A * x - (B + B_SPAN * n)
-COEFF_A=0.65
-COEFF_B=40.0
-COEFF_B_SPAN=8.5
-
-#
-# NOTE: This is used in build.sh
-#
-VOL_GAIN=0.0
-
-echo "NOTE: VOL_GAIN = $VOL_GAIN is used for 'Sampled Release' in build.sh"
-
-rm -f $RESULT
 
 COUNT=0
 for i in $LAYER_LIST ; do
@@ -51,8 +37,8 @@ for i in $LAYER_LIST ; do
 
   #echo $LIST
 
-  OUTPUT="harm_meanvol-sec${SEC}_${i}.txt"
-  OUTPUT_MEDIAN="harm_meanvol-sec${SEC}_median.txt"
+  OUTPUT="tmp_harm_meanvol.txt"
+  OUTPUT_MEDIAN="tmp_harm_meanvol_median.txt"
   sh measure_volume.sh 0 $SEC $LIST > $OUTPUT
 
   # Get median
@@ -62,28 +48,12 @@ for i in $LAYER_LIST ; do
   paste list_${i}.txt $OUTPUT | tr '\t' ' ' | awk '{ \
     S=$1 ; \
     gsub(/^.*[\/]/, "", S); \
-    printf("%s %g\n", S, ( -'$COEFF_A' * (NR-1) - ('$COEFF_B' + '$COEFF_B_SPAN' * 0) ) - ($2) + '$VOL_GAIN'); \
-  }' >> $RESULT
-
-  if [ "$i" = "harmV3" ]; then
-    PLOT_CMD="$PLOT_CMD '${OUTPUT}' with linesp title '$i', -$COEFF_A*x - $COEFF_B, -$COEFF_A*x - ($COEFF_B + 1*$COEFF_B_SPAN), -$COEFF_A*x - ($COEFF_B + 2*$COEFF_B_SPAN)"
-  else
-    PLOT_CMD="$PLOT_CMD '${OUTPUT}' with linesp title '$i',"
-  fi
+    printf("%s %g\n", S, $2); \
+  }'
 
   echo Median = `cat $OUTPUT_MEDIAN`
 
   COUNT=`expr $COUNT + 1`
 
 done
-
-OUTPUT_PLOT=plot_orig_harmvol-sec${SEC}.txt
-
-echo "set xlabel 'note-id'" > $OUTPUT_PLOT
-echo "set ylabel 'harm-volumne (${SEC} sec.)'" >> $OUTPUT_PLOT
-echo "set grid" >> $OUTPUT_PLOT
-echo "set xtics 10" >> $OUTPUT_PLOT
-#echo "set xrange [19:120]" >> $OUTPUT_PLOT
-
-echo $PLOT_CMD >> $OUTPUT_PLOT
 
