@@ -54,6 +54,34 @@ cp -p $SRC_DIR/harmS*.wav $DEST_DIR/.
 cp -p $SRC_DIR/harmV3*.wav $DEST_DIR/.
 
 #
+# harmLA1 ... Adjust decay and overtone.
+#
+
+IN_FILE="$SRC_DIR/harmLA1.wav"
+OUT_FILE="$DEST_DIR/harmLA1.wav"
+
+echo "Correct: $IN_FILE -> $OUT_FILE"
+
+rm -f $OUT_FILE
+
+"$FFMPEG" -i $IN_FILE -af equalizer=f=3000:w=6000:t=h:g=-3.0:r=f32,afade=t=out:st=0.1:d=0.25:silence=0.6:curve=tri,volume=+1.3dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+
+
+#
+# harmLC2 ... Adjust decay and overtone.
+#
+
+IN_FILE="$SRC_DIR/harmLC2.wav"
+OUT_FILE="$DEST_DIR/harmLC2.wav"
+
+echo "Correct: $IN_FILE -> $OUT_FILE"
+
+rm -f $OUT_FILE
+
+"$FFMPEG" -i $IN_FILE -af equalizer=f=4500:w=7000:t=h:g=-6.0:r=f32,afade=t=out:st=0.1:d=0.6:silence=0.65:curve=tri,volume=+0.5dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+
+
+#
 # harmLF#2 ... Mechanical noise at the 2.1-second -> Delete the section from 2.1 seconds onwards.
 #
 
@@ -113,6 +141,34 @@ rm -f _tmp_sub_0.wav _tmp_sub_1.wav $OUT_FILE
 "$FFMPEG" -i $IN_FILE -ss 1.30         -c:a pcm_f32le _tmp_sub_1.wav 2> /dev/null
 
 "$FFMPEG" -i _tmp_sub_0.wav -i _tmp_sub_1.wav -filter_complex concat=n=2:v=0:a=1 -c:a pcm_f32le $OUT_FILE 2> /dev/null
+
+
+#
+# harmSA1 ... Adjust decay and overtone.
+#
+
+IN_FILE="$SRC_DIR/harmSA1.wav"
+OUT_FILE="$DEST_DIR/harmSA1.wav"
+
+echo "Correct: $IN_FILE -> $OUT_FILE"
+
+rm -f $OUT_FILE
+
+"$FFMPEG" -i $IN_FILE -af equalizer=f=3000:w=6000:t=h:g=-0.3:r=f32,afade=t=out:st=0.1:d=0.4:silence=0.6:curve=tri,volume=+0.5dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+
+
+#
+# harmSC2 ... Adjust decay and overtone.
+#
+
+IN_FILE="$SRC_DIR/harmSC2.wav"
+OUT_FILE="$DEST_DIR/harmSC2.wav"
+
+echo "Correct: $IN_FILE -> $OUT_FILE"
+
+rm -f $OUT_FILE
+
+"$FFMPEG" -i $IN_FILE -af equalizer=f=4500:w=7000:t=h:g=-15.0:r=f32,afade=t=out:st=0.1:d=0.3:silence=0.7:curve=tri,volume=+1.0dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
 
 
 #
