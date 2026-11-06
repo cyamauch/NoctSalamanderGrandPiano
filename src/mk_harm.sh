@@ -64,7 +64,23 @@ echo "Correct: $IN_FILE -> $OUT_FILE"
 
 rm -f $OUT_FILE
 
-"$FFMPEG" -i $IN_FILE -af equalizer=f=3000:w=6000:t=h:g=-3.0:r=f32,afade=t=out:st=0.1:d=0.25:silence=0.6:curve=tri,volume=+1.3dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+#"$FFMPEG" -i $IN_FILE -af equalizer=f=3000:w=6000:t=h:g=-3.0:r=f32,afade=t=out:st=0.1:d=0.25:silence=0.6:curve=tri,volume=+1.3dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+
+"$FFMPEG" -i $IN_FILE -af equalizer=f=608:w=60:t=h:g=-12.0:r=f32,equalizer=f=3000:w=6000:t=h:g=-3.0:r=f32,afade=t=out:st=0.1:d=0.25:silence=0.6:curve=tri,volume=+2.1dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+
+
+#
+# harmLF#1 ... Remove strange emission line
+#
+
+IN_FILE="$SRC_DIR/harmLF#1.wav"
+OUT_FILE="$DEST_DIR/harmLF#1.wav"
+
+echo "Correct: $IN_FILE -> $OUT_FILE"
+
+rm -f $OUT_FILE
+
+"$FFMPEG" -i $IN_FILE -af equalizer=f=2369:w=236:t=h:g=-12.0:r=f32,volume=+0.0dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
 
 
 #
@@ -78,7 +94,9 @@ echo "Correct: $IN_FILE -> $OUT_FILE"
 
 rm -f $OUT_FILE
 
-"$FFMPEG" -i $IN_FILE -af equalizer=f=4500:w=7000:t=h:g=-6.0:r=f32,afade=t=out:st=0.1:d=0.6:silence=0.65:curve=tri,volume=+0.5dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+#"$FFMPEG" -i $IN_FILE -af equalizer=f=4500:w=7000:t=h:g=-6.0:r=f32,afade=t=out:st=0.1:d=0.5:silence=0.65:curve=tri,volume=+0.5dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+
+"$FFMPEG" -i $IN_FILE -af equalizer=f=1400:w=700:t=h:g=-6.0:r=f32,afade=t=out:st=0.1:d=0.5:silence=0.65:curve=tri,volume=+0.9dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
 
 
 #
@@ -154,7 +172,9 @@ echo "Correct: $IN_FILE -> $OUT_FILE"
 
 rm -f $OUT_FILE
 
-"$FFMPEG" -i $IN_FILE -af equalizer=f=3000:w=6000:t=h:g=-0.3:r=f32,afade=t=out:st=0.1:d=0.4:silence=0.6:curve=tri,volume=+0.5dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+#"$FFMPEG" -i $IN_FILE -af equalizer=f=3000:w=6000:t=h:g=-0.3:r=f32,afade=t=out:st=0.1:d=0.4:silence=0.6:curve=tri,volume=+0.5dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+
+"$FFMPEG" -i $IN_FILE -af equalizer=f=608:w=60:t=h:g=-12.0:r=f32,afade=t=out:st=0.1:d=0.6:silence=0.8:curve=tri,volume=+0.9dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
 
 
 #
@@ -168,7 +188,9 @@ echo "Correct: $IN_FILE -> $OUT_FILE"
 
 rm -f $OUT_FILE
 
-"$FFMPEG" -i $IN_FILE -af equalizer=f=4500:w=7000:t=h:g=-15.0:r=f32,afade=t=out:st=0.1:d=0.3:silence=0.7:curve=tri,volume=+1.0dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+#"$FFMPEG" -i $IN_FILE -af equalizer=f=4500:w=7000:t=h:g=-15.0:r=f32,afade=t=out:st=0.1:d=0.3:silence=0.6:curve=tri,volume=+1.2dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+
+"$FFMPEG" -i $IN_FILE -af equalizer=f=4500:w=7000:t=h:g=-15.0:r=f32,afade=t=out:st=0.1:d=0.4:silence=0.7:curve=tri,volume=+0.9dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
 
 
 #
