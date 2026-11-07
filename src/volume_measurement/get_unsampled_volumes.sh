@@ -17,7 +17,7 @@ if [ ! -x "$FFMPEG" ]; then
   exit 127
 fi
 
-DIR=../../AccurateSalamanderGrandPianoV6.0_48khz24bit/48khz24bit/
+DIR=../../AccurateSalamanderGrandPianoV6.2c_48khz24bit/48khz24bit/
 
 
 #cat typical.sfz | grep 'sample=[^ ]*[01][0-9][0-9]_[^ ][^ ]*[.]wav' | sed -e 's/^[^\\][^\\]*[\\]//'
@@ -38,7 +38,9 @@ echo "Using offset value ${OFFSET_DB}db to calcuate correction value."
 
 LIST=`cat ../key_n-id.txt | awk '{printf("%s_%s\n",$2,$1);}'`
 
-rm -f unsampled_volumes.txt
+OUTPUT_FILE=unsampled_volumes.txt
+
+rm -f $OUTPUT_FILE
 
 for i in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 ; do
 
@@ -111,9 +113,9 @@ for i in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 ; do
 
   done
 
-  echo "${i} ${RESULT_ALL} " >> unsampled_volumes.txt
+  echo "${i} ${RESULT_ALL} " >> $OUTPUT_FILE
 
 done
 
-cp -p unsampled_volumes.txt ..
+cp -p $OUTPUT_FILE ..
 

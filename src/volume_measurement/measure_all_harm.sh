@@ -16,11 +16,8 @@ DIR=../../AccurateSalamanderGrandPianoV6.2c_48khz24bit/48khz24bit
 
 echo "Note: Directory is $DIR"
 
-PLOT_CMD="plot "
-
 LAYER_LIST="harmL harmS harmV3"
 
-COUNT=0
 for i in $LAYER_LIST ; do
 
   echo "Measuring layer: ${i}"
@@ -44,7 +41,7 @@ for i in $LAYER_LIST ; do
   # Get median
   cat $OUTPUT | sort -n | awk '{if(NR==12){print;}}' > $OUTPUT_MEDIAN
 
-  # Get corr. values
+  # Output results
   paste list_${i}.txt $OUTPUT | tr '\t' ' ' | awk '{ \
     S=$1 ; \
     gsub(/^.*[\/]/, "", S); \
@@ -52,8 +49,6 @@ for i in $LAYER_LIST ; do
   }'
 
   echo Median = `cat $OUTPUT_MEDIAN`
-
-  COUNT=`expr $COUNT + 1`
 
 done
 
