@@ -190,7 +190,9 @@ rm -f $OUT_FILE
 
 #"$FFMPEG" -i $IN_FILE -af equalizer=f=4500:w=7000:t=h:g=-15.0:r=f32,afade=t=out:st=0.1:d=0.3:silence=0.6:curve=tri,volume=+1.2dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
 
-"$FFMPEG" -i $IN_FILE -af equalizer=f=4500:w=7000:t=h:g=-15.0:r=f32,afade=t=out:st=0.1:d=0.4:silence=0.7:curve=tri,volume=+0.9dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+#"$FFMPEG" -i $IN_FILE -af equalizer=f=4500:w=7000:t=h:g=-15.0:r=f32,afade=t=out:st=0.1:d=0.4:silence=0.7:curve=tri,volume=+0.9dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
+
+"$FFMPEG" -i $IN_FILE -af equalizer=f=1600:w=1600:t=h:g=-9.0:r=f32:r=f32,afade=t=out:st=0.1:d=0.4:silence=0.7:curve=tri,volume=+1.4dB -c:a pcm_f32le $OUT_FILE 2> /dev/null
 
 
 #
