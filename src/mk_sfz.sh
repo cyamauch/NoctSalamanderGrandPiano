@@ -163,7 +163,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
     if ( NR==1 ) { \
       VERSION=$1; \
       ix_rel=1; \
-      count_group100 = 101; \
+      count_group200 = 201; \
     } \
     else if ( NR==2 ) { \
       if ( $1 == "" ) { \
@@ -292,11 +292,11 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
       } \
       else if ( 0 < p_amp ) { \
         if ( 0 < p_pkt ) { \
-          gsub(/trigger=release/, "group=201 trigger=release_key", OUTPUT_LINE); \
+          gsub(/trigger=release/, "group=401 trigger=release_key", OUTPUT_LINE); \
           gsub(/amp_veltrack=[0-9][0-9]*[ ]/, "", OUTPUT_LINE); \
         } else if ( 0 < p_rtd ) { \
-          gsub(/trigger=release/, "group=" count_group100 " trigger=release", OUTPUT_LINE); \
-          count_group100 = count_group100 + 1; \
+          gsub(/trigger=release/, "group=" count_group200 " trigger=release", OUTPUT_LINE); \
+          count_group200 = count_group200 + 1; \
           gsub(/volume=[-]4 /, "", OUTPUT_LINE); \
           gsub(/amp_veltrack=[0-9][0-9]*[ ]/, "", OUTPUT_LINE); \
         } \
@@ -385,6 +385,9 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
         printf("<master> ampeg_attack=0.05 locc23=1\n"); \
         printf("volume_oncc23=-12\n"); \
         printf("volume_curvecc23=2  // 1 to 0 (Linear); see https://sfzformat.com/headers/curve/\n"); \
+        printf("// curve_index=10: ON/OFF pedaling.\n"); \
+        printf("// ampeg_release_curvecc64=10\n"); \
+        printf("// curve_index=12: half pedaling.\n"); \
         printf("//+ampeg_release_curvecc64=12\n"); \
         printf("\n"); \
         if ( 0 ) { \
@@ -498,7 +501,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
       } \
       print; \
     }' > tmp_out_daw.sfz
-    cat tmp_out_daw.sfz | sed -e 's/[ ]lovel=1[ ]/ lovel=2 /' -e 's/ampeg_dynamic=0/ampeg_dynamic=1/' -e 's/^[/][/][+&]//' | awk '{ \
+    cat tmp_out_daw.sfz | sed -e 's/[ ]lovel=1[ ]/ lovel=2 /' -e 's/ampeg_dynamic=0/ampeg_dynamic=1/' -e 's/^[/][/][*+&]//' | awk '{ \
       line = $0; \
       if ( $1 == "<group>" ) { \
         p0 = match($0, /[ ][\/][\/][ ]offset=[0-9]/); \
@@ -513,7 +516,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
     }' > tmp_out_live.sfz
     # final for minimum/
     cat tmp_out_minimum.sfz | awk '{ \
-      if ( substr($0,1,3) == "//+" ) { \
+      if ( substr($0,1,3) == "//+" || substr($0,1,3) == "//*" ) { \
         line = "// " substr($0,4); \
       } \
       else { \
@@ -528,7 +531,7 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
       if ( substr($0,1,3) == "//+" ) { \
         line = "// " substr($0,4); \
       } \
-      else if ( substr($0,1,3) == "//&" ) { \
+      else if ( substr($0,1,3) == "//&" || substr($0,1,3) == "//*" ) { \
         line = substr($0,4); \
       } \
       else { \

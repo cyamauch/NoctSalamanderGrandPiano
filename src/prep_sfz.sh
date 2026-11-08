@@ -31,6 +31,7 @@ cat sfz_inserted.txt $SRC_SFZ | tr -d '\r' | sed -e 's/[ ][ ]*$//' $ARG_OUTFILE_
     } \
   } \
   else { \
+    gsub(/[ ]lokey=20[ ]hikey=22[ ]/, " lokey=21 hikey=22 ",$0); \
     if ( match($0,/\/\/Notes$/) == 1 ) { \
       printf("%s",ins_parts[1]); \
     } \
@@ -355,6 +356,33 @@ cat tmp4.sfz | awk '{ \
     } \
   } \
 }' > tmp5.sfz
+
+#
+# tmp6.sfz is not used...
+# (Use this to adjust "Sampled Release" volume one by one)
+#
+cat tmp5.sfz | awk '{
+  if ( 0 < match($2, /sample=.*harm[SLV].*[.]wav/) ) { \
+    split($0,ARR," "); \
+    lokey = substr(ARR[3],7); \
+    hikey = substr(ARR[4],7); \
+    if ( length(ARR) == 7 ) { \
+      keycen = substr(ARR[7],17); \
+      for ( i=lokey ; i <= hikey ; i++ ) { \
+        printf("%s %s lokey=%d hikey=%d %s %s %s\n",ARR[1],ARR[2],i,i,ARR[5],ARR[6],ARR[7]); \
+      } \
+    } \
+    else { \
+      keycen = substr(ARR[6],17); \
+      for ( i=lokey ; i <= hikey ; i++ ) { \
+        printf("%s %s lokey=%d hikey=%d %s %s\n",ARR[1],ARR[2],i,i,ARR[5],ARR[6]); \
+      } \
+    } \
+  } \
+  else { \
+    print; \
+  } \
+}' > tmp6.sfz
 
 cat $SRC_UNSAMPLED | sed -e 's/[ ][ ]*/ /g' -e 's/[ ]/,-,/g' | tr ',' ' ' > tmp_unsampled.txt
 
