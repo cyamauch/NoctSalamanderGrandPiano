@@ -27,6 +27,7 @@ mkdir -p "$DEST"
 
 echo cp -p $SRC/README.txt $DEST/.
 cp -p $SRC/README.txt $DEST/.
+cp -p $SRC/README.orig.txt $DEST/.
 echo cp -pR $SRC/src $DEST/.
 cp -pR $SRC/src $DEST/.
 

@@ -385,8 +385,6 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
         printf("<master> ampeg_attack=0.05 locc23=1\n"); \
         printf("volume_oncc23=-12\n"); \
         printf("volume_curvecc23=2  // 1 to 0 (Linear); see https://sfzformat.com/headers/curve/\n"); \
-        printf("// curve_index=10: ON/OFF pedaling.\n"); \
-        printf("// ampeg_release_curvecc64=10\n"); \
         printf("// curve_index=12: half pedaling.\n"); \
         printf("//+ampeg_release_curvecc64=12\n"); \
         printf("\n"); \
@@ -429,14 +427,14 @@ if [ "$DEST_SFZ_BASENAME" != "" ]; then
             printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i+KEY_OFFSET],i,i,SRC_1[i+KEY_OFFSET]); \
           } \
           printf("\n"); \
-          KEY_OFFSET=9; \
-          printf("<group> group=305 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-6.0+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
+          KEY_OFFSET=6; \
+          printf("<group> group=305 group_volume=%g locc64=22  // key_offset = -%d,+%d\n",-7.5+('$RESONANCE_VOL_DB'),KEY_OFFSET,KEY_OFFSET); \
           printf("\n"); \
           for ( i=62 ; i <= 70 ; i++ ) { \
             printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i-KEY_OFFSET],i,i,SRC_1[i-KEY_OFFSET]); \
           } \
           printf("\n"); \
-          printf("<group> group=306 group_volume=%g locc64=22\n",-6.0+('$RESONANCE_VOL_DB')); \
+          printf("<group> group=306 group_volume=%g locc64=22\n",-7.5+('$RESONANCE_VOL_DB')); \
           printf("\n"); \
           for ( i=62 ; i <= 70 ; i++ ) { \
             printf("%s lokey=%d hikey=%d lovel=1 %s\n",SRC_0[i+KEY_OFFSET],i,i,SRC_1[i+KEY_OFFSET]); \

@@ -112,7 +112,7 @@ changes are available:
 
  - CC24 "Note Attenuation"
    Default: Off (v=0)
-   Range: -0 ... -48dB
+   Range: -0 ... -48dB, -Inf
 
 For software that does not fully support SFZ v2, the use of CC20-CC23 often 
 causes problems with damper pedal (CC64) processing; therefore, it is 
@@ -456,6 +456,16 @@ V6.2a (Oct.14,2026)
 * Adjusted pronunciation latency with greater precision.
 * Volume amplification of harm*.wav and pedal*.wav for converting them into 
   16-bit WAV/FLAC files.
+V6.2c (Nov.10,2026)
+* Adjusted the decay and overtones of harm{LA1,LC2,SA1,SC2}.wav.
+* Fixed the occurrence of unnatural high-freq. components in harmLF#1.wav.
+* Improved the continuity of overtones: A0v2, C1v2, D#1v2, A1v2, C2v2, 
+  C2v3, D#2v2, D#2v3, D#4v1, D#4v2 and D#4v3 are adjusted.
+* Updated SFZ files:
+ - Fixed simple bug in "Sampled Release" section:
+   "lokey=20 hikey=22" -> "lokey=21 hikey=22"
+ - Improved the continuity of "Pseudo Pedal Resonance":
+   changed key_offset for keys 62-70: "-9,+9" -> "-6,+6"
 
 
 *** Licence:

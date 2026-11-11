@@ -62,7 +62,7 @@ pan_curvecc10=1
 //      (e.g., YAMAHA Disklavier, Clavinova, P-525, CP88, YC88, etc.)
 // 1. + 2. : "Half pedaling" is supported.
 // 1. only : "Repedaling" is supported.
-
+//+
 // Reset default CC64 implementation.
 // Note: Sus pedal is controlled by CC64 even if the following line is enabled.
 //+sustain_cc=90
@@ -70,18 +70,8 @@ pan_curvecc10=1
 //+ampeg_dynamic=1
 //+ampeg_releasecc64=100
 //+
-// Release curve of note.
-// curve_index=10: ON/OFF pedaling.
-// ampeg_release_curvecc64=10
-// curve_index=11: half pedaling.
+// The curve with curve_index=11 is applied for half pedaling (note).
 //+ampeg_release_curvecc64=11
-//*
-// Normal behavior of Sus pedal (OFF:0...63, ON:64...127):
-//*<curve> curve_index=10
-//*v000=0
-//*v063=0
-//*v064=1
-//*v127=1
 //*
 // The subtle behavior of half pedaling is set by the following line:
 // (These parameters were calibrated using YAMAHA EA1 Disklavier grand piano)

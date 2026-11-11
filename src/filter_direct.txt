@@ -14,7 +14,7 @@
 ## F#1    equalizer=f=1210:t=h:w=8:g=-40:r=f32,equalizer=f=1830:t=h:w=8:g=-40:r=f32,equalizer=f=1400:t=h:w=1400:g=+14:r=f32,equalizer=f=46:t=h:w=40:g=-8:r=f32,equalizer=f=200:t=h:w=200:g=+6,volume=-3.8dB
 
 # Adjustment overtone
-D#1v2   equalizer=f=700.0:t=h:w=700.0:g=+1.0:r=f32
+#D#1v2   equalizer=f=700.0:t=h:w=700.0:g=+1.0:r=f32
 D#1v3   equalizer=f=700.0:t=h:w=700.0:g=+2.5:r=f32
 D#1v4   equalizer=f=700.0:t=h:w=700.0:g=+3.0:r=f32
 D#1v5   equalizer=f=700.0:t=h:w=700.0:g=+2.0:r=f32
@@ -56,7 +56,7 @@ D#2v1  lowpass=f=530.0:t=q:w=0.707:r=f32
 F#2v1  lowpass=f=450.0:t=q:w=0.707:r=f32
 D#3v1  lowpass=f=620.0:t=q:w=0.707:r=f32
 F#3v1  lowpass=f=560.0:t=q:w=0.707:r=f32
-D#4v1  lowpass=f=1100.0:t=q:w=0.707:r=f32
+#D#4v1  lowpass=f=1100.0:t=q:w=0.707:r=f32
 
 
 #######################
@@ -75,7 +75,11 @@ F#3v2  equalizer=f=1300.0:t=h:w=1300.0:g=-7.5:r=f32
 
 C4v2  equalizer=f=2300.0:t=h:w=2300.0:g=-4.0:r=f32
 
-D#4v2  equalizer=f=1700.0:t=h:w=1700.0:g=-12.0:r=f32
+#D#4v2  equalizer=f=1700.0:t=h:w=1700.0:g=-12.0:r=f32
+
+D#4v1  equalizer=f=1700.0:t=h:w=1700.0:g=-14.0:r=f32
+D#4v2  equalizer=f=1700.0:t=h:w=1700.0:g=-15.0:r=f32
+D#4v3  equalizer=f=1700.0:t=h:w=1700.0:g=-6.0:r=f32
 
 C5v1  lowpass=f=1600.0:t=q:w=0.707:r=f32
 C5v2  lowpass=f=1600.0:t=q:w=0.707:r=f32
@@ -201,4 +205,19 @@ D#7v6  equalizer=f=5080:t=h:w=250.0:g=+2.0:r=f32
 D#7v7  equalizer=f=5080:t=h:w=250.0:g=+2.0:r=f32
 D#7v8  equalizer=f=5080:t=h:w=250.0:g=+1.0:r=f32
 D#7v9  equalizer=f=5080:t=h:w=250.0:g=+1.0:r=f32
+
+
+#
+# fix spectrum jump between v02 and v03
+#
+
+A0v2   equalizer=f=800:t=h:w=1600.0:g=-1.5:r=f32
+C1v2   equalizer=f=800:t=h:w=1600.0:g=-4.5:r=f32,equalizer=f=3000:t=h:w=6000.0:g=-3.0:r=f32
+D#1v2  equalizer=f=800:t=h:w=1600.0:g=-3.0:r=f32
+A1v2   equalizer=f=800:t=h:w=1600.0:g=-0.6:r=f32
+C2v2   equalizer=f=1000:t=h:w=2000.0:g=-2.5:r=f32
+C2v3   equalizer=f=1000:t=h:w=2000.0:g=-0.5:r=f32
+
+D#2v2  equalizer=f=3000:t=h:w=6000.0:g=-3.0:r=f32
+D#2v3  equalizer=f=3000:t=h:w=6000.0:g=+2.0:r=f32
 
