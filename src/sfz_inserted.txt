@@ -46,6 +46,7 @@ amp_veltrack=73
 amp_veltrack_oncc99=-50
 amp_veltrack_curvecc99=0  // 0 to 1 (Linear); see https://sfzformat.com/headers/curve/
 note_polyphony=1
+ampeg_attack=0.001  // To fix clicking noise when using SFZ files in sfz_live/
 ampeg_release=1.0
 off_time=1.0
 amplitude_oncc7=100

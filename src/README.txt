@@ -466,6 +466,12 @@ V6.2c (Nov.10,2026)
    "lokey=20 hikey=22" -> "lokey=21 hikey=22"
  - Improved the continuity of "Pseudo Pedal Resonance":
    changed key_offset for keys 62-70: "-9,+9" -> "-6,+6"
+V6.2e (Nov.12,2026)
+* Fixed clicking noise when using SFZ files in sfz_live/: 
+  Appended ampeg_attack=0.001 to the <global> section.
+  (Thanks to Cagkan C. Bircan <https://www.instagram.com/between_the_folds>)
+* Improved "Pseudo Pedal Resonance": enhanced volume continuity and extended 
+  the supported range up to key 108 (covering all keys).
 
 
 *** Licence:
